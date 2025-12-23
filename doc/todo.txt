@@ -1,0 +1,6 @@
+- design merch
+  - image + product + price(s)
+- legal info
+- get link
+- get embedding code
+- custom e-shop
