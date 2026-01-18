@@ -1,0 +1,46 @@
+import React, {useCallback, useContext, useEffect, useState} from 'react';
+import {WnUserAlertsContext} from "../../util/WnUserAlerts";
+import {Card, Placeholder} from "react-bootstrap";
+import {JavaHeapControl} from "zavadil-react-common";
+import {MerchMasterRestClientContext} from "../../client/MerchMasterRestClient";
+import {MerchMasterStats} from "../../types/Stats";
+
+function MemoryStatsControl() {
+	const restClient = useContext(MerchMasterRestClientContext);
+	const userAlerts = useContext(WnUserAlertsContext);
+	const [stats, setStats] = useState<MerchMasterStats>();
+
+	const loadStats = useCallback(
+		() => {
+			restClient.stats()
+				.then(setStats)
+				.catch((e) => userAlerts.err(e))
+		},
+		[restClient, userAlerts]
+	);
+
+	useEffect(() => {
+		loadStats();
+		const h = setInterval(loadStats, 2000);
+		return () => clearInterval(h);
+	}, []);
+
+	return (
+		<Card>
+			<Card.Header>
+				<Card.Title>Server Memory</Card.Title>
+			</Card.Header>
+			<Card.Body>
+				{
+					stats ? <JavaHeapControl stats={stats.javaHeap}/>
+						: <Placeholder className="w-100" as="p" animation="glow">
+							<Placeholder className="w-100"/>
+						</Placeholder>
+				}
+
+			</Card.Body>
+		</Card>
+	);
+}
+
+export default MemoryStatsControl;

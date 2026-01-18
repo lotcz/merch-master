@@ -1,0 +1,10 @@
+services:
+  dev-db:
+    image: postgres:17.2-alpine
+    container_name: mm-dev-db
+    environment:
+      - POSTGRES_USER=mm
+      - POSTGRES_PASSWORD=mm
+      - POSTGRES_DB=mm
+    ports:
+      - 5439:5432
