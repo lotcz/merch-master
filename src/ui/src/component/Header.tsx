@@ -12,7 +12,7 @@ function Header() {
 	return (
 		<header className={`p-3 bg-body-secondary`}>
 			<Stack direction="horizontal" className="justify-content-between align-items-center">
-				<h1>WorldNews</h1>
+				<h1>MerchMaster</h1>
 				<div className="d-flex gap-2 p-2 rounded bg-body text-body">
 					<IconSwitch
 						checked={!isDark}
