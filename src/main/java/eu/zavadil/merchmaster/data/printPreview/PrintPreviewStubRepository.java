@@ -1,8 +1,15 @@
 package eu.zavadil.merchmaster.data.printPreview;
 
 import eu.zavadil.java.spring.common.entity.EntityRepository;
-import eu.zavadil.merchmaster.data.printType.PrintTypeStub;
+import org.springframework.data.jpa.repository.Modifying;
 
-public interface PrintPreviewStubRepository extends EntityRepository<PrintTypeStub> {
+import java.util.List;
+
+public interface PrintPreviewStubRepository extends EntityRepository<PrintPreviewStub> {
+
+	List<PrintPreviewStub> findAllByPrintZoneId(int printZoneId);
+
+	@Modifying
+	void deleteAllByPrintZoneIdAndIdNotIn(int printZoneId, List<Integer> previewIds);
 
 }

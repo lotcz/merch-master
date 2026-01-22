@@ -5,14 +5,10 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.UUID;
-
 @EqualsAndHashCode(callSuper = true)
 @Data
 @MappedSuperclass
 public class DesignFileBase extends EntityBase {
-
-	private UUID uuid;
 
 	private String imageName;
 

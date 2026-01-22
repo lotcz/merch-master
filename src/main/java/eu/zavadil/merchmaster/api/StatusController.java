@@ -45,11 +45,7 @@ public class StatusController {
 	@GetMapping("oauth/info")
 	@Operation(summary = "Get server oauth info.")
 	public ServerOAuthInfoPayload info() {
-		return new ServerOAuthInfoPayload(
-			this.oauthUrl,
-			this.appName,
-			this.version()
-		);
+		return new ServerOAuthInfoPayload(this.oauthUrl, this.appName, this.version);
 	}
 
 }
