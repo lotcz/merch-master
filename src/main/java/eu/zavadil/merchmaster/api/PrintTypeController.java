@@ -31,7 +31,7 @@ public class PrintTypeController {
 	PrintPreviewStubRepository previewStubRepository;
 
 	@GetMapping("by-product/{productId}")
-	public List<PrintTypeStub> loadByProduct(@RequestParam int productId) {
+	public List<PrintTypeStub> loadByProduct(@PathVariable int productId) {
 		return this.stubRepository.findAllByProductId(productId);
 	}
 

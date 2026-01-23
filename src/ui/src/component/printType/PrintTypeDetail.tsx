@@ -7,26 +7,26 @@ import {UserAlertsContext} from "../../util/UserAlerts";
 import RefreshIconButton from "../general/RefreshIconButton";
 import {ConfirmDialogContext, DeleteButton, SaveButton} from "zavadil-react-common";
 import BackIconLink from "../general/BackIconLink";
-import {Product} from "../../types/Product";
-import ProductPrintTypesList from "./ProductPrintTypesList";
+import {PrintTypePayload} from "../../types/PrintType";
+import ProductPreview from "../products/ProductPreview";
 
 const TAB_PARAM_NAME = 'tab';
-const DEFAULT_TAB = 'print-types';
+const DEFAULT_TAB = 'print-zones';
 
 const COL_1_MD = 3;
 const COL_2_MD = 5;
 const COL_1_LG = 2;
 const COL_2_LG = 6;
 
-export default function ProductDetail() {
-	const {id} = useParams();
+export default function PrintTypeDetail() {
+	const {id, productId} = useParams();
 	const navigate = useNavigate();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const restClient = useContext(MerchMasterRestClientContext);
 	const userAlerts = useContext(UserAlertsContext);
 	const confirmDialog = useContext(ConfirmDialogContext);
 	const [activeTab, setActiveTab] = useState<string>();
-	const [data, setData] = useState<Product>();
+	const [data, setData] = useState<PrintTypePayload>();
 	const [changed, setChanged] = useState<boolean>(false);
 	const [deleting, setDeleting] = useState<boolean>(false);
 	const [saving, setSaving] = useState<boolean>(false);
@@ -60,12 +60,16 @@ export default function ProductDetail() {
 		() => {
 			if (!id) {
 				setData({
-					name: ''
+					printType: {
+						name: '',
+						productId: NumberUtil.parseNumber(productId) || 0
+					},
+					zones: []
 				});
 				return;
 			}
 			setData(undefined);
-			restClient.products.loadSingle(Number(id))
+			restClient.printTypes.loadById(Number(id))
 				.then(setData)
 				.catch((e: Error) => userAlerts.err(e))
 		},
@@ -77,15 +81,15 @@ export default function ProductDetail() {
 	const saveData = useCallback(
 		() => {
 			if (!data) return;
-			const inserting = NumberUtil.isEmpty(data.id);
+			const inserting = NumberUtil.isEmpty(data.printType.id);
 			setSaving(true);
 			restClient
-				.products
+				.printTypes
 				.save(data)
 				.then(
 					(f) => {
 						if (inserting) {
-							navigate(`/products/detail/${f.id}`, {replace: true});
+							navigate(`/print-types/detail/${f.printType.id}`, {replace: true});
 						} else {
 							setData(f);
 						}
@@ -97,17 +101,17 @@ export default function ProductDetail() {
 		[restClient, data, userAlerts, navigate]
 	);
 
-	const deleteProduct = useCallback(
+	const deletePrintType = useCallback(
 		() => {
-			if (!data?.id) return;
+			if (!data?.printType.id) return;
 			confirmDialog.confirm(
 				'Confirm',
-				'Really delete this product?',
+				'Really delete this print type?',
 				() => {
 					setDeleting(true);
 					restClient
 						.products
-						.delete(Number(data.id))
+						.delete(Number(data.printType.id))
 						.then(
 							(f) => {
 								navigate(-1);
@@ -131,12 +135,22 @@ export default function ProductDetail() {
 					<BackIconLink changed={changed}/>
 					<RefreshIconButton onClick={reload}/>
 					<SaveButton loading={saving} disabled={!changed} onClick={saveData}>Save</SaveButton>
-					<DeleteButton loading={deleting} disabled={!data.id} onClick={deleteProduct}>Delete</DeleteButton>
+					<DeleteButton loading={deleting} disabled={!data.printType.id} onClick={deletePrintType}>Delete</DeleteButton>
 				</Stack>
 			</div>
 
 			<Form className="px-3 w-75">
 				<Stack direction="vertical" gap={2}>
+					<Row className="align-items-start">
+						<Col md={COL_1_MD} lg={COL_1_LG}>
+							<Form.Label>Product:</Form.Label>
+						</Col>
+						<Col md={COL_2_MD} lg={COL_2_LG}>
+							<div>
+								<ProductPreview productId={data.printType.productId}/>
+							</div>
+						</Col>
+					</Row>
 					<Row className="align-items-start">
 						<Col md={COL_1_MD} lg={COL_1_LG}>
 							<Form.Label>Name:</Form.Label>
@@ -145,9 +159,9 @@ export default function ProductDetail() {
 							<div>
 								<Form.Control
 									type="text"
-									value={data.name}
+									value={data.printType.name}
 									onChange={(e) => {
-										data.name = e.target.value;
+										data.printType.name = e.target.value;
 										onChanged();
 									}}
 								/>
@@ -157,18 +171,16 @@ export default function ProductDetail() {
 				</Stack>
 			</Form>
 			{
-				data.id && <div>
+				<div>
 					<Tabs
 						activeKey={activeTab}
 						onSelect={(key) => setActiveTab(StringUtil.getNonEmpty(key, DEFAULT_TAB))}
 					>
-						<Tab title="Print Types" eventKey="print-types"/>
+						<Tab title="Print Zones" eventKey="print-zones">
+							print zones
+						</Tab>
 					</Tabs>
-					<div className="px-3 py-1">
-						{
-							activeTab === 'print-types' && <ProductPrintTypesList productId={data.id}/>
-						}
-					</div>
+
 				</div>
 			}
 		</div>

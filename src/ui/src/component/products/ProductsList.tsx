@@ -1,7 +1,7 @@
 import React, {FormEvent, useCallback, useContext, useEffect, useMemo, useState} from 'react';
 import {Button, Form, Stack} from 'react-bootstrap';
-import {SelectableTableHeader, TablePlaceholder, TableWithSelect, TextInputWithReset} from "zavadil-react-common";
-import {DateUtil, ObjectUtil, Page, PagingRequest, PagingUtil, StringUtil} from "zavadil-ts-common";
+import {DateTime, SelectableTableHeader, TablePlaceholder, TableWithSelect, TextInputWithReset} from "zavadil-react-common";
+import {ObjectUtil, Page, PagingRequest, PagingUtil, StringUtil} from "zavadil-ts-common";
 import {useNavigate, useParams} from "react-router";
 import {MerchMasterRestClientContext} from "../../client/MerchMasterRestClient";
 import {UserAlertsContext} from "../../util/UserAlerts";
@@ -9,10 +9,10 @@ import RefreshIconButton from "../general/RefreshIconButton";
 import {Product} from "../../types/Product";
 
 const HEADER: SelectableTableHeader<Product> = [
-	{name: 'id', label: ''},
+	{name: 'id', label: 'ID'},
 	{name: 'name', label: 'Name'},
-	{name: 'lastUpdatedOn', label: 'Updated', renderer: (p) => DateUtil.formatDateTimeForHumans(p.lastUpdatedOn)},
-	{name: 'createdOn', label: 'Created', renderer: (p) => DateUtil.formatDateTimeForHumans(p.createdOn)}
+	{name: 'lastUpdatedOn', label: 'Updated', renderer: (p) => <DateTime value={p.lastUpdatedOn}/>},
+	{name: 'createdOn', label: 'Created', renderer: (p) => <DateTime value={p.createdOn}/>}
 ];
 
 const DEFAULT_PAGING: PagingRequest = {page: 0, size: 100, sorting: [{name: 'lastUpdatedOn', desc: true}]};

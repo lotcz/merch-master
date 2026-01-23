@@ -1,5 +1,4 @@
-import {Page, RestClient} from "zavadil-ts-common";
-import {DesignPayload} from "../types/Design";
+import {RestClient} from "zavadil-ts-common";
 import {PrintTypePayload, PrintTypeStub} from "../types/PrintType";
 
 export class PrintTypesClient {
@@ -10,7 +9,7 @@ export class PrintTypesClient {
 		this.client = client;
 	}
 
-	loadByProduct(productId: number): Promise<Page<PrintTypeStub>> {
+	loadByProduct(productId: number): Promise<Array<PrintTypeStub>> {
 		return this.client.getJson(`print-types/by-product/${productId}`);
 	}
 
@@ -18,9 +17,9 @@ export class PrintTypesClient {
 		return this.client.getJson(`print-types/${id}`);
 	}
 
-	save(document: DesignPayload): Promise<PrintTypePayload> {
-		return document.design.id ?
-			this.client.putJson(`print-types/${document.design.id}`, document)
+	save(document: PrintTypePayload): Promise<PrintTypePayload> {
+		return document.printType.id ?
+			this.client.putJson(`print-types/${document.printType.id}`, document)
 			: this.client.postJson('print-types', document);
 	}
 
