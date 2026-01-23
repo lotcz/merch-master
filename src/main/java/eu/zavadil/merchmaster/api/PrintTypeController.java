@@ -1,14 +1,9 @@
 package eu.zavadil.merchmaster.api;
 
-import eu.zavadil.java.spring.common.paging.JsonPage;
-import eu.zavadil.java.spring.common.paging.JsonPageImpl;
-import eu.zavadil.java.spring.common.paging.PagingUtils;
 import eu.zavadil.merchmaster.api.payload.PrintTypePayload;
 import eu.zavadil.merchmaster.api.payload.PrintZonePayload;
 import eu.zavadil.merchmaster.data.printPreview.PrintPreviewStub;
 import eu.zavadil.merchmaster.data.printPreview.PrintPreviewStubRepository;
-import eu.zavadil.merchmaster.data.printType.PrintType;
-import eu.zavadil.merchmaster.data.printType.PrintTypeRepository;
 import eu.zavadil.merchmaster.data.printType.PrintTypeStub;
 import eu.zavadil.merchmaster.data.printType.PrintTypeStubRepository;
 import eu.zavadil.merchmaster.data.printZone.PrintZoneStub;
@@ -27,9 +22,6 @@ import java.util.List;
 public class PrintTypeController {
 
 	@Autowired
-	PrintTypeRepository repository;
-
-	@Autowired
 	PrintTypeStubRepository stubRepository;
 
 	@Autowired
@@ -38,38 +30,52 @@ public class PrintTypeController {
 	@Autowired
 	PrintPreviewStubRepository previewStubRepository;
 
-	@GetMapping("")
-	public JsonPage<PrintType> loadPaged(
-		@RequestParam(defaultValue = "0") int page,
-		@RequestParam(defaultValue = "10") int size,
-		@RequestParam(defaultValue = "") String search,
-		@RequestParam(defaultValue = "") String sorting
-	) {
-		return JsonPageImpl.of(this.repository.search(search, PagingUtils.of(page, size, sorting)));
+	@GetMapping("by-product/{productId}")
+	public List<PrintTypeStub> loadByProduct(@RequestParam int productId) {
+		return this.stubRepository.findAllByProductId(productId);
 	}
 
 	@GetMapping("{id}")
-	public PrintTypeStub load(@PathVariable int id) {
-		return this.stubRepository.findById(id).orElseThrow();
+	public PrintTypePayload load(@PathVariable int id) {
+		PrintTypePayload response = new PrintTypePayload();
+		response.setPrintType(this.stubRepository.findById(id).orElseThrow());
+
+		List<PrintZoneStub> zones = this.zoneStubRepository.findAllByPrintTypeId(id);
+		List<PrintZonePayload> zonesPayload = zones.stream().map(
+			zone -> {
+				PrintZonePayload zonePayload = new PrintZonePayload();
+				zonePayload.setPrintZone(zone);
+				List<PrintPreviewStub> previews = this.previewStubRepository.findAllByPrintZoneId(zone.getId());
+				zonePayload.setPreviews(previews);
+				return zonePayload;
+			}
+		).toList();
+		response.setZones(zonesPayload);
+
+		return response;
 	}
 
 	private PrintTypePayload savePayload(PrintTypePayload payload) {
 		PrintTypeStub stub = payload.getPrintType();
-
 		stub = this.stubRepository.save(stub);
+		int printTypeId = stub.getId();
 
 		List<PrintZonePayload> zones = payload.getZones().stream().map(
 			zone -> {
 				PrintZoneStub zoneStub = zone.getPrintZone();
-				zoneStub.setId(null);
+				zoneStub.setPrintTypeId(printTypeId);
 				zoneStub = this.zoneStubRepository.save(zoneStub);
 
+				int zoneId = zoneStub.getId();
 				List<PrintPreviewStub> previews = zone.getPreviews().stream().map(
-					preview -> this.previewStubRepository.save(preview)
+					preview -> {
+						preview.setPrintZoneId(zoneId);
+						return this.previewStubRepository.save(preview);
+					}
 				).toList();
 
 				this.previewStubRepository.deleteAllByPrintZoneIdAndIdNotIn(
-					zoneStub.getId(),
+					zoneId,
 					previews.stream().map(PrintPreviewStub::getId).toList()
 				);
 
@@ -81,10 +87,10 @@ public class PrintTypeController {
 		).toList();
 
 		this.zoneStubRepository.deleteAllByPrintTypeIdAndIdNotIn(
-			stub.getId(),
+			printTypeId,
 			zones.stream().map(z -> z.getPrintZone().getId()).toList()
 		);
-		
+
 		PrintTypePayload response = new PrintTypePayload();
 		response.setPrintType(stub);
 		response.setZones(zones);

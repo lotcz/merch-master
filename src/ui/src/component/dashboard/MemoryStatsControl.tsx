@@ -1,5 +1,5 @@
 import React, {useCallback, useContext, useEffect, useState} from 'react';
-import {WnUserAlertsContext} from "../../util/WnUserAlerts";
+import {UserAlertsContext} from "../../util/UserAlerts";
 import {Card, Placeholder} from "react-bootstrap";
 import {JavaHeapControl} from "zavadil-react-common";
 import {MerchMasterRestClientContext} from "../../client/MerchMasterRestClient";
@@ -7,7 +7,7 @@ import {MerchMasterStats} from "../../types/Stats";
 
 function MemoryStatsControl() {
 	const restClient = useContext(MerchMasterRestClientContext);
-	const userAlerts = useContext(WnUserAlertsContext);
+	const userAlerts = useContext(UserAlertsContext);
 	const [stats, setStats] = useState<MerchMasterStats>();
 
 	const loadStats = useCallback(

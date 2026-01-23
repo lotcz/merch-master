@@ -1,10 +1,20 @@
 import {EntityBase} from "zavadil-ts-common";
+import {PrintType} from "./PrintType";
+import {DesignFileStub} from "./DesignFile";
 
 export type DesignBase = EntityBase & {
 	uuid: string;
 }
 
-export type Design = {
-	baseUrl: string;
-	secretToken: string;
+export type Design = DesignBase & {
+	printType: PrintType;
+}
+
+export type DesignStub = DesignBase & {
+	printTypeId: number;
+}
+
+export type DesignPayload = {
+	design: DesignStub;
+	files: Array<DesignFileStub>;
 }

@@ -1,4 +1,4 @@
-import {ImagezImage} from "./ImagezImage";
+import {ImagezImageThumb} from "./ImagezImage";
 import {ImageHealth} from "../../types/Image";
 
 export type ImagezImageHealthPreviewProps = {
@@ -10,7 +10,7 @@ export type ImagezImageHealthPreviewProps = {
 export function ImagezImageHealthPreview({health, width, height}: ImagezImageHealthPreviewProps) {
 	return <div>
 		<div>
-			<ImagezImage name={health.name} type="fit" width={width} height={height}/>
+			<ImagezImageThumb name={health.name}/>
 		</div>
 		<div>
 			{health.mime}: {health.width} x {health.height}

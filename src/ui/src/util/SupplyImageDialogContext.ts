@@ -1,5 +1,5 @@
 import {createContext} from "react";
-import {SupplyImageModalProps} from "../component/images/supply/SupplyImageModal";
+import {SupplyImageModalProps} from "../component/images/supply/UploadImageModal";
 
 export type SupplyImageDialogContextContent = {
 	show: (props: SupplyImageModalProps) => any;

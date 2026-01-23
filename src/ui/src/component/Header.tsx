@@ -1,12 +1,12 @@
 import React, {useContext} from 'react';
 import {Stack} from "react-bootstrap";
 import {BsMoonFill, BsSunFill} from "react-icons/bs";
-import {WnUserSessionContext, WnUserSessionUpdateContext} from "../util/WnUserSession";
+import {UserSessionContext, UserSessionUpdateContext} from "../util/UserSession";
 import {IconSwitch} from "zavadil-react-common";
 
 function Header() {
-	const session = useContext(WnUserSessionContext);
-	const sessionUpdate = useContext(WnUserSessionUpdateContext);
+	const session = useContext(UserSessionContext);
+	const sessionUpdate = useContext(UserSessionUpdateContext);
 	const isDark = session.theme === 'dark';
 
 	return (

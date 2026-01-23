@@ -4,8 +4,8 @@ import Dashboard from "./dashboard/Dashboard";
 import MainMenu from "./MainMenu";
 import {Stack} from "react-bootstrap";
 
-import ImagesList from "./images/ImagesList";
-import ImageDetail from "./images/ImageDetail";
+import ProductsList from "./products/ProductsList";
+import ProductDetail from "./products/ProductDetail";
 
 export default function Main() {
 	return (
@@ -16,13 +16,13 @@ export default function Main() {
 					<Routes>
 						<Route path="/" element={<Dashboard/>}/>
 
-						<Route path="images">
-							<Route path="" element={<ImagesList/>}/>
+						<Route path="products">
+							<Route path="" element={<ProductsList/>}/>
 							<Route path="detail">
-								<Route path="add" element={<ImageDetail/>}/>
-								<Route path=":id" element={<ImageDetail/>}/>
+								<Route path="add" element={<ProductDetail/>}/>
+								<Route path=":id" element={<ProductDetail/>}/>
 							</Route>
-							<Route path=":pagingString" element={<ImagesList/>}/>
+							<Route path=":pagingString" element={<ProductsList/>}/>
 						</Route>
 
 						<Route path="*" element={<span>404</span>}/>

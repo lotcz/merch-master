@@ -1,35 +1,28 @@
 import React, {FormEvent, useCallback, useContext, useEffect, useMemo, useState} from 'react';
 import {Button, Form, Stack} from 'react-bootstrap';
-import {AdvancedTable, TablePlaceholder, TextInputWithReset} from "zavadil-react-common";
+import {SelectableTableHeader, TablePlaceholder, TableWithSelect, TextInputWithReset} from "zavadil-react-common";
 import {DateUtil, ObjectUtil, Page, PagingRequest, PagingUtil, StringUtil} from "zavadil-ts-common";
 import {useNavigate, useParams} from "react-router";
 import {MerchMasterRestClientContext} from "../../client/MerchMasterRestClient";
-import {WnUserAlertsContext} from "../../util/WnUserAlerts";
+import {UserAlertsContext} from "../../util/UserAlerts";
 import RefreshIconButton from "../general/RefreshIconButton";
-import {Image} from "../../types/Image";
-import {ImagezImageThumb} from "./ImagezImage";
-import {SupplyImageDialogContext} from "../../util/SupplyImageDialogContext";
+import {Product} from "../../types/Product";
 
-const HEADER = [
+const HEADER: SelectableTableHeader<Product> = [
 	{name: 'id', label: ''},
 	{name: 'name', label: 'Name'},
-	{name: 'description', label: 'Description'},
-	{name: 'source', label: 'Source'},
-	{name: 'author', label: 'Author'},
-	{name: 'license', label: 'License'},
-	{name: 'lastUpdatedOn', label: 'Updated'},
-	{name: 'createdOn', label: 'Created'}
+	{name: 'lastUpdatedOn', label: 'Updated', renderer: (p) => DateUtil.formatDateTimeForHumans(p.lastUpdatedOn)},
+	{name: 'createdOn', label: 'Created', renderer: (p) => DateUtil.formatDateTimeForHumans(p.createdOn)}
 ];
 
 const DEFAULT_PAGING: PagingRequest = {page: 0, size: 100, sorting: [{name: 'lastUpdatedOn', desc: true}]};
 
-export default function ImagesList() {
+export default function ProductsList() {
 	const {pagingString} = useParams();
 	const navigate = useNavigate();
 	const restClient = useContext(MerchMasterRestClientContext);
-	const userAlerts = useContext(WnUserAlertsContext);
-	const supplyImageDialog = useContext(SupplyImageDialogContext);
-	const [data, setData] = useState<Page<Image> | null>(null);
+	const userAlerts = useContext(UserAlertsContext);
+	const [data, setData] = useState<Page<Product> | null>(null);
 
 	const paging = useMemo(
 		() => StringUtil.isBlank(pagingString) ? ObjectUtil.clone(DEFAULT_PAGING)
@@ -39,24 +32,33 @@ export default function ImagesList() {
 
 	const [searchInput, setSearchInput] = useState<string>(StringUtil.getNonEmpty(paging.search));
 
-	const createNew = () => {
-		navigate("/images/detail/add")
-	};
-
-	const navigateToPage = useCallback(
-		(p?: PagingRequest) => {
-			navigate(`/images/${PagingUtil.pagingRequestToString(p)}`);
+	const navigateToCreateNew = useCallback(
+		() => {
+			navigate("/products/detail/add")
 		},
 		[navigate]
 	);
 
-	const navigateToId = (id: number) => {
-		navigate(`/images/detail/${id}`);
-	}
+	const navigateToPage = useCallback(
+		(p?: PagingRequest) => {
+			navigate(`/products/${PagingUtil.pagingRequestToString(p)}`);
+		},
+		[navigate]
+	);
 
-	const navigateToDetail = (i: Image) => {
-		if (i.id) navigateToId(i.id);
-	}
+	const navigateToId = useCallback(
+		(id: number) => {
+			navigate(`/products/detail/${id}`);
+		},
+		[navigate]
+	);
+
+	const navigateToDetail = useCallback(
+		(p: Product) => {
+			if (p.id) navigateToId(p.id);
+		},
+		[navigateToId]
+	);
 
 	const applySearch = useCallback(
 		(e: FormEvent) => {
@@ -72,7 +74,7 @@ export default function ImagesList() {
 		() => {
 			setData(null);
 			restClient
-				.images
+				.products
 				.loadPage(paging)
 				.then(setData)
 				.catch((e: Error) => {
@@ -93,26 +95,12 @@ export default function ImagesList() {
 		[loadPageHandler]
 	);
 
-	const showImageSupplyDialog = useCallback(
-		() => supplyImageDialog.show(
-			{
-				onClose: () => supplyImageDialog.hide(),
-				onSelected: (id) => {
-					supplyImageDialog.hide();
-					navigateToId(id);
-				}
-			}
-		),
-		[supplyImageDialog, navigateToId]
-	);
-
 	return (
 		<div>
 			<div className="pt-2 ps-3">
 				<Stack direction="horizontal" gap={2}>
 					<RefreshIconButton onClick={reload}/>
-					<Button onClick={createNew} className="text-nowrap">+ Add</Button>
-					<Button onClick={showImageSupplyDialog} className="text-nowrap">Supply...</Button>
+					<Button onClick={navigateToCreateNew} className="text-nowrap">+ Add</Button>
 					<div style={{width: '250px'}}>
 						<Form onSubmit={applySearch} id="topics-search-form">
 							<TextInputWithReset
@@ -135,40 +123,17 @@ export default function ImagesList() {
 				{
 					(data === null) ? <TablePlaceholder/>
 						: (
-							<AdvancedTable
+							<TableWithSelect
+								showSelect={false}
 								header={HEADER}
 								paging={paging}
 								totalItems={data.totalItems}
 								onPagingChanged={navigateToPage}
+								onClick={navigateToDetail}
+								items={data.content}
 								hover={true}
 								striped={true}
-							>
-								{
-									(data.totalItems === 0) ? <tr>
-											<td colSpan={HEADER.length}>Nothing here...</td>
-										</tr> :
-										data.content.map((item, index) => {
-											return (
-												<tr key={index} role="button" onClick={() => navigateToDetail(item)}>
-													<td>
-														<ImagezImageThumb
-															name={item.name}
-															verticalAlign={item.verticalAlign}
-															horizontalAlign={item.horizontalAlign}
-														/>
-													</td>
-													<td>{item.name}</td>
-													<td>{item.description}</td>
-													<td>{item.source}</td>
-													<td>{item.author}</td>
-													<td>{item.license}</td>
-													<td className="text-nowrap">{DateUtil.formatDateTimeForHumans(item.lastUpdatedOn)}</td>
-													<td className="text-nowrap">{DateUtil.formatDateTimeForHumans(item.createdOn)}</td>
-												</tr>
-											);
-										})
-								}
-							</AdvancedTable>
+							/>
 						)
 				}
 			</div>

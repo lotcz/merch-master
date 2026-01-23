@@ -2,8 +2,8 @@ import React, {useCallback, useContext, useEffect, useMemo, useState} from "reac
 import Footer from "./Footer";
 import Header from "./Header";
 import Main from "./Main";
-import {WnUserAlertsContext} from "../util/WnUserAlerts";
-import {WnUserSession, WnUserSessionContext, WnUserSessionUpdateContext} from "../util/WnUserSession";
+import {UserAlertsContext} from "../util/UserAlerts";
+import {UserSession, UserSessionContext, UserSessionUpdateContext} from "../util/UserSession";
 import {
 	ConfirmDialog,
 	ConfirmDialogContext,
@@ -20,21 +20,21 @@ import {WaitingDialogContext, WaitingDialogContextContent} from "../util/Waiting
 import WaitingDialog, {WaitingDialogProps} from "./general/WaitingDialog";
 import {BsRepeat} from "react-icons/bs";
 import {MerchMasterRestClientContext} from "../client/MerchMasterRestClient";
-import {SupplyImageModal, SupplyImageModalProps} from "./images/supply/SupplyImageModal";
+import {SupplyImageModalProps, UploadImageModal} from "./images/supply/UploadImageModal";
 import {SupplyImageDialogContext, SupplyImageDialogContextContent} from "../util/SupplyImageDialogContext";
 
 export default function App() {
-	const userAlerts = useContext(WnUserAlertsContext);
+	const userAlerts = useContext(UserAlertsContext);
 	const restClient = useContext(MerchMasterRestClientContext);
 	const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogProps>();
 	const [waitingDialog, setWaitingDialog] = useState<WaitingDialogProps>();
 	const [supplyImageDialog, setSupplyImageDialog] = useState<SupplyImageModalProps>();
-	const [session, setSession] = useState<WnUserSession>(new WnUserSession());
+	const [session, setSession] = useState<UserSession>(new UserSession());
 	const [initialized, setInitialized] = useState<boolean>();
 	const [showAlerts, setShowAlerts] = useState<boolean>();
 
 	const updateSession = useCallback(
-		(s: WnUserSession) => {
+		(s: UserSession) => {
 			document.documentElement.dataset.bsTheme = s.theme;
 			localStorage.setItem('okarina-session', JSON.stringify(s));
 			setSession({...s});
@@ -124,8 +124,8 @@ export default function App() {
 	);
 
 	return (
-		<WnUserSessionContext.Provider value={session}>
-			<WnUserSessionUpdateContext.Provider value={updateSession}>
+		<UserSessionContext.Provider value={session}>
+			<UserSessionUpdateContext.Provider value={updateSession}>
 				<SupplyImageDialogContext.Provider value={supplyImageDialogContext}>
 					<WaitingDialogContext.Provider value={waitingDialogContext}>
 						<ConfirmDialogContext.Provider value={confirmDialogContext}>
@@ -165,7 +165,7 @@ export default function App() {
 										waitingDialog && <WaitingDialog {...waitingDialog} />
 									}
 									{
-										supplyImageDialog && <SupplyImageModal {...supplyImageDialog} />
+										supplyImageDialog && <UploadImageModal {...supplyImageDialog} />
 									}
 									{
 										showAlerts && <UserAlertsWidget userAlerts={userAlerts}/>
@@ -175,7 +175,7 @@ export default function App() {
 						</ConfirmDialogContext.Provider>
 					</WaitingDialogContext.Provider>
 				</SupplyImageDialogContext.Provider>
-			</WnUserSessionUpdateContext.Provider>
-		</WnUserSessionContext.Provider>
+			</UserSessionUpdateContext.Provider>
+		</UserSessionContext.Provider>
 	)
 }

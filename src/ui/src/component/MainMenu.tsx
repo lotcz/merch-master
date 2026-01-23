@@ -1,13 +1,13 @@
 import React, {useCallback, useContext} from 'react';
 import {NavLink, useNavigate} from "react-router";
-import {WnUserAlertsContext} from '../util/WnUserAlerts';
+import {UserAlertsContext} from '../util/UserAlerts';
 import {Localize} from "zavadil-react-common";
 import {MerchMasterRestClientContext} from "../client/MerchMasterRestClient";
 
 function MainMenu() {
 	const navigate = useNavigate();
 	const restClient = useContext(MerchMasterRestClientContext);
-	const userAlerts = useContext(WnUserAlertsContext);
+	const userAlerts = useContext(UserAlertsContext);
 
 	const logOut = useCallback(
 		() => {
@@ -28,7 +28,7 @@ function MainMenu() {
 			<h4 className="mt-2">Manage</h4>
 			<div className="ps-3">
 				<div>
-					<NavLink to="/images">Images</NavLink>
+					<NavLink to="/products">Products</NavLink>
 				</div>
 			</div>
 			<h4 className="mt-2"><Localize text="System"/></h4>
