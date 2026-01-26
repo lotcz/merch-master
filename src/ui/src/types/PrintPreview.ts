@@ -2,7 +2,7 @@ import {EntityWithName} from "zavadil-ts-common";
 import {PrintZone} from "./PrintZone";
 
 export type PrintPreviewBase = EntityWithName & {
-	imageName: string;
+	imageName?: string | null;
 	imageWidth: number;
 	imageHeight: number;
 	zoneStartX: number;
@@ -16,5 +16,5 @@ export type PrintPreview = PrintPreviewBase & {
 }
 
 export type PrintPreviewStub = PrintPreviewBase & {
-	printZoneId: number;
+	printZoneId?: number | null;
 }

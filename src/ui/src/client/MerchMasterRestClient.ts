@@ -6,6 +6,7 @@ import {ImagezClient} from "./ImagezClient";
 import {ProductsClient} from "./ProductsClient";
 import {PrintTypesClient} from "./PrintTypesClient";
 import {DesignsClient} from "./DesignsClient";
+import {ProductColorsClient} from "./ProductColorsClient";
 
 export class MerchMasterRestClient extends RestClientWithOAuth {
 
@@ -17,6 +18,8 @@ export class MerchMasterRestClient extends RestClientWithOAuth {
 
 	public designs: DesignsClient;
 
+	public productColors: ProductColorsClient;
+
 	constructor() {
 		super(conf.API_URL);
 
@@ -24,6 +27,7 @@ export class MerchMasterRestClient extends RestClientWithOAuth {
 		this.products = new ProductsClient(this);
 		this.printTypes = new PrintTypesClient(this);
 		this.designs = new DesignsClient(this);
+		this.productColors = new ProductColorsClient(this);
 	}
 
 	version(): Promise<string> {

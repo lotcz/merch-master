@@ -33,15 +33,34 @@ export default function App() {
 	const [initialized, setInitialized] = useState<boolean>();
 	const [showAlerts, setShowAlerts] = useState<boolean>();
 
-	const updateSession = useCallback(
+	const updateSessionValues = useCallback(
 		(s: UserSession) => {
 			document.documentElement.dataset.bsTheme = s.theme;
-			localStorage.setItem('okarina-session', JSON.stringify(s));
-			setSession({...s});
 		},
 		[]
 	);
 
+	const saveSession = useCallback(
+		(s: UserSession) => {
+			updateSessionValues(s);
+			localStorage.setItem('merchmaster-session', JSON.stringify(s));
+			setSession({...s});
+		},
+		[updateSessionValues]
+	);
+
+	const loadSession = useCallback(
+		() => {
+			const json = localStorage.getItem('merchmaster-session');
+			if (json) {
+				const session = JSON.parse(json);
+				setSession(session);
+				updateSessionValues(session);
+			}
+		},
+		[updateSessionValues]
+	);
+	
 	const confirmDialogContext = useMemo<ConfirmDialogContextData>(
 		() => new ConfirmDialogContextData(setConfirmDialog),
 		[]
@@ -104,14 +123,12 @@ export default function App() {
 		[userAlerts]
 	);
 
-	useEffect(() => {
+	useEffect(
+		() => {
 			userAlerts.addOnChangeHandler(alertsChanged);
 
 			// session
-			const sessionRaw = localStorage.getItem('wn-session');
-			if (sessionRaw) {
-				updateSession(JSON.parse(sessionRaw));
-			}
+			loadSession();
 
 			// rest client
 			restInitialize();
@@ -125,7 +142,7 @@ export default function App() {
 
 	return (
 		<UserSessionContext.Provider value={session}>
-			<UserSessionUpdateContext.Provider value={updateSession}>
+			<UserSessionUpdateContext.Provider value={saveSession}>
 				<SupplyImageDialogContext.Provider value={supplyImageDialogContext}>
 					<WaitingDialogContext.Provider value={waitingDialogContext}>
 						<ConfirmDialogContext.Provider value={confirmDialogContext}>

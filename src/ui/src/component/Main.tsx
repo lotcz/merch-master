@@ -7,6 +7,7 @@ import {Stack} from "react-bootstrap";
 import ProductsList from "./products/ProductsList";
 import ProductDetail from "./products/ProductDetail";
 import PrintTypeDetail from "./printType/PrintTypeDetail";
+import ProductColorDetail from "./productColor/ProductColorDetail";
 
 export default function Main() {
 	return (
@@ -23,14 +24,19 @@ export default function Main() {
 								<Route path="add" element={<ProductDetail/>}/>
 								<Route path=":id" element={<ProductDetail/>}/>
 							</Route>
-							<Route path=":pagingString" element={<ProductsList/>}/>
-						</Route>
-
-						<Route path="print-types">
-							<Route path="detail">
-								<Route path="add/:productId" element={<PrintTypeDetail/>}/>
-								<Route path=":id" element={<PrintTypeDetail/>}/>
+							<Route path="print-types">
+								<Route path="detail">
+									<Route path="add/:productId" element={<PrintTypeDetail/>}/>
+									<Route path=":id" element={<PrintTypeDetail/>}/>
+								</Route>
 							</Route>
+							<Route path="product-colors">
+								<Route path="detail">
+									<Route path="add/:productId" element={<ProductColorDetail/>}/>
+									<Route path=":id" element={<ProductColorDetail/>}/>
+								</Route>
+							</Route>
+							<Route path=":pagingString" element={<ProductsList/>}/>
 						</Route>
 
 						<Route path="*" element={<span>404</span>}/>

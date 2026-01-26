@@ -6,11 +6,11 @@ import {UserAlertsContext} from "../../util/UserAlerts";
 import {PrintTypeStub} from "../../types/PrintType";
 import {Button, Table} from "react-bootstrap";
 
-export type ProductPrintTypesListProps = {
+export type ProductColorsListProps = {
 	productId: number;
 }
 
-export default function ProductPrintTypesList({productId}: ProductPrintTypesListProps) {
+export default function ProductColorsList({productId}: ProductColorsListProps) {
 	const navigate = useNavigate();
 	const restClient = useContext(MerchMasterRestClientContext);
 	const userAlerts = useContext(UserAlertsContext);
@@ -23,7 +23,7 @@ export default function ProductPrintTypesList({productId}: ProductPrintTypesList
 	const load = useCallback(
 		() => {
 			restClient
-				.printTypes
+				.productColors
 				.loadByProduct(productId)
 				.then(setData)
 				.catch((e: Error) => {
@@ -43,7 +43,7 @@ export default function ProductPrintTypesList({productId}: ProductPrintTypesList
 			<div className="pt-2 d-flex gap-2 align-items-center">
 				<Button
 					variant="primary"
-					onClick={() => navigate(`/products/print-types/detail/add/${productId}`)}>
+					onClick={() => navigate(`/products/product-colors/detail/add/${productId}`)}>
 					+ Add
 				</Button>
 			</div>

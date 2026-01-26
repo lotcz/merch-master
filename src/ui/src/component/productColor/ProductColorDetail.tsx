@@ -1,52 +1,31 @@
-import {Col, Form, Row, Spinner, Stack, Tab, Tabs} from "react-bootstrap";
+import {Col, Form, Row, Spinner, Stack} from "react-bootstrap";
 import {useNavigate, useParams, useSearchParams} from "react-router";
 import React, {useCallback, useContext, useEffect, useState} from "react";
-import {NumberUtil, StringUtil} from "zavadil-ts-common";
+import {NumberUtil} from "zavadil-ts-common";
 import {MerchMasterRestClientContext} from "../../client/MerchMasterRestClient";
 import {UserAlertsContext} from "../../util/UserAlerts";
 import RefreshIconButton from "../general/RefreshIconButton";
 import {ConfirmDialogContext, DeleteButton, SaveButton} from "zavadil-react-common";
 import BackIconLink from "../general/BackIconLink";
-import {Product} from "../../types/Product";
-import ProductPrintTypesList from "./ProductPrintTypesList";
-import ProductColorsList from "./ProductColorsList";
-
-const TAB_PARAM_NAME = 'tab';
-const DEFAULT_TAB = 'print-types';
+import ProductPreview from "../products/ProductPreview";
+import {ProductColorStub} from "../../types/ProductColor";
 
 const COL_1_MD = 3;
 const COL_2_MD = 5;
 const COL_1_LG = 2;
 const COL_2_LG = 6;
 
-export default function ProductDetail() {
-	const {id} = useParams();
+export default function ProductColorDetail() {
+	const {id, productId} = useParams();
 	const navigate = useNavigate();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const restClient = useContext(MerchMasterRestClientContext);
 	const userAlerts = useContext(UserAlertsContext);
 	const confirmDialog = useContext(ConfirmDialogContext);
-	const [activeTab, setActiveTab] = useState<string>();
-	const [data, setData] = useState<Product>();
+	const [data, setData] = useState<ProductColorStub>();
 	const [changed, setChanged] = useState<boolean>(false);
 	const [deleting, setDeleting] = useState<boolean>(false);
 	const [saving, setSaving] = useState<boolean>(false);
-
-	useEffect(
-		() => {
-			if (!activeTab) return;
-			searchParams.set(TAB_PARAM_NAME, activeTab);
-			setSearchParams(searchParams, {replace: true});
-		},
-		[activeTab]
-	);
-
-	useEffect(
-		() => {
-			setActiveTab(StringUtil.getNonEmpty(searchParams.get(TAB_PARAM_NAME), DEFAULT_TAB));
-		},
-		[id]
-	);
 
 	const onChanged = useCallback(
 		() => {
@@ -61,16 +40,22 @@ export default function ProductDetail() {
 		() => {
 			if (!id) {
 				setData({
-					name: ''
+					color: '',
+					name: '',
+					productId: NumberUtil.parseNumber(productId) || 0
 				});
 				return;
 			}
 			setData(undefined);
-			restClient.products.loadSingle(Number(id))
-				.then(setData)
+			restClient.productColors.loadSingle(Number(id))
+				.then(
+					(pt) => {
+						setData(pt);
+					}
+				)
 				.catch((e: Error) => userAlerts.err(e))
 		},
-		[id, restClient, userAlerts]
+		[id, productId, restClient, userAlerts]
 	);
 
 	useEffect(reload, [id]);
@@ -81,12 +66,12 @@ export default function ProductDetail() {
 			const inserting = NumberUtil.isEmpty(data.id);
 			setSaving(true);
 			restClient
-				.products
+				.productColors
 				.save(data)
 				.then(
 					(f) => {
 						if (inserting) {
-							navigate(`/products/detail/${f.id}`, {replace: true});
+							navigate(`/products/product-colors/detail/${f.id}`, {replace: true});
 						} else {
 							setData(f);
 						}
@@ -98,12 +83,12 @@ export default function ProductDetail() {
 		[restClient, data, userAlerts, navigate]
 	);
 
-	const deleteProduct = useCallback(
+	const deleteColor = useCallback(
 		() => {
 			if (!data?.id) return;
 			confirmDialog.confirm(
 				'Confirm',
-				'Really delete this product?',
+				'Really delete this product color?',
 				() => {
 					setDeleting(true);
 					restClient
@@ -111,7 +96,7 @@ export default function ProductDetail() {
 						.delete(Number(data.id))
 						.then(
 							(f) => {
-								navigate(-1);
+								navigate(`/products/${data.productId}`);
 							})
 						.catch((e: Error) => userAlerts.err(e))
 						.finally(() => setDeleting(false))
@@ -132,13 +117,23 @@ export default function ProductDetail() {
 					<BackIconLink changed={changed}/>
 					<RefreshIconButton onClick={reload}/>
 					<SaveButton loading={saving} disabled={!changed} onClick={saveData}>Save</SaveButton>
-					<DeleteButton loading={deleting} disabled={!data.id} onClick={deleteProduct}>Delete</DeleteButton>
+					<DeleteButton loading={deleting} disabled={!data.id} onClick={deleteColor}>Delete</DeleteButton>
 				</Stack>
 			</div>
 
 			<Form className="px-3 w-75">
 				<Stack direction="vertical" gap={2}>
 					<Row className="align-items-start">
+						<Col md={COL_1_MD} lg={COL_1_LG}>
+							<Form.Label>Product:</Form.Label>
+						</Col>
+						<Col md={COL_2_MD} lg={COL_2_LG}>
+							<div>
+								<ProductPreview productId={data.productId}/>
+							</div>
+						</Col>
+					</Row>
+					<Row className="align-items-center">
 						<Col md={COL_1_MD} lg={COL_1_LG}>
 							<Form.Label>Name:</Form.Label>
 						</Col>
@@ -155,27 +150,25 @@ export default function ProductDetail() {
 							</div>
 						</Col>
 					</Row>
+					<Row className="align-items-center">
+						<Col md={COL_1_MD} lg={COL_1_LG}>
+							<Form.Label>Color:</Form.Label>
+						</Col>
+						<Col md={COL_2_MD} lg={COL_2_LG}>
+							<div>
+								<Form.Control
+									type="color"
+									value={data.color}
+									onChange={(e) => {
+										data.color = e.target.value;
+										onChanged();
+									}}
+								/>
+							</div>
+						</Col>
+					</Row>
 				</Stack>
 			</Form>
-			{
-				data.id && <div>
-					<Tabs
-						activeKey={activeTab}
-						onSelect={(key) => setActiveTab(StringUtil.getNonEmpty(key, DEFAULT_TAB))}
-					>
-						<Tab title="Print Types" eventKey="print-types"/>
-						<Tab title="Colors" eventKey="product-colors"/>
-					</Tabs>
-					<div className="px-3 py-1">
-						{
-							activeTab === 'print-types' && <ProductPrintTypesList productId={data.id}/>
-						}
-						{
-							activeTab === 'product-colors' && <ProductColorsList productId={data.id}/>
-						}
-					</div>
-				</div>
-			}
 		</div>
 	)
 }

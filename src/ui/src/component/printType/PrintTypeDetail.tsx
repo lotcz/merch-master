@@ -1,4 +1,4 @@
-import {Col, Form, Row, Spinner, Stack, Tab, Tabs} from "react-bootstrap";
+import {Button, Col, Form, Row, Spinner, Stack, Tab, Table, Tabs} from "react-bootstrap";
 import {useNavigate, useParams, useSearchParams} from "react-router";
 import React, {useCallback, useContext, useEffect, useState} from "react";
 import {NumberUtil, StringUtil} from "zavadil-ts-common";
@@ -9,6 +9,8 @@ import {ConfirmDialogContext, DeleteButton, SaveButton} from "zavadil-react-comm
 import BackIconLink from "../general/BackIconLink";
 import {PrintTypePayload} from "../../types/PrintType";
 import ProductPreview from "../products/ProductPreview";
+import {PrintZonePayload} from "../../types/PrintZone";
+import PrintZoneForm from "./PrintZoneForm";
 
 const TAB_PARAM_NAME = 'tab';
 const DEFAULT_TAB = 'print-zones';
@@ -27,6 +29,7 @@ export default function PrintTypeDetail() {
 	const confirmDialog = useContext(ConfirmDialogContext);
 	const [activeTab, setActiveTab] = useState<string>();
 	const [data, setData] = useState<PrintTypePayload>();
+	const [selectedPrintZone, setSelectedPrintZone] = useState<PrintZonePayload>();
 	const [changed, setChanged] = useState<boolean>(false);
 	const [deleting, setDeleting] = useState<boolean>(false);
 	const [saving, setSaving] = useState<boolean>(false);
@@ -50,10 +53,41 @@ export default function PrintTypeDetail() {
 	const onChanged = useCallback(
 		() => {
 			if (!data) return;
+			data.zones = [...data.zones];
 			setData({...data});
 			setChanged(true);
 		},
 		[data]
+	);
+
+	const addPrintZone = useCallback(
+		() => {
+			if (!data) return;
+			const zone: PrintZonePayload = {
+				printZone: {
+					name: 'Přední strana',
+					printTypeId: data.printType.id,
+					width: 100,
+					height: 100
+				},
+				previews: []
+			};
+			data.zones.push(zone);
+			setSelectedPrintZone(zone);
+			onChanged();
+		},
+		[data, onChanged]
+	);
+
+	const removePrintZone = useCallback(
+		() => {
+			if (!selectedPrintZone) return;
+			if (!data) return;
+			data.zones.splice(data.zones.indexOf(selectedPrintZone), 1);
+			setSelectedPrintZone(data.zones.length > 0 ? data.zones[0] : undefined);
+			onChanged();
+		},
+		[data, selectedPrintZone, onChanged]
 	);
 
 	const reload = useCallback(
@@ -70,10 +104,17 @@ export default function PrintTypeDetail() {
 			}
 			setData(undefined);
 			restClient.printTypes.loadById(Number(id))
-				.then(setData)
+				.then(
+					(pt) => {
+						setData(pt);
+						if (pt.zones.length > 0) {
+							setSelectedPrintZone(pt.zones[0]);
+						}
+					}
+				)
 				.catch((e: Error) => userAlerts.err(e))
 		},
-		[id, restClient, userAlerts]
+		[id, productId, restClient, userAlerts]
 	);
 
 	useEffect(reload, [id]);
@@ -89,7 +130,7 @@ export default function PrintTypeDetail() {
 				.then(
 					(f) => {
 						if (inserting) {
-							navigate(`/print-types/detail/${f.printType.id}`, {replace: true});
+							navigate(`/products/print-types/detail/${f.printType.id}`, {replace: true});
 						} else {
 							setData(f);
 						}
@@ -114,7 +155,7 @@ export default function PrintTypeDetail() {
 						.delete(Number(data.printType.id))
 						.then(
 							(f) => {
-								navigate(-1);
+								navigate(`/products/${data.printType.productId}`);
 							})
 						.catch((e: Error) => userAlerts.err(e))
 						.finally(() => setDeleting(false))
@@ -151,7 +192,7 @@ export default function PrintTypeDetail() {
 							</div>
 						</Col>
 					</Row>
-					<Row className="align-items-start">
+					<Row className="align-items-center">
 						<Col md={COL_1_MD} lg={COL_1_LG}>
 							<Form.Label>Name:</Form.Label>
 						</Col>
@@ -171,16 +212,57 @@ export default function PrintTypeDetail() {
 				</Stack>
 			</Form>
 			{
-				<div>
+				<div className="mt-2">
 					<Tabs
 						activeKey={activeTab}
 						onSelect={(key) => setActiveTab(StringUtil.getNonEmpty(key, DEFAULT_TAB))}
 					>
 						<Tab title="Print Zones" eventKey="print-zones">
-							print zones
+							<div className="p-2">
+								<div className="d-flex gap-2 align-items-center">
+									<Button onClick={addPrintZone}>+ Add</Button>
+									<Button onClick={removePrintZone} disabled={selectedPrintZone === undefined} variant="warning">- Remove</Button>
+								</div>
+								<Row className="mt-2">
+									<Col md={3} lg={2}>
+										<Table>
+											<tbody>
+											{
+												data.zones.map(
+													(printZone) => <tr
+														className={`cursor-pointer ${printZone === selectedPrintZone ? 'table-active' : ''}`}
+														onClick={() => setSelectedPrintZone(printZone)}
+													>
+														<td>
+															{printZone.printZone.name}
+														</td>
+													</tr>
+												)
+											}
+											</tbody>
+										</Table>
+									</Col>
+									<Col>
+										<div>
+											{
+												selectedPrintZone && <PrintZoneForm
+													printZone={selectedPrintZone}
+													onChange={
+														(pz) => {
+															const i = data.zones.indexOf(selectedPrintZone);
+															data.zones[i] = pz;
+															setSelectedPrintZone(pz);
+															onChanged();
+														}
+													}
+												/>
+											}
+										</div>
+									</Col>
+								</Row>
+							</div>
 						</Tab>
 					</Tabs>
-
 				</div>
 			}
 		</div>

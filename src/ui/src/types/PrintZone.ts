@@ -12,7 +12,7 @@ export type PrintZone = PrintZoneBase & {
 }
 
 export type PrintZoneStub = PrintZoneBase & {
-	printTypeId: number;
+	printTypeId?: number | null;
 }
 
 export type PrintZonePayload = {
