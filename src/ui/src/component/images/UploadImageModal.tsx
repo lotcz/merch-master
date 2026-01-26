@@ -1,16 +1,16 @@
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {Form, Modal} from 'react-bootstrap';
-import {MerchMasterRestClientContext} from "../../../client/MerchMasterRestClient";
-import {UserAlertsContext} from "../../../util/UserAlerts";
-import {Img} from "../Img";
+import {MerchMasterRestClientContext} from "../../client/MerchMasterRestClient";
+import {UserAlertsContext} from "../../util/UserAlerts";
+import {Img} from "./Img";
 import {SaveButton} from "zavadil-react-common";
 
-export type SupplyImageModalProps = {
+export type UploadImageModalProps = {
 	onClose: () => any;
 	onSelected: (imageName: string) => any;
 }
 
-export function UploadImageModal({onClose, onSelected}: SupplyImageModalProps) {
+export function UploadImageModal({onClose, onSelected}: UploadImageModalProps) {
 	const restClient = useContext(MerchMasterRestClientContext);
 	const alerts = useContext(UserAlertsContext);
 	const [uploading, setUploading] = useState<boolean>(false);

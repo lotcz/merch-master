@@ -45,7 +45,7 @@ public class ImagezController {
 	}
 
 	@PostMapping("upload")
-	public ImageHealthPayload uploadImage(@RequestParam("file") MultipartFile file) {
+	public ImageHealthPayload uploadImage(@RequestParam("image") MultipartFile file) {
 		String originalFileName = FileNameUtils.extractFileName(file.getOriginalFilename());
 		try {
 			return this.imagez.upload(originalFileName, file.getBytes());

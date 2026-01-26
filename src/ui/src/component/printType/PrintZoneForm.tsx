@@ -1,4 +1,4 @@
-import {Button, Col, Form, Row, Stack, Tab, Table, Tabs} from "react-bootstrap";
+import {Button, Col, Container, Form, Row, Stack, Tab, Table, Tabs} from "react-bootstrap";
 import React, {useCallback, useEffect, useState} from "react";
 import {StringUtil} from "zavadil-ts-common";
 import {PrintZonePayload} from "../../types/PrintZone";
@@ -161,41 +161,44 @@ export default function PrintZoneForm({printZone, onChange}: PrintZoneFormParams
 										- Remove
 									</Button>
 								</div>
-								<div className="d-flex gap-2 align-items-start mt-2">
-									<div>
-										<Table>
-											<tbody>
-											{
-												printZone.previews.map(
-													(preview) => <tr
-														className={`cursor-pointer ${preview === selectedPrintPreview ? 'table-active' : ''}`}
-														onClick={() => setSelectedPrintPreview(preview)}
-													>
-														<td>
-															{preview.name}
-														</td>
-													</tr>
-												)
-											}
-											</tbody>
-										</Table>
-									</div>
-									<div>
-										{
-											selectedPrintPreview && <PrintPreviewForm
-												printPreview={selectedPrintPreview}
-												onChange={
-													(preview) => {
-														const i = printZone.previews.indexOf(selectedPrintPreview);
-														printZone.previews[i] = preview;
-														setSelectedPrintPreview(preview);
-														changed();
-													}
+								<Container fluid>
+									<Row className="d-flex gap-2 align-items-start mt-2">
+										<Col md={2} lg={1}>
+											<Table>
+												<tbody>
+												{
+													printZone.previews.map(
+														(preview, index) => <tr
+															key={index}
+															className={`cursor-pointer ${preview === selectedPrintPreview ? 'table-active' : ''}`}
+															onClick={() => setSelectedPrintPreview(preview)}
+														>
+															<td>
+																{preview.name}
+															</td>
+														</tr>
+													)
 												}
-											/>
-										}
-									</div>
-								</div>
+												</tbody>
+											</Table>
+										</Col>
+										<Col>
+											{
+												selectedPrintPreview && <PrintPreviewForm
+													printPreview={selectedPrintPreview}
+													onChange={
+														(preview) => {
+															const i = printZone.previews.indexOf(selectedPrintPreview);
+															printZone.previews[i] = preview;
+															setSelectedPrintPreview(preview);
+															changed();
+														}
+													}
+												/>
+											}
+										</Col>
+									</Row>
+								</Container>
 							</div>
 						</Tab>
 					</Tabs>

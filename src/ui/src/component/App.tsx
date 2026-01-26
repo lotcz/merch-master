@@ -20,15 +20,15 @@ import {WaitingDialogContext, WaitingDialogContextContent} from "../util/Waiting
 import WaitingDialog, {WaitingDialogProps} from "./general/WaitingDialog";
 import {BsRepeat} from "react-icons/bs";
 import {MerchMasterRestClientContext} from "../client/MerchMasterRestClient";
-import {SupplyImageModalProps, UploadImageModal} from "./images/supply/UploadImageModal";
-import {SupplyImageDialogContext, SupplyImageDialogContextContent} from "../util/SupplyImageDialogContext";
+import {UploadImageModal, UploadImageModalProps} from "./images/UploadImageModal";
+import {UploadImageDialogContext, UploadImageDialogContextContent} from "../util/UploadImageDialogContext";
 
 export default function App() {
 	const userAlerts = useContext(UserAlertsContext);
 	const restClient = useContext(MerchMasterRestClientContext);
 	const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogProps>();
 	const [waitingDialog, setWaitingDialog] = useState<WaitingDialogProps>();
-	const [supplyImageDialog, setSupplyImageDialog] = useState<SupplyImageModalProps>();
+	const [uploadImageDialog, setUploadImageDialog] = useState<UploadImageModalProps>();
 	const [session, setSession] = useState<UserSession>(new UserSession());
 	const [initialized, setInitialized] = useState<boolean>();
 	const [showAlerts, setShowAlerts] = useState<boolean>();
@@ -60,7 +60,7 @@ export default function App() {
 		},
 		[updateSessionValues]
 	);
-	
+
 	const confirmDialogContext = useMemo<ConfirmDialogContextData>(
 		() => new ConfirmDialogContextData(setConfirmDialog),
 		[]
@@ -86,11 +86,11 @@ export default function App() {
 		[waitingDialog]
 	);
 
-	const supplyImageDialogContext = useMemo<SupplyImageDialogContextContent>(
+	const uploadImageDialogContext = useMemo<UploadImageDialogContextContent>(
 		() => {
 			return {
-				show: (props: SupplyImageModalProps) => setSupplyImageDialog(props),
-				hide: () => setSupplyImageDialog(undefined)
+				show: (props: UploadImageModalProps) => setUploadImageDialog(props),
+				hide: () => setUploadImageDialog(undefined)
 			}
 		},
 		[]
@@ -143,7 +143,7 @@ export default function App() {
 	return (
 		<UserSessionContext.Provider value={session}>
 			<UserSessionUpdateContext.Provider value={saveSession}>
-				<SupplyImageDialogContext.Provider value={supplyImageDialogContext}>
+				<UploadImageDialogContext.Provider value={uploadImageDialogContext}>
 					<WaitingDialogContext.Provider value={waitingDialogContext}>
 						<ConfirmDialogContext.Provider value={confirmDialogContext}>
 							<BrowserRouter>
@@ -182,7 +182,7 @@ export default function App() {
 										waitingDialog && <WaitingDialog {...waitingDialog} />
 									}
 									{
-										supplyImageDialog && <UploadImageModal {...supplyImageDialog} />
+										uploadImageDialog && <UploadImageModal {...uploadImageDialog} />
 									}
 									{
 										showAlerts && <UserAlertsWidget userAlerts={userAlerts}/>
@@ -191,7 +191,7 @@ export default function App() {
 							</BrowserRouter>
 						</ConfirmDialogContext.Provider>
 					</WaitingDialogContext.Provider>
-				</SupplyImageDialogContext.Provider>
+				</UploadImageDialogContext.Provider>
 			</UserSessionUpdateContext.Provider>
 		</UserSessionContext.Provider>
 	)

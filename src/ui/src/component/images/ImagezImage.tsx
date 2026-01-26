@@ -40,7 +40,7 @@ export type ImagezImageResizedProps = {
 export function ImagezImageThumb({name}: ImagezImageResizedProps) {
 	return <ImagezImage
 		name={name}
-		type="fit"
+		type="Fit"
 		width={75}
 		height={50}
 
@@ -50,7 +50,7 @@ export function ImagezImageThumb({name}: ImagezImageResizedProps) {
 export function ImagezImagePreview({name}: ImagezImageResizedProps) {
 	return <ImagezImage
 		name={name}
-		type="fit"
+		type="Fit"
 		width={600}
 		height={200}
 	/>

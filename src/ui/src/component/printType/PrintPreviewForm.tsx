@@ -1,6 +1,7 @@
 import {Col, Form, Row, Stack} from "react-bootstrap";
 import React, {useCallback} from "react";
 import {PrintPreviewStub} from "../../types/PrintPreview";
+import {ImagezUploadInput} from "../images/ImagezUploadInput";
 
 const COL_1_MD = 3;
 const COL_2_MD = 9;
@@ -33,10 +34,30 @@ export default function PrintPreviewForm({printPreview, onChange}: PrintPreviewF
 								<Form.Control
 									type="text"
 									value={printPreview.name}
-									onChange={(e) => {
-										printPreview.name = e.target.value;
-										changed();
-									}}
+									onChange={
+										(e) => {
+											printPreview.name = e.target.value;
+											changed();
+										}
+									}
+								/>
+							</div>
+						</Col>
+					</Row>
+					<Row className="align-items-center">
+						<Col md={COL_1_MD} lg={COL_1_LG}>
+							<Form.Label>Image:</Form.Label>
+						</Col>
+						<Col md={COL_2_MD} lg={COL_2_LG}>
+							<div>
+								<ImagezUploadInput
+									name={printPreview.imageName}
+									onSelected={
+										(e) => {
+											printPreview.imageName = e;
+											changed();
+										}
+									}
 								/>
 							</div>
 						</Col>
