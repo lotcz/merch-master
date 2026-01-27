@@ -1,8 +1,8 @@
-import {EntityWithName} from "zavadil-ts-common";
+import {EntityBase} from "zavadil-ts-common";
 import {PrintZone} from "./PrintZone";
 import {Design} from "./Design";
 
-export type DesignFileBase = EntityWithName & {
+export type DesignFileBase = EntityBase & {
 	imageName: string;
 	originalImageWidth: number;
 	originalImageHeight: number;

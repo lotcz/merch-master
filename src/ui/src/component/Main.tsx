@@ -8,6 +8,8 @@ import ProductsList from "./products/ProductsList";
 import ProductDetail from "./products/ProductDetail";
 import PrintTypeDetail from "./printType/PrintTypeDetail";
 import ProductColorDetail from "./productColor/ProductColorDetail";
+import DesignsList from "./designs/DesignsList";
+import DesignDetail from "./designs/DesignDetail";
 
 export default function Main() {
 	return (
@@ -37,6 +39,15 @@ export default function Main() {
 								</Route>
 							</Route>
 							<Route path=":pagingString" element={<ProductsList/>}/>
+						</Route>
+
+						<Route path="designs">
+							<Route path="" element={<DesignsList/>}/>
+							<Route path="detail">
+								<Route path="add" element={<DesignDetail/>}/>
+								<Route path=":id" element={<DesignDetail/>}/>
+							</Route>
+							<Route path=":pagingString" element={<DesignsList/>}/>
 						</Route>
 
 						<Route path="*" element={<span>404</span>}/>

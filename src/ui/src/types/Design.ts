@@ -3,15 +3,15 @@ import {PrintType} from "./PrintType";
 import {DesignFileStub} from "./DesignFile";
 
 export type DesignBase = EntityBase & {
-	uuid: string;
+	uuid?: string | null;
 }
 
 export type Design = DesignBase & {
-	printType: PrintType;
+	printType?: PrintType | null;
 }
 
 export type DesignStub = DesignBase & {
-	printTypeId: number;
+	printTypeId?: number | null;
 }
 
 export type DesignPayload = {

@@ -48,7 +48,7 @@ public class SecurityConfig {
 	}
 
 	/**
-	 * Protect everything except /api/status/**
+	 * Protect everything except /api/status/** and /api/designer/**
 	 */
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -65,7 +65,10 @@ public class SecurityConfig {
 			.authorizeHttpRequests(
 				(auth) ->
 					auth
-						.requestMatchers(String.format("%s/status/**", this.apiBaseUrl))
+						.requestMatchers(
+							String.format("%s/status/**", this.apiBaseUrl),
+							String.format("%s/designer/**", this.apiBaseUrl)
+						)
 						.permitAll()
 						.anyRequest()
 						.authenticated()

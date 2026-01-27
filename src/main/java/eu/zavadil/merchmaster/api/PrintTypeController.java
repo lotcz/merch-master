@@ -8,6 +8,7 @@ import eu.zavadil.merchmaster.data.printType.PrintTypeStub;
 import eu.zavadil.merchmaster.data.printType.PrintTypeStubRepository;
 import eu.zavadil.merchmaster.data.printZone.PrintZoneStub;
 import eu.zavadil.merchmaster.data.printZone.PrintZoneStubRepository;
+import eu.zavadil.merchmaster.service.PrintTypesService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ public class PrintTypeController {
 	@Autowired
 	PrintPreviewStubRepository previewStubRepository;
 
+	@Autowired
+	PrintTypesService printTypesService;
+
 	@GetMapping("by-product/{productId}")
 	public List<PrintTypeStub> loadByProduct(@PathVariable int productId) {
 		return this.stubRepository.findAllByProductId(productId);
@@ -37,22 +41,7 @@ public class PrintTypeController {
 
 	@GetMapping("{id}")
 	public PrintTypePayload load(@PathVariable int id) {
-		PrintTypePayload response = new PrintTypePayload();
-		response.setPrintType(this.stubRepository.findById(id).orElseThrow());
-
-		List<PrintZoneStub> zones = this.zoneStubRepository.findAllByPrintTypeId(id);
-		List<PrintZonePayload> zonesPayload = zones.stream().map(
-			zone -> {
-				PrintZonePayload zonePayload = new PrintZonePayload();
-				zonePayload.setPrintZone(zone);
-				List<PrintPreviewStub> previews = this.previewStubRepository.findAllByPrintZoneId(zone.getId());
-				zonePayload.setPreviews(previews);
-				return zonePayload;
-			}
-		).toList();
-		response.setZones(zonesPayload);
-
-		return response;
+		return this.printTypesService.load(id);
 	}
 
 	private PrintTypePayload savePayload(PrintTypePayload payload) {
