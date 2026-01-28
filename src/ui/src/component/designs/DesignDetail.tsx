@@ -8,6 +8,7 @@ import RefreshIconButton from "../general/RefreshIconButton";
 import {ConfirmDialogContext, DeleteButton, SaveButton} from "zavadil-react-common";
 import BackIconLink from "../general/BackIconLink";
 import {DesignPayload} from "../../types/Design";
+import Designer from "../designer/Designer";
 
 const TAB_PARAM_NAME = 'tab';
 const DEFAULT_TAB = 'files';
@@ -59,7 +60,9 @@ export default function DesignDetail() {
 		() => {
 			if (!id) {
 				setData({
-					design: {},
+					design: {
+						confirmed: false
+					},
 					files: []
 				});
 				return;
@@ -181,7 +184,26 @@ export default function DesignDetail() {
 							</tbody>
 						</Table>
 					</Tab>
+					<Tab title="Designer" eventKey="designer"/>
 				</Tabs>
+				<div>
+					{
+						activeTab === 'designer' && <Designer
+							uuid={data.design.uuid}
+							onFinished={
+								(uuid) => {
+									restClient.designs
+										.loadByUuid(uuid)
+										.then(
+											(d) => {
+												navigate(`/designs/detail/${d.design.id}`);
+											}
+										);
+								}
+							}
+						/>
+					}
+				</div>
 			</div>
 		</div>
 	)

@@ -1,14 +1,18 @@
 package eu.zavadil.merchmaster.service;
 
 import eu.zavadil.java.spring.common.entity.EntityBase;
+import eu.zavadil.java.spring.common.exceptions.BadRequestException;
 import eu.zavadil.merchmaster.api.payload.DesignPayload;
 import eu.zavadil.merchmaster.data.design.DesignStub;
 import eu.zavadil.merchmaster.data.design.DesignStubRepository;
 import eu.zavadil.merchmaster.data.designFile.DesignFileStub;
 import eu.zavadil.merchmaster.data.designFile.DesignFileStubRepository;
+import eu.zavadil.merchmaster.data.printType.PrintTypeStub;
+import eu.zavadil.merchmaster.data.printType.PrintTypeStubRepository;
+import eu.zavadil.merchmaster.data.productColor.ProductColorStub;
+import eu.zavadil.merchmaster.data.productColor.ProductColorStubRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,9 +26,25 @@ public class DesignsService {
 	@Autowired
 	DesignFileStubRepository designFileStubRepository;
 
+	@Autowired
+	PrintTypeStubRepository printTypeStubRepository;
+
+	@Autowired
+	ProductColorStubRepository productColorStubRepository;
+
+	public DesignStub saveDesign(DesignStub stub) {
+		PrintTypeStub printType = printTypeStubRepository.findById(stub.getPrintTypeId()).orElseThrow();
+		ProductColorStub color = productColorStubRepository.findById(stub.getProductColorId()).orElseThrow();
+
+		if (printType.getProductId() != color.getProductId()) {
+			throw new BadRequestException("Print type and color must have the same product ID!");
+		}
+
+		return this.stubRepository.save(stub);
+	}
+
 	public DesignPayload savePayload(DesignPayload payload) {
-		DesignStub stub = payload.getDesign();
-		stub = this.stubRepository.save(stub);
+		DesignStub stub = this.saveDesign(payload.getDesign());
 		int designId = stub.getId();
 
 		List<DesignFileStub> files = payload.getFiles().stream().map(

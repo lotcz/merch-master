@@ -3,6 +3,7 @@ import {RestClient} from "zavadil-ts-common";
 import {Product} from "../types/Product";
 import {PrintTypePayload, PrintTypeStub} from "../types/PrintType";
 import {DesignPayload} from "../types/Design";
+import {ProductColorStub} from "../types/ProductColor";
 
 export class DesignerRestClient extends RestClient {
 
@@ -12,6 +13,10 @@ export class DesignerRestClient extends RestClient {
 
 	loadProducts(): Promise<Array<Product>> {
 		return this.getJson('products');
+	}
+
+	loadColorsByProduct(productId: number): Promise<Array<ProductColorStub>> {
+		return this.getJson(`product-colors/by-product/${productId}`);
 	}
 
 	loadPrintTypesByProduct(productId: number): Promise<Array<PrintTypeStub>> {

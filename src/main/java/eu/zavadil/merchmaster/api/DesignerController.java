@@ -6,6 +6,8 @@ import eu.zavadil.merchmaster.data.printType.PrintTypeStub;
 import eu.zavadil.merchmaster.data.printType.PrintTypeStubRepository;
 import eu.zavadil.merchmaster.data.product.Product;
 import eu.zavadil.merchmaster.data.product.ProductRepository;
+import eu.zavadil.merchmaster.data.productColor.ProductColorStub;
+import eu.zavadil.merchmaster.data.productColor.ProductColorStubRepository;
 import eu.zavadil.merchmaster.service.DesignsService;
 import eu.zavadil.merchmaster.service.PrintTypesService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,6 +34,16 @@ public class DesignerController {
 		return this.productRepository.findAll();
 	}
 
+	/* COLORS */
+
+	@Autowired
+	ProductColorStubRepository productColorStubRepository;
+
+	@GetMapping("product-colors/by-product/{productId}")
+	public List<ProductColorStub> loadColorsByProduct(@PathVariable int productId) {
+		return this.productColorStubRepository.findAllByProductId(productId);
+	}
+
 	/* PRINT TYPES */
 
 	@Autowired
@@ -41,7 +53,7 @@ public class DesignerController {
 	PrintTypesService printTypesService;
 
 	@GetMapping("print-types/by-product/{productId}")
-	public List<PrintTypeStub> loadByProduct(@PathVariable int productId) {
+	public List<PrintTypeStub> loadPrintTypesByProduct(@PathVariable int productId) {
 		return this.printTypeStubRepository.findAllByProductId(productId);
 	}
 
@@ -60,8 +72,7 @@ public class DesignerController {
 		return this.designsService.loadPayload(uuid);
 	}
 
-	@PostMapping("designs")
-	@PutMapping("designs")
+	@RequestMapping(path = "designs", method = {RequestMethod.POST, RequestMethod.PUT})
 	public DesignPayload save(@RequestBody DesignPayload document) {
 		return this.designsService.savePayload(document);
 	}

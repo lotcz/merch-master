@@ -3,8 +3,9 @@ import {useNavigate} from "react-router";
 import {DateTime, TablePlaceholder} from "zavadil-react-common";
 import {MerchMasterRestClientContext} from "../../client/MerchMasterRestClient";
 import {UserAlertsContext} from "../../util/UserAlerts";
-import {PrintTypeStub} from "../../types/PrintType";
 import {Button, Table} from "react-bootstrap";
+import ColorPreview from "../productColor/ColorPreview";
+import {ProductColorStub} from "../../types/ProductColor";
 
 export type ProductColorsListProps = {
 	productId: number;
@@ -14,10 +15,10 @@ export default function ProductColorsList({productId}: ProductColorsListProps) {
 	const navigate = useNavigate();
 	const restClient = useContext(MerchMasterRestClientContext);
 	const userAlerts = useContext(UserAlertsContext);
-	const [data, setData] = useState<Array<PrintTypeStub>>();
+	const [data, setData] = useState<Array<ProductColorStub>>();
 
-	const navigateToDetail = (d: PrintTypeStub) => {
-		navigate(`/products/print-types/detail/${d.id}`);
+	const navigateToDetail = (d: ProductColorStub) => {
+		navigate(`/products/product-colors/detail/${d.id}`);
 	}
 
 	const load = useCallback(
@@ -69,7 +70,7 @@ export default function ProductColorsList({productId}: ProductColorsListProps) {
 								return (
 									<tr key={index} role="button" onClick={() => navigateToDetail(pt)}>
 										<td>{pt.id}</td>
-										<td>{pt.name}</td>
+										<td><ColorPreview color={pt}/></td>
 										<td><DateTime value={pt.lastUpdatedOn}/></td>
 										<td><DateTime value={pt.createdOn}/></td>
 									</tr>

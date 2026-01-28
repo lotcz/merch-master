@@ -6,13 +6,15 @@ import {useNavigate, useParams} from "react-router";
 import {MerchMasterRestClientContext} from "../../client/MerchMasterRestClient";
 import {UserAlertsContext} from "../../util/UserAlerts";
 import RefreshIconButton from "../general/RefreshIconButton";
-import {Product} from "../../types/Product";
 import {Design} from "../../types/Design";
+import ColorPreview from "../productColor/ColorPreview";
 
 const HEADER: SelectableTableHeader<Design> = [
 	{name: 'id', label: 'ID'},
-	{name: 'name', label: 'Name'},
-	{name: 'product.name', label: 'Product'},
+	{name: 'uuid', label: 'UUID'},
+	{name: 'printType.product.name', label: 'Product'},
+	{name: 'productColor.name', label: 'Color', renderer: (p) => p.productColor && <ColorPreview color={p.productColor}/>},
+	{name: 'printType.name', label: 'Print Type'},
 	{name: 'lastUpdatedOn', label: 'Updated', renderer: (p) => <DateTime value={p.lastUpdatedOn}/>},
 	{name: 'createdOn', label: 'Created', renderer: (p) => <DateTime value={p.createdOn}/>}
 ];

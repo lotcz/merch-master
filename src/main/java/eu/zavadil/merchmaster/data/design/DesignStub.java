@@ -15,4 +15,7 @@ public class DesignStub extends DesignBase {
 	@Column(name = "print_type_id")
 	private int printTypeId;
 
+	@Column(name = "product_color_id")
+	private int productColorId;
+
 }

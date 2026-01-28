@@ -103,3 +103,11 @@ tr.selectable.selected td {
 	-moz-user-select: none;
 	-ms-user-select: none;
 }
+
+/* DESIGNER */
+
+.designer .form-label {
+	font-size: 75%;
+	margin-top: 10px;
+	margin-bottom: 0;
+}

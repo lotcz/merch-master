@@ -17,6 +17,10 @@ export class DesignsClient {
 		return this.client.getJson(`designs/${id}`);
 	}
 
+	loadByUuid(uuid: string): Promise<DesignPayload> {
+		return this.client.getJson(`designer/designs/${uuid}`);
+	}
+
 	save(document: DesignPayload): Promise<DesignPayload> {
 		return document.design.id ?
 			this.client.putJson(`designs/${document.design.id}`, document)
