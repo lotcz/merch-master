@@ -2,6 +2,7 @@ import React from "react";
 import {DesignFileStub} from "../../types/DesignFile";
 import {PIXEL_PER_CM} from "../../util/ImageUtil";
 import {ImagezImage} from "../images/ImagezImage";
+import {BsArrowDownRight} from "react-icons/bs";
 
 export type DesignerFileParams = {
 	file: DesignFileStub;
@@ -19,12 +20,26 @@ export type DesignerFileParams = {
 }
 
 export default function DesignerFile(
-	{file, scale, onChanged, maxHeight, maxWidth, isSelected, onSelected, onStartMove, onEndMove, isManipulating}: DesignerFileParams
+	{
+		file,
+		scale,
+		onChanged,
+		maxHeight,
+		maxWidth,
+		isSelected,
+		onSelected,
+		onStartMove,
+		onEndMove,
+		onStartResize,
+		onEndResize,
+		isManipulating
+	}: DesignerFileParams
 ) {
 
 	return (
 		<div
 			className={`design-file ${isSelected ? 'selected' : ''} ${isManipulating ? 'manipulating' : ''}`}
+			draggable={false}
 			style={
 				{
 					top: file.positionY * PIXEL_PER_CM * scale,
@@ -33,20 +48,33 @@ export default function DesignerFile(
 					height: file.imageHeight * PIXEL_PER_CM * scale
 				}
 			}
-			onClick={
-				() => {
-					if (!isSelected) onSelected();
-				}
-			}
 			onMouseDown={
 				(e) => {
 					if (!isSelected) onSelected();
 					onStartMove();
 				}
 			}
+			onMouseUp={
+				(e) => {
+					onEndMove();
+					onEndResize();
+				}
+			}
 
 		>
 			<ImagezImage name={file.imageName} type="Fit" width={maxWidth} height={maxHeight}/>
+			<div
+				className="resize-button"
+				onMouseDown={
+					(e) => {
+						e.stopPropagation();
+						onEndMove();
+						onStartResize();
+					}
+				}
+			>
+				<BsArrowDownRight size={12}/>
+			</div>
 		</div>
 	)
 }
