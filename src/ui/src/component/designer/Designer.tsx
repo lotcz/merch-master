@@ -1,6 +1,6 @@
 import {Button, Col, Container, Form, Row, Spinner} from "react-bootstrap";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
-import {StringUtil} from "zavadil-ts-common";
+import {NumberUtil, StringUtil} from "zavadil-ts-common";
 import {DesignPayload} from "../../types/Design";
 import {PrintTypePayload, PrintTypeStub} from "../../types/PrintType";
 import {DesignerRestClient} from "../../client/DesignerRestClient";
@@ -42,10 +42,35 @@ export default function Designer({uuid, onFinished}: DesignerParams) {
 
 	useEffect(loadProducts, []);
 
+	const updatePrintTypeValue = useCallback(
+		() => {
+			if (printTypes && printTypes.length > 0) {
+				if (NumberUtil.isEmpty(selectedPrintTypeId) || !printTypes.find(o => o.id === selectedPrintTypeId)) {
+					setSelectedPrintTypeId(printTypes[0].id);
+				}
+			}
+		},
+		[printTypes, selectedPrintTypeId]
+	);
+
+	useEffect(updatePrintTypeValue, [printTypes, selectedPrintTypeId]);
+
+	const updateColorValue = useCallback(
+		() => {
+			if (colors && colors.length > 0) {
+				if (NumberUtil.isEmpty(selectedColorId) || !colors.find(o => o.id === selectedColorId)) {
+					setSelectedColorId(colors[0].id);
+				}
+			}
+		},
+		[colors, selectedColorId]
+	);
+
+	useEffect(updateColorValue, [colors, selectedColorId]);
+
 	const loadPrintTypes = useCallback(
 		() => {
 			if (!selectedProductId) {
-				setSelectedPrintTypeId(undefined);
 				setPrintTypes(undefined);
 				return;
 			}
@@ -62,7 +87,6 @@ export default function Designer({uuid, onFinished}: DesignerParams) {
 	const loadColors = useCallback(
 		() => {
 			if (!selectedProductId) {
-				setSelectedColorId(undefined);
 				setColors(undefined);
 				return;
 			}
@@ -139,6 +163,8 @@ export default function Designer({uuid, onFinished}: DesignerParams) {
 					},
 					files: []
 				});
+				setSelectedColorId(undefined);
+				setSelectedPrintTypeId(undefined);
 				return;
 			}
 			client.loadDesign(uuid)
@@ -193,27 +219,33 @@ export default function Designer({uuid, onFinished}: DesignerParams) {
 				<Col md={3} lg={2}>
 					<Form.Group>
 						<Form.Label title="Produkt">Produkt</Form.Label>
-						<EntityWithNameIdSelect
-							id={selectedProductId}
-							onChange={setSelectedProductId}
-							options={products}
-						/>
+						{
+							selectedProductId && <EntityWithNameIdSelect
+								id={selectedProductId}
+								onChange={setSelectedProductId}
+								options={products}
+							/>
+						}
 					</Form.Group>
 					<Form.Group>
 						<Form.Label title="Barva">Barva</Form.Label>
-						<ColorSelectId
-							id={selectedColorId}
-							onSelected={setSelectedColorId}
-							colors={colors}
-						/>
+						{
+							selectedColorId && <ColorSelectId
+								id={selectedColorId}
+								onSelected={setSelectedColorId}
+								colors={colors}
+							/>
+						}
 					</Form.Group>
 					<Form.Group>
 						<Form.Label title="Druh potisku">Druh potisku</Form.Label>
-						<EntityWithNameIdSelect
-							id={selectedPrintTypeId}
-							onChange={setSelectedPrintTypeId}
-							options={printTypes}
-						/>
+						{
+							selectedPrintTypeId && <EntityWithNameIdSelect
+								id={selectedPrintTypeId}
+								onChange={setSelectedPrintTypeId}
+								options={printTypes}
+							/>
+						}
 					</Form.Group>
 					<Form.Group>
 						<Form.Label title="Náhled">Náhled</Form.Label>

@@ -38,7 +38,7 @@ export default function DesignsList() {
 
 	const navigateToCreateNew = useCallback(
 		() => {
-			navigate("/designs/detail/add")
+			navigate("/designs/detail/add?tab=designer")
 		},
 		[navigate]
 	);

@@ -1,5 +1,5 @@
 import {Dropdown, Spinner} from "react-bootstrap";
-import React, {useEffect} from "react";
+import React from "react";
 import {ProductColorStub} from "../../types/ProductColor";
 import ColorPreview from "./ColorPreview";
 
@@ -10,21 +10,6 @@ export type ColorSelectParams = {
 }
 
 export default function ColorSelect({selectedColor, colors, onSelected}: ColorSelectParams) {
-
-	useEffect(
-		() => {
-			if (!colors) return;
-
-			if (!selectedColor && colors.length > 0) {
-				onSelected(colors[0]);
-			}
-
-			if (selectedColor && !colors.includes(selectedColor)) {
-				onSelected(colors[0]);
-			}
-		},
-		[colors, selectedColor, onSelected]
-	);
 
 	if (!colors) {
 		return <Spinner/>

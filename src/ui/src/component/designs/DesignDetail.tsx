@@ -196,7 +196,11 @@ export default function DesignDetail() {
 										.loadByUuid(uuid)
 										.then(
 											(d) => {
-												navigate(`/designs/detail/${d.design.id}`);
+												if (data.design.id) {
+													reload();
+												} else {
+													navigate(`/designs/detail/${d.design.id}`, {replace: true});
+												}
 											}
 										);
 								}
