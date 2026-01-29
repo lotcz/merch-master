@@ -2,11 +2,10 @@ import React from "react";
 import {DesignFileStub} from "../../types/DesignFile";
 import {PIXEL_PER_CM} from "../../util/ImageUtil";
 import {ImagezImage} from "../images/ImagezImage";
-import {BsArrowDownRight} from "react-icons/bs";
+import {BsArrowDownRight, BsTrash} from "react-icons/bs";
 
 export type DesignerFileParams = {
 	file: DesignFileStub;
-	onChanged: (file: DesignFileStub) => any;
 	scale: number;
 	maxWidth: number;
 	maxHeight: number;
@@ -17,13 +16,13 @@ export type DesignerFileParams = {
 	onEndMove: () => any;
 	onStartResize: () => any;
 	onEndResize: () => any;
+	onDeleted: () => any;
 }
 
 export default function DesignerFile(
 	{
 		file,
 		scale,
-		onChanged,
 		maxHeight,
 		maxWidth,
 		isSelected,
@@ -32,7 +31,8 @@ export default function DesignerFile(
 		onEndMove,
 		onStartResize,
 		onEndResize,
-		isManipulating
+		isManipulating,
+		onDeleted
 	}: DesignerFileParams
 ) {
 
@@ -64,11 +64,23 @@ export default function DesignerFile(
 		>
 			<ImagezImage name={file.imageName} type="Fit" width={maxWidth} height={maxHeight}/>
 			<div
+				className="delete-button"
+				onMouseDown={
+					(e) => {
+						e.stopPropagation();
+						onDeleted();
+					}
+				}
+			>
+				<BsTrash size={15}/>
+			</div>
+			<div
 				className="resize-button"
 				onMouseDown={
 					(e) => {
 						e.stopPropagation();
 						onEndMove();
+						onSelected();
 						onStartResize();
 					}
 				}

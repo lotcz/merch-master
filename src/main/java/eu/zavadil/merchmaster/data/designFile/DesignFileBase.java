@@ -16,12 +16,12 @@ public class DesignFileBase extends EntityBase {
 
 	private int originalImageHeight;
 
-	private int positionX;
+	private double positionX;
 
-	private int positionY;
+	private double positionY;
 
-	private int imageWidth;
+	private double imageWidth;
 
-	private int imageHeight;
+	private double imageHeight;
 
 }

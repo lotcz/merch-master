@@ -146,23 +146,23 @@ export default function DesignerPrintZone({
 			>
 				{
 					files.map(
-						(f) => <DesignerFile
-							file={f}
+						(file) => <DesignerFile
+							file={file}
 							scale={scale}
 							maxWidth={maxWidth}
 							maxHeight={maxHeight}
-							onChanged={
-								(f) => {
-									onChanged({design: {...design.design}, files: [...files]})
-								}
-							}
-							isSelected={f === selectedFile}
+							isSelected={file === selectedFile}
 							isManipulating={isResizing || isMoving}
-							onSelected={() => onFileSelected(f)}
+							onSelected={() => onFileSelected(file)}
 							onStartMove={() => setIsMoving(true)}
 							onEndMove={() => setIsMoving(false)}
 							onStartResize={() => setIsResizing(true)}
 							onEndResize={() => setIsResizing(false)}
+							onDeleted={
+								() => {
+									onChanged({design: design.design, files: design.files.filter(f => f !== file)})
+								}
+							}
 						/>
 					)
 				}

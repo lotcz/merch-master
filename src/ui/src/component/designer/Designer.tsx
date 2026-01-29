@@ -146,9 +146,9 @@ export default function Designer({uuid, onFinished}: DesignerParams) {
 	useEffect(loadPrintType, [selectedPrintTypeId]);
 
 	const onChanged = useCallback(
-		() => {
+		(newDesign?: DesignPayload) => {
 			if (!design) return;
-			setDesign({...design});
+			setDesign(newDesign || {...design});
 			setChanged(true);
 		},
 		[design]
