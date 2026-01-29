@@ -1,5 +1,5 @@
-import {Button, Col, Container, Form, Row, Spinner} from "react-bootstrap";
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import {Alert, Button, Col, Container, Form, Row, Spinner} from "react-bootstrap";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {NumberUtil, StringUtil} from "zavadil-ts-common";
 import {DesignPayload} from "../../types/Design";
 import {PrintTypePayload, PrintTypeStub} from "../../types/PrintType";
@@ -10,13 +10,30 @@ import {ProductColorStub} from "../../types/ProductColor";
 import DesignerPrintZone from "./DesignerPrintZone";
 import ColorSelectId from "../productColor/ColorSelectId";
 
+const MAX_WIDTH = 800;
+const MAX_HEIGHT = 350;
+
 export type DesignerParams = {
 	uuid?: string | null;
 	onFinished: (uuid: string) => any;
 }
 
 export default function Designer({uuid, onFinished}: DesignerParams) {
-	const [error, setError] = useState<string>();
+	const areaRef = useRef<HTMLDivElement>(null);
+	const [areaWidth, setAreaWidth] = useState<number>(MAX_WIDTH);
+	const [areaHeight, setAreaHeight] = useState<number>(MAX_HEIGHT);
+
+	const updateAreaSize = useCallback(
+		() => {
+			if (!areaRef.current) return;
+			setAreaWidth(areaRef.current.clientWidth);
+			setAreaHeight(areaRef.current.clientHeight);
+		},
+		[areaRef]
+	);
+
+	useEffect(updateAreaSize, []);
+
 	const [design, setDesign] = useState<DesignPayload>();
 	const [products, setProducts] = useState<Array<Product>>();
 	const [selectedProductId, setSelectedProductId] = useState<number | null | undefined>();
@@ -25,8 +42,11 @@ export default function Designer({uuid, onFinished}: DesignerParams) {
 	const [printType, setPrintType] = useState<PrintTypePayload | null | undefined>();
 	const [colors, setColors] = useState<Array<ProductColorStub>>();
 	const [selectedColorId, setSelectedColorId] = useState<number | null | undefined>();
+
 	const [changed, setChanged] = useState<boolean>(false);
 	const [saving, setSaving] = useState<boolean>(false);
+
+	const [error, setError] = useState<string>();
 
 	const client = useMemo(() => new DesignerRestClient(), []);
 
@@ -253,16 +273,31 @@ export default function Designer({uuid, onFinished}: DesignerParams) {
 					</Form.Group>
 				</Col>
 				<Col md={9} lg={10}>
-					{
-						printType ? printType.zones.map(
-							(zone) => <DesignerPrintZone printZone={zone} design={design} onChanged={onChanged}/>
-						) : <Spinner/>
-					}
+					<div ref={areaRef}>
+						{
+							printType ? printType.zones.map(
+								(zone) => <DesignerPrintZone
+									printZone={zone}
+									design={design}
+									onChanged={onChanged}
+									maxWidth={areaWidth}
+									maxHeight={MAX_HEIGHT}
+								/>
+							) : <Spinner/>
+						}
+					</div>
 				</Col>
 			</Row>
+			{
+				error && <Row>
+					<Col md={12}>
+						<Alert variant="danger">{error}</Alert>
+					</Col>
+				</Row>
+			}
 			<Row>
-				<Col>
-					<Button onClick={() => saveDesign(true)}>Save</Button>
+				<Col md={{span: 6, offset: 3}} className="text-center">
+					<Button size="lg" onClick={() => saveDesign(true)}>Uložit</Button>
 				</Col>
 			</Row>
 		</Container>

@@ -4,6 +4,7 @@ import {DesignFileStub} from "../../types/DesignFile";
 export type DesignerFileParams = {
 	file: DesignFileStub;
 	onChanged: (file: DesignFileStub) => any;
+	scale: number;
 }
 
 export default function DesignerFile({file, onChanged}: DesignerFileParams) {
