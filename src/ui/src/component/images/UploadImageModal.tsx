@@ -4,10 +4,11 @@ import {MerchMasterRestClientContext} from "../../client/MerchMasterRestClient";
 import {UserAlertsContext} from "../../util/UserAlerts";
 import {Img} from "./Img";
 import {SaveButton} from "zavadil-react-common";
+import {ImageHealth} from "../../types/Image";
 
 export type UploadImageModalProps = {
 	onClose: () => any;
-	onSelected: (imageName: string) => any;
+	onSelected: (imageName: string, imageHealth: ImageHealth) => any;
 }
 
 export function UploadImageModal({onClose, onSelected}: UploadImageModalProps) {
@@ -35,7 +36,7 @@ export function UploadImageModal({onClose, onSelected}: UploadImageModalProps) {
 			restClient
 				.imagez
 				.uploadFile(file)
-				.then((ih) => onSelected(ih.name))
+				.then((ih) => onSelected(ih.name, ih))
 				.catch(
 					(e) => {
 						setUploading(false);
