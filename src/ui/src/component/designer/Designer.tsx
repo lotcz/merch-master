@@ -9,6 +9,7 @@ import {EntityWithNameIdSelect} from "zavadil-react-common";
 import {ProductColorStub} from "../../types/ProductColor";
 import DesignerPrintZone from "./DesignerPrintZone";
 import ColorSelectId from "../productColor/ColorSelectId";
+import {DesignFileStub} from "../../types/DesignFile";
 
 const MAX_WIDTH = 800;
 const MAX_HEIGHT = 350;
@@ -42,6 +43,7 @@ export default function Designer({uuid, onFinished}: DesignerParams) {
 	const [printType, setPrintType] = useState<PrintTypePayload | null | undefined>();
 	const [colors, setColors] = useState<Array<ProductColorStub>>();
 	const [selectedColorId, setSelectedColorId] = useState<number | null | undefined>();
+	const [selectedFile, setSelectedFile] = useState<DesignFileStub | undefined>();
 
 	const [changed, setChanged] = useState<boolean>(false);
 	const [saving, setSaving] = useState<boolean>(false);
@@ -185,6 +187,7 @@ export default function Designer({uuid, onFinished}: DesignerParams) {
 				});
 				setSelectedColorId(undefined);
 				setSelectedPrintTypeId(undefined);
+				setSelectedFile(undefined);
 				return;
 			}
 			client.loadDesign(uuid)
@@ -193,6 +196,7 @@ export default function Designer({uuid, onFinished}: DesignerParams) {
 						setDesign(d);
 						setSelectedColorId(d.design.productColorId);
 						setSelectedPrintTypeId(d.design.printTypeId);
+						setSelectedFile(undefined);
 					})
 				.catch((e: Error) => setError(e.message))
 		},
@@ -282,6 +286,8 @@ export default function Designer({uuid, onFinished}: DesignerParams) {
 									onChanged={onChanged}
 									maxWidth={areaWidth}
 									maxHeight={MAX_HEIGHT}
+									selectedFile={selectedFile}
+									onFileSelected={setSelectedFile}
 								/>
 							) : <Spinner/>
 						}

@@ -9,13 +9,22 @@ export type DesignerFileParams = {
 	scale: number;
 	maxWidth: number;
 	maxHeight: number;
+	isSelected: boolean;
+	isManipulating: boolean;
+	onSelected: () => any;
+	onStartMove: () => any;
+	onEndMove: () => any;
+	onStartResize: () => any;
+	onEndResize: () => any;
 }
 
-export default function DesignerFile({file, scale, onChanged, maxHeight, maxWidth}: DesignerFileParams) {
+export default function DesignerFile(
+	{file, scale, onChanged, maxHeight, maxWidth, isSelected, onSelected, onStartMove, onEndMove, isManipulating}: DesignerFileParams
+) {
 
 	return (
 		<div
-			className="design-file"
+			className={`design-file ${isSelected ? 'selected' : ''} ${isManipulating ? 'manipulating' : ''}`}
 			style={
 				{
 					top: file.positionY * PIXEL_PER_CM * scale,
@@ -24,10 +33,20 @@ export default function DesignerFile({file, scale, onChanged, maxHeight, maxWidt
 					height: file.imageHeight * PIXEL_PER_CM * scale
 				}
 			}
+			onClick={
+				() => {
+					if (!isSelected) onSelected();
+				}
+			}
+			onMouseDown={
+				(e) => {
+					if (!isSelected) onSelected();
+					onStartMove();
+				}
+			}
+
 		>
-			<div>
-				<ImagezImage name={file.imageName} type="Fit" width={maxWidth} height={maxHeight}/>
-			</div>
+			<ImagezImage name={file.imageName} type="Fit" width={maxWidth} height={maxHeight}/>
 		</div>
 	)
 }

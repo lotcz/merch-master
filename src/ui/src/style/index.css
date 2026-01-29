@@ -126,5 +126,26 @@ tr.selectable.selected td {
 }
 
 .designer .print-zone .boundary {
+	position: relative;
 	border: dashed 3px #ffa5a5;
+	overflow: hidden;
+}
+
+.designer .print-zone .design-file {
+	position: absolute;
+	border: solid 2px transparent;
+}
+
+.designer .print-zone .design-file.manipulating {
+	pointer-events: none;
+}
+
+.designer .print-zone .design-file.selected {
+	border: solid 2px #ff0000;
+}
+
+.designer .print-zone .design-file img {
+	width: 100%;
+	height: 100%;
+	user-select: none;
 }

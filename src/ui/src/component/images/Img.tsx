@@ -16,5 +16,6 @@ export function Img({url, alt, maxWidth, maxHeight}: ImgProps) {
 		src={url}
 		alt={alt || 'image'}
 		style={{maxHeight, maxWidth}}
+		draggable={false}
 	/>
 }

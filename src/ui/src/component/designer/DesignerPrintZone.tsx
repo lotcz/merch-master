@@ -1,7 +1,7 @@
-import React, {useCallback, useContext, useMemo} from "react";
+import React, {MouseEvent, MouseEventHandler, useCallback, useContext, useMemo, useState} from "react";
 import {PrintZonePayload} from "../../types/PrintZone";
 import {DesignPayload} from "../../types/Design";
-import {NumberUtil} from "zavadil-ts-common";
+import {NumberUtil, Vector2} from "zavadil-ts-common";
 import DesignerFile from "./DesignerFile";
 import {Button} from "react-bootstrap";
 import {UploadImageDialogContext} from "../../util/UploadImageDialogContext";
@@ -14,9 +14,19 @@ export type DesignerPrintZoneParams = {
 	onChanged: (design: DesignPayload) => any;
 	maxWidth: number;
 	maxHeight: number;
+	selectedFile?: DesignFileStub;
+	onFileSelected: (selectedFile?: DesignFileStub) => any;
 }
 
-export default function DesignerPrintZone({printZone, design, maxWidth, maxHeight, onChanged}: DesignerPrintZoneParams) {
+export default function DesignerPrintZone({
+	printZone,
+	design,
+	maxWidth,
+	maxHeight,
+	onChanged,
+	selectedFile,
+	onFileSelected
+}: DesignerPrintZoneParams) {
 	const uploadImageDialog = useContext(UploadImageDialogContext);
 
 	const widthCm = useMemo(
@@ -52,16 +62,18 @@ export default function DesignerPrintZone({printZone, design, maxWidth, maxHeigh
 							widthCm,
 							heightCm
 						);
+						const imageWidth = imageScale * health.width / PIXEL_PER_CM;
+						const imageHeight = imageScale * health.height / PIXEL_PER_CM;
 						const file: DesignFileStub = {
 							designId: Number(design.design.id),
 							printZoneId: Number(printZone.printZone.id),
 							imageName: imageName,
 							originalImageHeight: health.height,
 							originalImageWidth: health.width,
-							positionX: 0,
-							positionY: 0,
-							imageWidth: imageScale * health.width / PIXEL_PER_CM,
-							imageHeight: imageScale * health.height / PIXEL_PER_CM
+							positionX: (widthCm - imageWidth) / 2,
+							positionY: (heightCm - imageHeight) / 2,
+							imageWidth: imageWidth,
+							imageHeight: imageHeight
 						};
 						design.files = [...design.files, file];
 						onChanged({...design})
@@ -71,7 +83,39 @@ export default function DesignerPrintZone({printZone, design, maxWidth, maxHeigh
 				}
 			);
 		},
-		[uploadImageDialog, design, printZone, onChanged]
+		[uploadImageDialog, design, printZone, onChanged, widthCm, heightCm]
+	);
+
+	const [isResizing, setIsResizing] = useState<boolean>(false);
+	const [isMoving, setIsMoving] = useState<boolean>(false);
+	const [lastMousePos, setLastMousePos] = useState<Vector2>();
+
+	const onMouseMove: MouseEventHandler<HTMLDivElement> = useCallback(
+		(e: MouseEvent<HTMLDivElement>) => {
+			if (!selectedFile) return;
+			if (!(isMoving || isResizing)) return;
+
+			const pos = new Vector2(e.nativeEvent.offsetX, e.nativeEvent.offsetY).multiply(1 / scale).multiply(1 / PIXEL_PER_CM);
+
+			if (!lastMousePos) {
+				setLastMousePos(pos);
+				return;
+			}
+
+			//const diff = pos.sub(lastMousePos).multiply(1 / PIXEL_PER_CM);
+
+			if (isResizing) {
+				//selectedFile.imageWidth = selectedFile.imageWidth + diff.x;
+				//selectedFile.imageHeight = selectedFile.imageHeight + diff.y;
+			} else if (isMoving) {
+				console.log(pos.toString());
+				selectedFile.positionX = pos.x - (selectedFile.imageWidth / 2);
+				selectedFile.positionY = pos.y - (selectedFile.imageHeight / 2);
+			}
+
+			setLastMousePos(pos);
+		},
+		[isResizing, isMoving, selectedFile, lastMousePos, scale]
 	);
 
 	const files = useMemo(
@@ -86,7 +130,17 @@ export default function DesignerPrintZone({printZone, design, maxWidth, maxHeigh
 				({widthCm} x {heightCm} cm)
 				<Button size="sm" onClick={uploadImage}>Nahrát obrázek...</Button>
 			</div>
-			<div className="boundary" style={{width: widthCm * PIXEL_PER_CM * scale, height: heightCm * PIXEL_PER_CM * scale}}>
+			<div
+				className="boundary"
+				style={{width: widthCm * PIXEL_PER_CM * scale, height: heightCm * PIXEL_PER_CM * scale}}
+				onMouseMove={onMouseMove}
+				onMouseUp={
+					(e: MouseEvent<HTMLDivElement>) => {
+						setIsResizing(false);
+						setIsMoving(false);
+					}
+				}
+			>
 				{
 					files.map(
 						(f) => <DesignerFile
@@ -99,6 +153,13 @@ export default function DesignerPrintZone({printZone, design, maxWidth, maxHeigh
 									onChanged({design: {...design.design}, files: [...files]})
 								}
 							}
+							isSelected={f === selectedFile}
+							isManipulating={isResizing || isMoving}
+							onSelected={() => onFileSelected(f)}
+							onStartMove={() => setIsMoving(true)}
+							onEndMove={() => setIsMoving(false)}
+							onStartResize={() => setIsResizing(true)}
+							onEndResize={() => setIsResizing(false)}
 						/>
 					)
 				}
