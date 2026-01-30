@@ -102,6 +102,10 @@ export default function DesignerPrintZone({
 	const onMouseMove: MouseEventHandler<HTMLDivElement> = useCallback(
 		(e: MouseEvent<HTMLDivElement>) => {
 			if (!selectedFile) return;
+			if (e.buttons === 0) {
+				//setIsResizing(false);
+				//setIsMoving(false);
+			}
 			if (!(isMoving || isResizing)) return;
 
 			const pos = new Vector2(e.nativeEvent.offsetX, e.nativeEvent.offsetY).multiply(1 / scale).multiply(1 / PIXEL_PER_CM);

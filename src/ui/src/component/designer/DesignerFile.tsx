@@ -50,6 +50,8 @@ export default function DesignerFile(
 			}
 			onMouseDown={
 				(e) => {
+					e.stopPropagation();
+					e.preventDefault();
 					if (!isSelected) onSelected();
 					onStartMove();
 				}
@@ -79,6 +81,7 @@ export default function DesignerFile(
 				onMouseDown={
 					(e) => {
 						e.stopPropagation();
+						e.preventDefault();
 						onEndMove();
 						onSelected();
 						onStartResize();

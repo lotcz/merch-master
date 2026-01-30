@@ -170,6 +170,7 @@ export default function DesignDetail() {
 							<tr>
 								<td>ID</td>
 								<td>Image</td>
+								<td>Zone</td>
 							</tr>
 							</thead>
 							<tbody>
@@ -178,6 +179,7 @@ export default function DesignDetail() {
 									(designFile, index) => <tr key={index}>
 										<td>{designFile.id}</td>
 										<td>{designFile.imageName}</td>
+										<td>{designFile.printZoneId}</td>
 									</tr>
 								)
 							}
