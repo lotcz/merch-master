@@ -33,6 +33,10 @@ public class DesignsService {
 	ProductColorStubRepository productColorStubRepository;
 
 	public DesignStub saveDesign(DesignStub stub) {
+		if (stub.getUuid() == null) {
+			stub.setUuid(UUID.randomUUID());
+		}
+		
 		PrintTypeStub printType = printTypeStubRepository.findById(stub.getPrintTypeId()).orElseThrow();
 		ProductColorStub color = productColorStubRepository.findById(stub.getProductColorId()).orElseThrow();
 

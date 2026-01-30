@@ -11,7 +11,7 @@ import {DesignPayload} from "../../types/Design";
 import Designer from "../designer/Designer";
 
 const TAB_PARAM_NAME = 'tab';
-const DEFAULT_TAB = 'files';
+const DEFAULT_TAB = 'designer';
 
 const COL_1_MD = 3;
 const COL_2_MD = 5;
@@ -48,18 +48,17 @@ export default function DesignDetail() {
 	);
 
 	const onChanged = useCallback(
-		() => {
-			if (!data) return;
-			setData({...data});
+		(design: DesignPayload) => {
+			setData(design);
 			setChanged(true);
 		},
-		[data]
+		[]
 	);
 
 	const reload = useCallback(
 		() => {
 			setChanged(false);
-			
+
 			if (id) {
 				// load existing
 				restClient.designs.loadById(Number(id))
@@ -151,7 +150,7 @@ export default function DesignDetail() {
 									value={StringUtil.getNonEmpty(data.design.uuid)}
 									onChange={(e) => {
 										data.design.uuid = e.target.value;
-										onChanged();
+										onChanged({...data});
 									}}
 								/>
 							</div>
@@ -164,6 +163,7 @@ export default function DesignDetail() {
 					activeKey={activeTab}
 					onSelect={(key) => setActiveTab(StringUtil.getNonEmpty(key, DEFAULT_TAB))}
 				>
+					<Tab title="Designer" eventKey="designer"/>
 					<Tab title="Files" eventKey="files">
 						<Table>
 							<thead>
@@ -186,7 +186,6 @@ export default function DesignDetail() {
 							</tbody>
 						</Table>
 					</Tab>
-					<Tab title="Designer" eventKey="designer"/>
 				</Tabs>
 				<div>
 					{
