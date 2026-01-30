@@ -3,9 +3,9 @@ import {ProductColorStub} from "../../types/ProductColor";
 import ColorSelect from "./ColorSelect";
 
 export type ColorSelectIdParams = {
-	colors?: Array<ProductColorStub>;
-	id?: number | null;
-	onSelected: (id?: number | null) => any;
+	colors: Array<ProductColorStub>;
+	id: number;
+	onSelected: (id: number) => any;
 }
 
 export default function ColorSelectId({id, colors, onSelected}: ColorSelectIdParams) {
@@ -19,10 +19,14 @@ export default function ColorSelectId({id, colors, onSelected}: ColorSelectIdPar
 		[colors, id]
 	);
 
+	if (!color) {
+		return <span>NO COLOR!</span>
+	}
+
 	return (
 		<ColorSelect
 			selectedColor={color}
-			onSelected={(color) => onSelected(color?.id)}
+			onSelected={(c) => onSelected(Number(c.id))}
 			colors={colors}
 		/>
 	)

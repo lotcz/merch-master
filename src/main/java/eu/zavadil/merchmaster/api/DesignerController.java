@@ -34,6 +34,11 @@ public class DesignerController {
 		return this.productRepository.findAll();
 	}
 
+	@GetMapping("product/{id}")
+	public Product loadProduct(@PathVariable int id) {
+		return this.productRepository.findById(id).orElseThrow();
+	}
+
 	/* COLORS */
 
 	@Autowired

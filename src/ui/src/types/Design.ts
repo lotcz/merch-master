@@ -9,13 +9,13 @@ export type DesignBase = EntityBase & {
 }
 
 export type Design = DesignBase & {
-	printType?: PrintType | null;
-	productColor?: ProductColor | null;
+	printType: PrintType;
+	productColor: ProductColor;
 }
 
 export type DesignStub = DesignBase & {
-	printTypeId?: number | null;
-	productColorId?: number | null;
+	printTypeId: number;
+	productColorId: number;
 }
 
 export type DesignPayload = {

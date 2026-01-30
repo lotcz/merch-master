@@ -5,6 +5,9 @@ import {PrintTypePayload, PrintTypeStub} from "../types/PrintType";
 import {DesignPayload} from "../types/Design";
 import {ProductColorStub} from "../types/ProductColor";
 
+/**
+ * Client for public Designer - all endpoints should be unprotected
+ */
 export class DesignerRestClient extends RestClient {
 
 	constructor() {
@@ -13,6 +16,10 @@ export class DesignerRestClient extends RestClient {
 
 	loadProducts(): Promise<Array<Product>> {
 		return this.getJson('products');
+	}
+
+	loadProduct(id: number): Promise<Product> {
+		return this.getJson(`product/${id}`);
 	}
 
 	loadColorsByProduct(productId: number): Promise<Array<ProductColorStub>> {
@@ -25,6 +32,44 @@ export class DesignerRestClient extends RestClient {
 
 	loadPrintType(printTypeId: number): Promise<PrintTypePayload> {
 		return this.getJson(`print-types/${printTypeId}`);
+	}
+
+	createNewDesign(): Promise<DesignPayload> {
+		return this.loadProducts()
+			.then(
+				(products) => {
+					if (products.length === 0) {
+						throw new Error("NO PRODUCTS!");
+					}
+					const productId = Number(products[0].id);
+					return this.loadPrintTypesByProduct(productId)
+						.then(
+							(printTypes) => {
+								if (products.length === 0) {
+									throw new Error("NO PRINT TYPES!");
+								}
+								const printTypeId = Number(printTypes[0].id);
+								return this.loadColorsByProduct(productId)
+									.then(
+										(colors) => {
+											if (colors.length === 0) {
+												throw new Error("NO COLORS!");
+											}
+											const colorId = Number(colors[0].id);
+											return {
+												design: {
+													printTypeId: printTypeId,
+													productColorId: colorId,
+													confirmed: false
+												},
+												files: []
+											};
+										}
+									)
+							}
+						);
+				}
+			);
 	}
 
 	loadDesign(designUuid: string): Promise<DesignPayload> {

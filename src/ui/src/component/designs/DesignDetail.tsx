@@ -58,19 +58,19 @@ export default function DesignDetail() {
 
 	const reload = useCallback(
 		() => {
-			if (!id) {
-				setData({
-					design: {
-						confirmed: false
-					},
-					files: []
-				});
-				return;
+			setChanged(false);
+			
+			if (id) {
+				// load existing
+				restClient.designs.loadById(Number(id))
+					.then(setData)
+					.catch((e: Error) => userAlerts.err(e));
+			} else {
+				// create new design
+				restClient.designer.createNewDesign()
+					.then(setData)
+					.catch((e: Error) => userAlerts.err(e));
 			}
-			setData(undefined);
-			restClient.designs.loadById(Number(id))
-				.then(setData)
-				.catch((e: Error) => userAlerts.err(e))
 		},
 		[id, restClient, userAlerts]
 	);
@@ -191,22 +191,10 @@ export default function DesignDetail() {
 				<div>
 					{
 						activeTab === 'designer' && <Designer
-							uuid={data.design.uuid}
-							onFinished={
-								(uuid) => {
-									restClient.designs
-										.loadByUuid(uuid)
-										.then(
-											(d) => {
-												if (data.design.id) {
-													reload();
-												} else {
-													navigate(`/designs/detail/${d.design.id}`, {replace: true});
-												}
-											}
-										);
-								}
-							}
+							client={restClient.designer}
+							design={data}
+							onChange={onChanged}
+							onError={(e) => userAlerts.err(e)}
 						/>
 					}
 				</div>

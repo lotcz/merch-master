@@ -2,7 +2,7 @@ import React from "react";
 import {DesignFileStub} from "../../types/DesignFile";
 import {PIXEL_PER_CM} from "../../util/ImageUtil";
 import {ImagezImage} from "../images/ImagezImage";
-import {BsArrowDownRight, BsTrash} from "react-icons/bs";
+import {BsArrowDownRight, BsLock, BsTrash, BsUnlock} from "react-icons/bs";
 
 export type DesignerFileParams = {
 	file: DesignFileStub;
@@ -17,6 +17,7 @@ export type DesignerFileParams = {
 	onStartResize: () => any;
 	onEndResize: () => any;
 	onDeleted: () => any;
+	onLockUnlock: () => any;
 }
 
 export default function DesignerFile(
@@ -32,7 +33,8 @@ export default function DesignerFile(
 		onStartResize,
 		onEndResize,
 		isManipulating,
-		onDeleted
+		onDeleted,
+		onLockUnlock
 	}: DesignerFileParams
 ) {
 
@@ -74,7 +76,21 @@ export default function DesignerFile(
 					}
 				}
 			>
-				<BsTrash size={15}/>
+				<BsTrash size={20}/>
+			</div>
+			<div
+				className={`aspect-lock-button ${file.aspectLocked ? 'locked' : 'unlocked'}`}
+				onMouseDown={
+					(e) => {
+						e.stopPropagation();
+						e.preventDefault();
+						onLockUnlock();
+					}
+				}
+			>
+				{
+					file.aspectLocked ? <BsLock size={20}/> : <BsUnlock size={20}/>
+				}
 			</div>
 			<div
 				className="resize-button"

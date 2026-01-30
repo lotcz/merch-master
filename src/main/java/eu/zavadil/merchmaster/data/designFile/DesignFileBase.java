@@ -24,4 +24,6 @@ public class DesignFileBase extends EntityBase {
 
 	private double imageHeight;
 
+	private boolean aspectLocked = true;
+
 }

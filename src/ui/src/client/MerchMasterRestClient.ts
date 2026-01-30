@@ -7,6 +7,7 @@ import {ProductsClient} from "./ProductsClient";
 import {PrintTypesClient} from "./PrintTypesClient";
 import {DesignsClient} from "./DesignsClient";
 import {ProductColorsClient} from "./ProductColorsClient";
+import {DesignerRestClient} from "./DesignerRestClient";
 
 export class MerchMasterRestClient extends RestClientWithOAuth {
 
@@ -20,6 +21,8 @@ export class MerchMasterRestClient extends RestClientWithOAuth {
 
 	public productColors: ProductColorsClient;
 
+	public designer: DesignerRestClient;
+
 	constructor() {
 		super(conf.API_URL);
 
@@ -28,6 +31,8 @@ export class MerchMasterRestClient extends RestClientWithOAuth {
 		this.printTypes = new PrintTypesClient(this);
 		this.designs = new DesignsClient(this);
 		this.productColors = new ProductColorsClient(this);
+
+		this.designer = new DesignerRestClient();
 	}
 
 	version(): Promise<string> {
@@ -37,7 +42,6 @@ export class MerchMasterRestClient extends RestClientWithOAuth {
 	stats(): Promise<MerchMasterStats> {
 		return this.getJson('status/stats');
 	}
-
 
 }
 

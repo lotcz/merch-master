@@ -10,6 +10,7 @@ export type DesignFileBase = EntityBase & {
 	positionY: number;
 	imageWidth: number;
 	imageHeight: number;
+	aspectLocked: boolean;
 }
 
 export type DesignFile = DesignFileBase & {

@@ -11,7 +11,7 @@ import ImageUtil, {PIXEL_PER_CM} from "../../util/ImageUtil";
 export type DesignerPrintZoneParams = {
 	printZone: PrintZonePayload;
 	design: DesignPayload;
-	onChanged: (design: DesignPayload) => any;
+	onChange: (design: DesignPayload) => any;
 	maxWidth: number;
 	maxHeight: number;
 	selectedFile?: DesignFileStub;
@@ -23,7 +23,7 @@ export default function DesignerPrintZone({
 	design,
 	maxWidth,
 	maxHeight,
-	onChanged,
+	onChange,
 	selectedFile,
 	onFileSelected
 }: DesignerPrintZoneParams) {
@@ -73,27 +73,28 @@ export default function DesignerPrintZone({
 							positionX: (widthCm - imageWidth) / 2,
 							positionY: (heightCm - imageHeight) / 2,
 							imageWidth: imageWidth,
-							imageHeight: imageHeight
+							imageHeight: imageHeight,
+							aspectLocked: true
 						};
 						design.files = [...design.files, file];
-						onChanged({...design});
+						onChange({...design});
 						uploadImageDialog.hide();
 					},
 					onClose: () => uploadImageDialog.hide()
 				}
 			);
 		},
-		[uploadImageDialog, design, printZone, onChanged, widthCm, heightCm]
+		[uploadImageDialog, design, printZone, onChange, widthCm, heightCm]
 	);
 
 	const updateFile = useCallback(
 		(file: DesignFileStub) => {
 			const newFile = {...file};
 			design.files = design.files.map(f => f === file ? newFile : f);
-			onChanged({...design});
+			onChange({...design});
 			if (file === selectedFile) onFileSelected(newFile);
 		},
-		[design, onChanged, selectedFile, onFileSelected]
+		[design, onChange, selectedFile, onFileSelected]
 	);
 
 	const [isResizing, setIsResizing] = useState<boolean>(false);
@@ -102,10 +103,6 @@ export default function DesignerPrintZone({
 	const onMouseMove: MouseEventHandler<HTMLDivElement> = useCallback(
 		(e: MouseEvent<HTMLDivElement>) => {
 			if (!selectedFile) return;
-			if (e.buttons === 0) {
-				//setIsResizing(false);
-				//setIsMoving(false);
-			}
 			if (!(isMoving || isResizing)) return;
 
 			const pos = new Vector2(e.nativeEvent.offsetX, e.nativeEvent.offsetY).multiply(1 / scale).multiply(1 / PIXEL_PER_CM);
@@ -115,6 +112,12 @@ export default function DesignerPrintZone({
 				const height = pos.y - selectedFile.positionY;
 				selectedFile.imageWidth = width;
 				selectedFile.imageHeight = height;
+
+				if (selectedFile.aspectLocked) {
+					const aspect = selectedFile.originalImageWidth / selectedFile.originalImageHeight;
+					selectedFile.imageHeight = selectedFile.imageWidth / aspect;
+				}
+
 			} else if (isMoving) {
 				selectedFile.positionX = pos.x - (selectedFile.imageWidth / 2);
 				selectedFile.positionY = pos.y - (selectedFile.imageHeight / 2);
@@ -147,11 +150,18 @@ export default function DesignerPrintZone({
 						setIsMoving(false);
 					}
 				}
+				onMouseLeave={
+					(e: MouseEvent<HTMLDivElement>) => {
+						setIsResizing(false);
+						setIsMoving(false);
+					}
+				}
 			>
 				{
 					files.map(
-						(file) => <DesignerFile
+						(file, index) => <DesignerFile
 							file={file}
+							key={index}
 							scale={scale}
 							maxWidth={maxWidth}
 							maxHeight={maxHeight}
@@ -164,7 +174,17 @@ export default function DesignerPrintZone({
 							onEndResize={() => setIsResizing(false)}
 							onDeleted={
 								() => {
-									onChanged({design: design.design, files: design.files.filter(f => f !== file)})
+									onChange({design: design.design, files: design.files.filter(f => f !== file)})
+								}
+							}
+							onLockUnlock={
+								() => {
+									file.aspectLocked = !file.aspectLocked;
+									if (file.aspectLocked) {
+										const aspect = file.originalImageWidth / file.originalImageHeight;
+										file.imageHeight = file.imageWidth / aspect;
+									}
+									updateFile(file);
 								}
 							}
 						/>
