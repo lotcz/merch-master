@@ -16,3 +16,8 @@ export type PrintTypePayload = {
 	printType: PrintTypeStub;
 	zones: Array<PrintZonePayload>;
 }
+
+export type PrintTypeAdminPayload = {
+	printType: PrintTypeStub;
+	zones: Array<number>;
+}

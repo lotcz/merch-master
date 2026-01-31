@@ -10,6 +10,7 @@ import PrintTypeDetail from "./printType/PrintTypeDetail";
 import ProductColorDetail from "./productColor/ProductColorDetail";
 import DesignsList from "./designs/DesignsList";
 import DesignDetail from "./designs/DesignDetail";
+import PrintZoneDetail from "./printZone/PrintZoneDetail";
 
 export default function Main() {
 	return (
@@ -30,6 +31,12 @@ export default function Main() {
 								<Route path="detail">
 									<Route path="add/:productId" element={<PrintTypeDetail/>}/>
 									<Route path=":id" element={<PrintTypeDetail/>}/>
+								</Route>
+							</Route>
+							<Route path="print-zones">
+								<Route path="detail">
+									<Route path="add/:productId" element={<PrintZoneDetail/>}/>
+									<Route path=":id" element={<PrintZoneDetail/>}/>
 								</Route>
 							</Route>
 							<Route path="product-colors">

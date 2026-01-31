@@ -10,6 +10,7 @@ import BackIconLink from "../general/BackIconLink";
 import {Product} from "../../types/Product";
 import ProductPrintTypesList from "./ProductPrintTypesList";
 import ProductColorsList from "./ProductColorsList";
+import ProductPrintZonesList from "./ProductPrintZonesList";
 
 const TAB_PARAM_NAME = 'tab';
 const DEFAULT_TAB = 'print-types';
@@ -158,17 +159,21 @@ export default function ProductDetail() {
 				</Stack>
 			</Form>
 			{
-				data.id && <div>
+				data.id && <div className="mt-2">
 					<Tabs
 						activeKey={activeTab}
 						onSelect={(key) => setActiveTab(StringUtil.getNonEmpty(key, DEFAULT_TAB))}
 					>
 						<Tab title="Print Types" eventKey="print-types"/>
+						<Tab title="Print Zones" eventKey="print-zones"/>
 						<Tab title="Colors" eventKey="product-colors"/>
 					</Tabs>
 					<div className="px-3 py-1">
 						{
 							activeTab === 'print-types' && <ProductPrintTypesList productId={data.id}/>
+						}
+						{
+							activeTab === 'print-zones' && <ProductPrintZonesList productId={data.id}/>
 						}
 						{
 							activeTab === 'product-colors' && <ProductColorsList productId={data.id}/>

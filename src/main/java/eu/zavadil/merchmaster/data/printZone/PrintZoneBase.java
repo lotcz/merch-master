@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 @MappedSuperclass
 public class PrintZoneBase extends EntityWithNameBase {
 
-	private int width;
+	private int widthMm;
 
-	private int height;
+	private int heightMm;
 }

@@ -1,9 +1,9 @@
 package eu.zavadil.merchmaster.service;
 
+import eu.zavadil.java.spring.common.entity.EntityBase;
+import eu.zavadil.merchmaster.api.payload.PrintTypeAdminPayload;
 import eu.zavadil.merchmaster.api.payload.PrintTypePayload;
 import eu.zavadil.merchmaster.api.payload.PrintZonePayload;
-import eu.zavadil.merchmaster.data.printPreview.PrintPreviewStub;
-import eu.zavadil.merchmaster.data.printPreview.PrintPreviewStubRepository;
 import eu.zavadil.merchmaster.data.printType.PrintTypeStubRepository;
 import eu.zavadil.merchmaster.data.printZone.PrintZoneStub;
 import eu.zavadil.merchmaster.data.printZone.PrintZoneStubRepository;
@@ -22,7 +22,7 @@ public class PrintTypesService {
 	PrintZoneStubRepository zoneStubRepository;
 
 	@Autowired
-	PrintPreviewStubRepository previewStubRepository;
+	PrintZonesService printZonesService;
 
 	public PrintTypePayload load(int id) {
 		PrintTypePayload response = new PrintTypePayload();
@@ -30,15 +30,19 @@ public class PrintTypesService {
 
 		List<PrintZoneStub> zones = this.zoneStubRepository.findAllByPrintTypeId(id);
 		List<PrintZonePayload> zonesPayload = zones.stream().map(
-			zone -> {
-				PrintZonePayload zonePayload = new PrintZonePayload();
-				zonePayload.setPrintZone(zone);
-				List<PrintPreviewStub> previews = this.previewStubRepository.findAllByPrintZoneId(zone.getId());
-				zonePayload.setPreviews(previews);
-				return zonePayload;
-			}
+			zone -> this.printZonesService.load(zone)
 		).toList();
 		response.setZones(zonesPayload);
+
+		return response;
+	}
+
+	public PrintTypeAdminPayload loadAdmin(int id) {
+		PrintTypeAdminPayload response = new PrintTypeAdminPayload();
+		response.setPrintType(this.stubRepository.findById(id).orElseThrow());
+
+		List<PrintZoneStub> zones = this.zoneStubRepository.findAllByPrintTypeId(id);
+		response.setZones(zones.stream().map(EntityBase::getId).toList());
 
 		return response;
 	}

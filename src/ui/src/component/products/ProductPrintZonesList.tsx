@@ -1,30 +1,29 @@
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {useNavigate} from "react-router";
-import {DateTime, TablePlaceholder} from "zavadil-react-common";
+import {TablePlaceholder} from "zavadil-react-common";
 import {MerchMasterRestClientContext} from "../../client/MerchMasterRestClient";
 import {UserAlertsContext} from "../../util/UserAlerts";
 import {Button, Table} from "react-bootstrap";
-import ColorPreview from "../productColor/ColorPreview";
-import {ProductColorStub} from "../../types/ProductColor";
+import {PrintZoneStub} from "../../types/PrintZone";
 
-export type ProductColorsListProps = {
+export type ProductPrintZonesListProps = {
 	productId: number;
 }
 
-export default function ProductColorsList({productId}: ProductColorsListProps) {
+export default function ProductPrintZonesList({productId}: ProductPrintZonesListProps) {
 	const navigate = useNavigate();
 	const restClient = useContext(MerchMasterRestClientContext);
 	const userAlerts = useContext(UserAlertsContext);
-	const [data, setData] = useState<Array<ProductColorStub>>();
+	const [data, setData] = useState<Array<PrintZoneStub>>();
 
-	const navigateToDetail = (d: ProductColorStub) => {
-		navigate(`/products/product-colors/detail/${d.id}`);
+	const navigateToDetail = (d: PrintZoneStub) => {
+		navigate(`/products/print-zones/detail/${d.id}`);
 	}
 
 	const load = useCallback(
 		() => {
 			restClient
-				.productColors
+				.printZones
 				.loadByProduct(productId)
 				.then(setData)
 				.catch((e: Error) => {
@@ -45,7 +44,7 @@ export default function ProductColorsList({productId}: ProductColorsListProps) {
 				<Button
 					variant="primary"
 					size="sm"
-					onClick={() => navigate(`/products/product-colors/detail/add/${productId}`)}>
+					onClick={() => navigate(`/products/print-zones/detail/add/${productId}`)}>
 					+ Add
 				</Button>
 			</div>
@@ -58,8 +57,7 @@ export default function ProductColorsList({productId}: ProductColorsListProps) {
 					<tr>
 						<th>ID</th>
 						<th>Name</th>
-						<th>Updated</th>
-						<th>Created</th>
+						<th>Size</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -71,9 +69,8 @@ export default function ProductColorsList({productId}: ProductColorsListProps) {
 								return (
 									<tr key={index} role="button" onClick={() => navigateToDetail(pt)}>
 										<td>{pt.id}</td>
-										<td><ColorPreview color={pt}/></td>
-										<td><DateTime value={pt.lastUpdatedOn}/></td>
-										<td><DateTime value={pt.createdOn}/></td>
+										<td>{pt.name}</td>
+										<td>{pt.widthMm} x {pt.heightMm} mm</td>
 									</tr>
 								);
 							})

@@ -6,7 +6,7 @@ import DesignerFile from "./DesignerFile";
 import {Button} from "react-bootstrap";
 import {UploadImageDialogContext} from "../../util/UploadImageDialogContext";
 import {DesignFileStub} from "../../types/DesignFile";
-import ImageUtil, {PIXEL_PER_CM} from "../../util/ImageUtil";
+import ImageUtil, {PIXEL_PER_MM} from "../../util/ImageUtil";
 
 export type DesignerPrintZoneParams = {
 	printZone: PrintZonePayload;
@@ -29,26 +29,36 @@ export default function DesignerPrintZone({
 }: DesignerPrintZoneParams) {
 	const uploadImageDialog = useContext(UploadImageDialogContext);
 
-	const widthCm = useMemo(
-		() => NumberUtil.round(printZone.printZone.width / 10, 1),
+	const widthMm = useMemo(
+		() => printZone.printZone.widthMm,
 		[printZone]
 	);
 
-	const heightCm = useMemo(
-		() => NumberUtil.round(printZone.printZone.height / 10, 1),
+	const heightMm = useMemo(
+		() => printZone.printZone.heightMm,
 		[printZone]
+	);
+
+	const widthCm = useMemo(
+		() => NumberUtil.round(widthMm / 10, 1),
+		[widthMm]
+	);
+
+	const heightCm = useMemo(
+		() => NumberUtil.round(heightMm / 10, 1),
+		[heightMm]
 	);
 
 	const scale = useMemo(
 		() => {
 			return ImageUtil.getMaxScale(
-				widthCm * PIXEL_PER_CM,
-				heightCm * PIXEL_PER_CM,
+				widthMm * PIXEL_PER_MM,
+				heightMm * PIXEL_PER_MM,
 				maxWidth,
 				maxHeight
 			);
 		},
-		[widthCm, heightCm, maxHeight, maxWidth]
+		[widthMm, heightMm, maxHeight, maxWidth]
 	);
 
 	const uploadImage = useCallback(
@@ -57,23 +67,23 @@ export default function DesignerPrintZone({
 				{
 					onSelected: (imageName, health) => {
 						const imageScale = ImageUtil.getMaxScale(
-							health.width / PIXEL_PER_CM,
-							health.height / PIXEL_PER_CM,
-							widthCm,
-							heightCm
+							health.width / PIXEL_PER_MM,
+							health.height / PIXEL_PER_MM,
+							widthMm,
+							heightMm
 						);
-						const imageWidth = imageScale * health.width / PIXEL_PER_CM;
-						const imageHeight = imageScale * health.height / PIXEL_PER_CM;
+						const imageWidth = imageScale * health.width / PIXEL_PER_MM;
+						const imageHeight = imageScale * health.height / PIXEL_PER_MM;
 						const file: DesignFileStub = {
 							designId: Number(design.design.id),
 							printZoneId: Number(printZone.printZone.id),
 							imageName: imageName,
-							originalImageHeight: health.height,
-							originalImageWidth: health.width,
-							positionX: (widthCm - imageWidth) / 2,
-							positionY: (heightCm - imageHeight) / 2,
-							imageWidth: imageWidth,
-							imageHeight: imageHeight,
+							originalImageHeightPx: health.height,
+							originalImageWidthPx: health.width,
+							positionXMm: (widthMm - imageWidth) / 2,
+							positionYMm: (heightMm - imageHeight) / 2,
+							imageWidthMm: imageWidth,
+							imageHeightMm: imageHeight,
 							aspectLocked: true
 						};
 						design.files = [...design.files, file];
@@ -84,7 +94,7 @@ export default function DesignerPrintZone({
 				}
 			);
 		},
-		[uploadImageDialog, design, printZone, onChange, widthCm, heightCm]
+		[uploadImageDialog, design, printZone, onChange, widthMm, heightMm]
 	);
 
 	const updateFile = useCallback(
@@ -105,22 +115,22 @@ export default function DesignerPrintZone({
 			if (!selectedFile) return;
 			if (!(isMoving || isResizing)) return;
 
-			const pos = new Vector2(e.nativeEvent.offsetX, e.nativeEvent.offsetY).multiply(1 / scale).multiply(1 / PIXEL_PER_CM);
+			const pos = new Vector2(e.nativeEvent.offsetX, e.nativeEvent.offsetY).multiply(1 / scale).multiply(1 / PIXEL_PER_MM);
 
 			if (isResizing) {
-				const width = pos.x - selectedFile.positionX;
-				const height = pos.y - selectedFile.positionY;
-				selectedFile.imageWidth = width;
-				selectedFile.imageHeight = height;
+				const width = pos.x - selectedFile.positionXMm;
+				const height = pos.y - selectedFile.positionYMm;
+				selectedFile.imageWidthMm = width;
+				selectedFile.imageHeightMm = height;
 
 				if (selectedFile.aspectLocked) {
-					const aspect = selectedFile.originalImageWidth / selectedFile.originalImageHeight;
-					selectedFile.imageHeight = selectedFile.imageWidth / aspect;
+					const aspect = selectedFile.originalImageWidthPx / selectedFile.originalImageHeightPx;
+					selectedFile.imageHeightMm = selectedFile.imageWidthMm / aspect;
 				}
 
 			} else if (isMoving) {
-				selectedFile.positionX = pos.x - (selectedFile.imageWidth / 2);
-				selectedFile.positionY = pos.y - (selectedFile.imageHeight / 2);
+				selectedFile.positionXMm = pos.x - (selectedFile.imageWidthMm / 2);
+				selectedFile.positionYMm = pos.y - (selectedFile.imageHeightMm / 2);
 			}
 
 			updateFile(selectedFile);
@@ -142,7 +152,7 @@ export default function DesignerPrintZone({
 			</div>
 			<div
 				className={`boundary ${isResizing ? 'resizing' : ''} ${isMoving ? 'moving' : ''}`}
-				style={{width: widthCm * PIXEL_PER_CM * scale, height: heightCm * PIXEL_PER_CM * scale}}
+				style={{width: widthMm * PIXEL_PER_MM * scale, height: heightMm * PIXEL_PER_MM * scale}}
 				onMouseMove={onMouseMove}
 				onMouseUp={
 					(e: MouseEvent<HTMLDivElement>) => {
@@ -181,8 +191,8 @@ export default function DesignerPrintZone({
 								() => {
 									file.aspectLocked = !file.aspectLocked;
 									if (file.aspectLocked) {
-										const aspect = file.originalImageWidth / file.originalImageHeight;
-										file.imageHeight = file.imageWidth / aspect;
+										const aspect = file.originalImageWidthPx / file.originalImageHeightPx;
+										file.imageHeightMm = file.imageWidthMm / aspect;
 									}
 									updateFile(file);
 								}

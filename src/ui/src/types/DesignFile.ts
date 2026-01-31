@@ -4,12 +4,12 @@ import {Design} from "./Design";
 
 export type DesignFileBase = EntityBase & {
 	imageName: string;
-	originalImageWidth: number;
-	originalImageHeight: number;
-	positionX: number;
-	positionY: number;
-	imageWidth: number;
-	imageHeight: number;
+	originalImageWidthPx: number;
+	originalImageHeightPx: number;
+	positionXMm: number;
+	positionYMm: number;
+	imageWidthMm: number;
+	imageHeightMm: number;
 	aspectLocked: boolean;
 }
 

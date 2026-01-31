@@ -12,17 +12,17 @@ public class DesignFileBase extends EntityBase {
 
 	private String imageName;
 
-	private int originalImageWidth;
+	private int originalImageWidthPx;
 
-	private int originalImageHeight;
+	private int originalImageHeightPx;
 
-	private double positionX;
+	private double positionXMm;
 
-	private double positionY;
+	private double positionYMm;
 
-	private double imageWidth;
+	private double imageWidthMm;
 
-	private double imageHeight;
+	private double imageHeightMm;
 
 	private boolean aspectLocked = true;
 

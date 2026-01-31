@@ -1,6 +1,6 @@
 package eu.zavadil.merchmaster.data.printZone;
 
-import eu.zavadil.merchmaster.data.printType.PrintType;
+import eu.zavadil.merchmaster.data.product.Product;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -14,6 +14,6 @@ import lombok.EqualsAndHashCode;
 public class PrintZone extends PrintZoneBase {
 
 	@ManyToOne(optional = false)
-	private PrintType printType;
+	private Product product;
 
 }

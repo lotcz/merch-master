@@ -43,6 +43,7 @@ export default function ProductPrintTypesList({productId}: ProductPrintTypesList
 			<div className="pt-2 d-flex gap-2 align-items-center">
 				<Button
 					variant="primary"
+					size="sm"
 					onClick={() => navigate(`/products/print-types/detail/add/${productId}`)}>
 					+ Add
 				</Button>

@@ -1,4 +1,4 @@
-export const PIXEL_PER_CM = 100;
+export const PIXEL_PER_MM = 10;
 
 export default class ImageUtil {
 

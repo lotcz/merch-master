@@ -1,18 +1,18 @@
 import {EntityWithName} from "zavadil-ts-common";
-import {PrintType} from "./PrintType";
 import {PrintPreviewStub} from "./PrintPreview";
+import {Product} from "./Product";
 
 export type PrintZoneBase = EntityWithName & {
-	width: number;
-	height: number;
+	widthMm: number;
+	heightMm: number;
 }
 
 export type PrintZone = PrintZoneBase & {
-	printType: PrintType;
+	product: Product;
 }
 
 export type PrintZoneStub = PrintZoneBase & {
-	printTypeId?: number | null;
+	productId: number;
 }
 
 export type PrintZonePayload = {

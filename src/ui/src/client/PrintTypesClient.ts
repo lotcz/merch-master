@@ -1,5 +1,5 @@
 import {RestClient} from "zavadil-ts-common";
-import {PrintTypePayload, PrintTypeStub} from "../types/PrintType";
+import {PrintTypeAdminPayload, PrintTypeStub} from "../types/PrintType";
 
 export class PrintTypesClient {
 
@@ -13,11 +13,11 @@ export class PrintTypesClient {
 		return this.client.getJson(`print-types/by-product/${productId}`);
 	}
 
-	loadById(id: number): Promise<PrintTypePayload> {
+	loadById(id: number): Promise<PrintTypeAdminPayload> {
 		return this.client.getJson(`print-types/${id}`);
 	}
 
-	save(document: PrintTypePayload): Promise<PrintTypePayload> {
+	save(document: PrintTypeAdminPayload): Promise<PrintTypeAdminPayload> {
 		return document.printType.id ?
 			this.client.putJson(`print-types/${document.printType.id}`, document)
 			: this.client.postJson('print-types', document);

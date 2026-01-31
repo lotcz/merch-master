@@ -1,12 +1,11 @@
 package eu.zavadil.merchmaster.api;
 
-import eu.zavadil.merchmaster.api.payload.PrintTypePayload;
-import eu.zavadil.merchmaster.api.payload.PrintZonePayload;
-import eu.zavadil.merchmaster.data.printPreview.PrintPreviewStub;
+import eu.zavadil.merchmaster.api.payload.PrintTypeAdminPayload;
 import eu.zavadil.merchmaster.data.printPreview.PrintPreviewStubRepository;
 import eu.zavadil.merchmaster.data.printType.PrintTypeStub;
 import eu.zavadil.merchmaster.data.printType.PrintTypeStubRepository;
-import eu.zavadil.merchmaster.data.printZone.PrintZoneStub;
+import eu.zavadil.merchmaster.data.printTypeZone.PrintTypeZone;
+import eu.zavadil.merchmaster.data.printTypeZone.PrintTypeZoneRepository;
 import eu.zavadil.merchmaster.data.printZone.PrintZoneStubRepository;
 import eu.zavadil.merchmaster.service.PrintTypesService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,6 +28,9 @@ public class PrintTypeController {
 	PrintZoneStubRepository zoneStubRepository;
 
 	@Autowired
+	PrintTypeZoneRepository printTypeZoneRepository;
+
+	@Autowired
 	PrintPreviewStubRepository previewStubRepository;
 
 	@Autowired
@@ -40,65 +42,43 @@ public class PrintTypeController {
 	}
 
 	@GetMapping("{id}")
-	public PrintTypePayload load(@PathVariable int id) {
-		return this.printTypesService.load(id);
+	public PrintTypeAdminPayload load(@PathVariable int id) {
+		return this.printTypesService.loadAdmin(id);
 	}
 
-	private PrintTypePayload savePayload(PrintTypePayload payload) {
+	private PrintTypeAdminPayload savePayload(PrintTypeAdminPayload payload) {
 		PrintTypeStub stub = payload.getPrintType();
 		stub = this.stubRepository.save(stub);
 		int printTypeId = stub.getId();
 
-		List<PrintZonePayload> zones = payload.getZones().stream().map(
-			zone -> {
-				PrintZoneStub zoneStub = zone.getPrintZone();
-				zoneStub.setPrintTypeId(printTypeId);
-				zoneStub = this.zoneStubRepository.save(zoneStub);
-
-				int zoneId = zoneStub.getId();
-				List<PrintPreviewStub> previews = zone.getPreviews().stream().map(
-					preview -> {
-						preview.setPrintZoneId(zoneId);
-						return this.previewStubRepository.save(preview);
-					}
-				).toList();
-
-				this.previewStubRepository.deleteAllByPrintZoneIdAndIdNotIn(
-					zoneId,
-					previews.stream().map(PrintPreviewStub::getId).toList()
-				);
-
-				PrintZonePayload zoneResponse = new PrintZonePayload();
-				zoneResponse.setPrintZone(zoneStub);
-				zoneResponse.setPreviews(previews);
-				return zoneResponse;
+		payload.getZones().forEach(
+			zoneId -> {
+				PrintTypeZone ptz = new PrintTypeZone();
+				ptz.setPrintTypeId(printTypeId);
+				ptz.setPrintZoneId(zoneId);
+				this.printTypeZoneRepository.save(ptz);
 			}
-		).toList();
-
-		this.zoneStubRepository.deleteAllByPrintTypeIdAndIdNotIn(
-			printTypeId,
-			zones.stream().map(z -> z.getPrintZone().getId()).toList()
 		);
 
-		PrintTypePayload response = new PrintTypePayload();
+		this.printTypeZoneRepository.deleteAllByPrintTypeIdAndIdNotIn(
+			printTypeId,
+			payload.getZones()
+		);
+
+		PrintTypeAdminPayload response = new PrintTypeAdminPayload();
 		response.setPrintType(stub);
-		response.setZones(zones);
+		response.setZones(payload.getZones());
 		return response;
 	}
 
 	@PostMapping("")
-	public PrintTypePayload insert(@RequestBody PrintTypePayload document) {
+	public PrintTypeAdminPayload insert(@RequestBody PrintTypeAdminPayload document) {
 		document.getPrintType().setId(null);
-		document.getZones().forEach(
-			zone -> {
-				zone.getPrintZone().setId(null);
-				zone.getPreviews().forEach(preview -> preview.setId(null));
-			});
 		return this.savePayload(document);
 	}
 
 	@PutMapping("{id}")
-	public PrintTypePayload update(@PathVariable int id, @RequestBody PrintTypePayload document) {
+	public PrintTypeAdminPayload update(@PathVariable int id, @RequestBody PrintTypeAdminPayload document) {
 		document.getPrintType().setId(id);
 		return this.savePayload(document);
 	}

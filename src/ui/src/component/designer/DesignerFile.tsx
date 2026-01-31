@@ -1,6 +1,6 @@
 import React from "react";
 import {DesignFileStub} from "../../types/DesignFile";
-import {PIXEL_PER_CM} from "../../util/ImageUtil";
+import {PIXEL_PER_MM} from "../../util/ImageUtil";
 import {ImagezImage} from "../images/ImagezImage";
 import {BsArrowDownRight, BsLock, BsTrash, BsUnlock} from "react-icons/bs";
 
@@ -44,10 +44,10 @@ export default function DesignerFile(
 			draggable={false}
 			style={
 				{
-					top: file.positionY * PIXEL_PER_CM * scale,
-					left: file.positionX * PIXEL_PER_CM * scale,
-					width: file.imageWidth * PIXEL_PER_CM * scale,
-					height: file.imageHeight * PIXEL_PER_CM * scale
+					top: file.positionYMm * PIXEL_PER_MM * scale,
+					left: file.positionXMm * PIXEL_PER_MM * scale,
+					width: file.imageWidthMm * PIXEL_PER_MM * scale,
+					height: file.imageHeightMm * PIXEL_PER_MM * scale
 				}
 			}
 			onMouseDown={
