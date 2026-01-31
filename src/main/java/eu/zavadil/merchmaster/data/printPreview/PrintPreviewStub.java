@@ -13,12 +13,12 @@ import lombok.EqualsAndHashCode;
 @Table(
 	name = "print_preview",
 	indexes = {
-		@Index(columnList = "printZoneId"),
+		@Index(columnList = "productId"),
 	}
 )
 public class PrintPreviewStub extends PrintPreviewBase {
 
-	@Column(name = "print_zone_id")
-	private int printZoneId;
+	@Column(name = "product_id")
+	private int productId;
 
 }

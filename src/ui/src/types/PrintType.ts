@@ -1,6 +1,6 @@
 import {EntityWithName} from "zavadil-ts-common";
 import {Product} from "./Product";
-import {PrintZonePayload} from "./PrintZone";
+import {PrintZoneStub} from "./PrintZone";
 
 export type PrintTypeBase = EntityWithName & {}
 
@@ -14,7 +14,7 @@ export type PrintTypeStub = PrintTypeBase & {
 
 export type PrintTypePayload = {
 	printType: PrintTypeStub;
-	zones: Array<PrintZonePayload>;
+	zones: Array<PrintZoneStub>;
 }
 
 export type PrintTypeAdminPayload = {

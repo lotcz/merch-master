@@ -92,7 +92,7 @@ export default function ProductColorDetail() {
 				() => {
 					setDeleting(true);
 					restClient
-						.products
+						.productColors
 						.delete(Number(data.id))
 						.then(
 							(f) => {

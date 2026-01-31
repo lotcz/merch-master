@@ -1,7 +1,10 @@
 package eu.zavadil.merchmaster.api;
 
 import eu.zavadil.merchmaster.api.payload.DesignPayload;
+import eu.zavadil.merchmaster.api.payload.PrintPreviewPayload;
 import eu.zavadil.merchmaster.api.payload.PrintTypePayload;
+import eu.zavadil.merchmaster.data.printPreview.PrintPreviewStub;
+import eu.zavadil.merchmaster.data.printPreview.PrintPreviewStubRepository;
 import eu.zavadil.merchmaster.data.printType.PrintTypeStub;
 import eu.zavadil.merchmaster.data.printType.PrintTypeStubRepository;
 import eu.zavadil.merchmaster.data.product.Product;
@@ -9,6 +12,7 @@ import eu.zavadil.merchmaster.data.product.ProductRepository;
 import eu.zavadil.merchmaster.data.productColor.ProductColorStub;
 import eu.zavadil.merchmaster.data.productColor.ProductColorStubRepository;
 import eu.zavadil.merchmaster.service.DesignsService;
+import eu.zavadil.merchmaster.service.PrintPreviewsService;
 import eu.zavadil.merchmaster.service.PrintTypesService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -73,13 +77,31 @@ public class DesignerController {
 	DesignsService designsService;
 
 	@GetMapping("designs/{uuid}")
-	public DesignPayload load(@PathVariable UUID uuid) {
+	public DesignPayload loadDesign(@PathVariable UUID uuid) {
 		return this.designsService.loadPayload(uuid);
 	}
 
 	@RequestMapping(path = "designs", method = {RequestMethod.POST, RequestMethod.PUT})
-	public DesignPayload save(@RequestBody DesignPayload document) {
+	public DesignPayload saveDesign(@RequestBody DesignPayload document) {
 		return this.designsService.savePayload(document);
+	}
+
+	/* PREVIEW */
+
+	@Autowired
+	PrintPreviewsService previewsService;
+
+	@Autowired
+	PrintPreviewStubRepository previewStubRepository;
+
+	@GetMapping("previews/{id}")
+	public PrintPreviewPayload loadPreview(@PathVariable int id) {
+		return this.previewsService.load(id);
+	}
+
+	@GetMapping("previews/by-product/{productId}")
+	public List<PrintPreviewStub> loadPreviews(@PathVariable int productId) {
+		return this.previewStubRepository.findAllByProductId(productId);
 	}
 
 }

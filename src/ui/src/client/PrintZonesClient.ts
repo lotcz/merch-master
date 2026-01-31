@@ -1,5 +1,5 @@
 import {RestClient} from "zavadil-ts-common";
-import {PrintZonePayload, PrintZoneStub} from "../types/PrintZone";
+import {PrintZoneStub} from "../types/PrintZone";
 
 export class PrintZonesClient {
 
@@ -13,13 +13,13 @@ export class PrintZonesClient {
 		return this.client.getJson(`print-zones/by-product/${productId}`);
 	}
 
-	loadById(id: number): Promise<PrintZonePayload> {
+	loadById(id: number): Promise<PrintZoneStub> {
 		return this.client.getJson(`print-zones/${id}`);
 	}
 
-	save(document: PrintZonePayload): Promise<PrintZonePayload> {
-		return document.printZone.id ?
-			this.client.putJson(`print-zones/${document.printZone.id}`, document)
+	save(document: PrintZoneStub): Promise<PrintZoneStub> {
+		return document.id ?
+			this.client.putJson(`print-zones/${document.id}`, document)
 			: this.client.postJson('print-zones', document);
 	}
 

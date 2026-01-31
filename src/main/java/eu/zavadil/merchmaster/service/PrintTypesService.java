@@ -3,7 +3,6 @@ package eu.zavadil.merchmaster.service;
 import eu.zavadil.java.spring.common.entity.EntityBase;
 import eu.zavadil.merchmaster.api.payload.PrintTypeAdminPayload;
 import eu.zavadil.merchmaster.api.payload.PrintTypePayload;
-import eu.zavadil.merchmaster.api.payload.PrintZonePayload;
 import eu.zavadil.merchmaster.data.printType.PrintTypeStubRepository;
 import eu.zavadil.merchmaster.data.printZone.PrintZoneStub;
 import eu.zavadil.merchmaster.data.printZone.PrintZoneStubRepository;
@@ -21,18 +20,10 @@ public class PrintTypesService {
 	@Autowired
 	PrintZoneStubRepository zoneStubRepository;
 
-	@Autowired
-	PrintZonesService printZonesService;
-
 	public PrintTypePayload load(int id) {
 		PrintTypePayload response = new PrintTypePayload();
 		response.setPrintType(this.stubRepository.findById(id).orElseThrow());
-
-		List<PrintZoneStub> zones = this.zoneStubRepository.findAllByPrintTypeId(id);
-		List<PrintZonePayload> zonesPayload = zones.stream().map(
-			zone -> this.printZonesService.load(zone)
-		).toList();
-		response.setZones(zonesPayload);
+		response.setZones(this.zoneStubRepository.findAllByPrintTypeId(id));
 
 		return response;
 	}

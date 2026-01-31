@@ -1,5 +1,5 @@
 import React, {MouseEvent, MouseEventHandler, useCallback, useContext, useMemo, useState} from "react";
-import {PrintZonePayload} from "../../types/PrintZone";
+import {PrintZoneStub} from "../../types/PrintZone";
 import {DesignPayload} from "../../types/Design";
 import {NumberUtil, Vector2} from "zavadil-ts-common";
 import DesignerFile from "./DesignerFile";
@@ -9,7 +9,7 @@ import {DesignFileStub} from "../../types/DesignFile";
 import ImageUtil, {PIXEL_PER_MM} from "../../util/ImageUtil";
 
 export type DesignerPrintZoneParams = {
-	printZone: PrintZonePayload;
+	printZone: PrintZoneStub;
 	design: DesignPayload;
 	onChange: (design: DesignPayload) => any;
 	maxWidth: number;
@@ -30,12 +30,12 @@ export default function DesignerPrintZone({
 	const uploadImageDialog = useContext(UploadImageDialogContext);
 
 	const widthMm = useMemo(
-		() => printZone.printZone.widthMm,
+		() => printZone.widthMm,
 		[printZone]
 	);
 
 	const heightMm = useMemo(
-		() => printZone.printZone.heightMm,
+		() => printZone.heightMm,
 		[printZone]
 	);
 
@@ -76,7 +76,7 @@ export default function DesignerPrintZone({
 						const imageHeight = imageScale * health.height / PIXEL_PER_MM;
 						const file: DesignFileStub = {
 							designId: Number(design.design.id),
-							printZoneId: Number(printZone.printZone.id),
+							printZoneId: Number(printZone.id),
 							imageName: imageName,
 							originalImageHeightPx: health.height,
 							originalImageWidthPx: health.width,
@@ -108,7 +108,6 @@ export default function DesignerPrintZone({
 	);
 
 	const [isResizing, setIsResizing] = useState<boolean>(false);
-	//const [isMoving, setIsMoving] = useState<boolean>(false);
 	const [moveImagePosition, setMoveImagePosition] = useState<Vector2>();
 
 	const onMouseMove: MouseEventHandler<HTMLDivElement> = useCallback(
@@ -140,14 +139,14 @@ export default function DesignerPrintZone({
 	);
 
 	const files = useMemo(
-		() => design.files.filter(f => f.printZoneId === printZone.printZone.id),
+		() => design.files.filter(f => f.printZoneId === printZone.id),
 		[design, printZone]
 	)
 
 	return (
 		<div className="print-zone">
 			<div className="label">
-				<h3>{printZone.printZone.name}</h3>
+				<h3>{printZone.name}</h3>
 				({widthCm} x {heightCm} cm)
 				<Button size="sm" onClick={uploadImage}>Nahrát obrázek...</Button>
 			</div>

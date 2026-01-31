@@ -3,10 +3,11 @@ import {ImagezImageThumb} from "./ImagezImage";
 import {Button, Form} from "react-bootstrap";
 import {StringUtil} from "zavadil-ts-common";
 import {UploadImageDialogContext} from "../../util/UploadImageDialogContext";
+import {ImageHealth} from "../../types/Image";
 
 export type ImagezUploadInputProps = {
 	name?: string | null;
-	onSelected: (imageName: string) => any;
+	onSelected: (imageName: string, imageHealth: ImageHealth) => any;
 };
 
 export function ImagezUploadInput({name, onSelected}: ImagezUploadInputProps) {
@@ -25,8 +26,8 @@ export function ImagezUploadInput({name, onSelected}: ImagezUploadInputProps) {
 					() => {
 						uploadImage.show(
 							{
-								onSelected: (i) => {
-									onSelected(i);
+								onSelected: (name, health) => {
+									onSelected(name, health);
 									uploadImage.hide();
 								},
 								onClose: () => {

@@ -11,6 +11,7 @@ import {Product} from "../../types/Product";
 import ProductPrintTypesList from "./ProductPrintTypesList";
 import ProductColorsList from "./ProductColorsList";
 import ProductPrintZonesList from "./ProductPrintZonesList";
+import ProductPrintPreviewsList from "./ProductPrintPreviewsList";
 
 const TAB_PARAM_NAME = 'tab';
 const DEFAULT_TAB = 'print-types';
@@ -167,6 +168,7 @@ export default function ProductDetail() {
 						<Tab title="Print Types" eventKey="print-types"/>
 						<Tab title="Print Zones" eventKey="print-zones"/>
 						<Tab title="Colors" eventKey="product-colors"/>
+						<Tab title="Previews" eventKey="previews"/>
 					</Tabs>
 					<div className="px-3 py-1">
 						{
@@ -177,6 +179,9 @@ export default function ProductDetail() {
 						}
 						{
 							activeTab === 'product-colors' && <ProductColorsList productId={data.id}/>
+						}
+						{
+							activeTab === 'previews' && <ProductPrintPreviewsList productId={data.id}/>
 						}
 					</div>
 				</div>

@@ -11,6 +11,7 @@ import ProductColorDetail from "./productColor/ProductColorDetail";
 import DesignsList from "./designs/DesignsList";
 import DesignDetail from "./designs/DesignDetail";
 import PrintZoneDetail from "./printZone/PrintZoneDetail";
+import PrintPreviewDetail from "./printPreview/PrintPreviewDetail";
 
 export default function Main() {
 	return (
@@ -37,6 +38,12 @@ export default function Main() {
 								<Route path="detail">
 									<Route path="add/:productId" element={<PrintZoneDetail/>}/>
 									<Route path=":id" element={<PrintZoneDetail/>}/>
+								</Route>
+							</Route>
+							<Route path="print-previews">
+								<Route path="detail">
+									<Route path="add/:productId" element={<PrintPreviewDetail/>}/>
+									<Route path=":id" element={<PrintPreviewDetail/>}/>
 								</Route>
 							</Route>
 							<Route path="product-colors">

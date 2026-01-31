@@ -9,6 +9,7 @@ import {DesignsClient} from "./DesignsClient";
 import {ProductColorsClient} from "./ProductColorsClient";
 import {DesignerRestClient} from "./DesignerRestClient";
 import {PrintZonesClient} from "./PrintZonesClient";
+import {PrintPreviewsClient} from "./PrintPreviewsClient";
 
 export class MerchMasterRestClient extends RestClientWithOAuth {
 
@@ -19,6 +20,8 @@ export class MerchMasterRestClient extends RestClientWithOAuth {
 	public printTypes: PrintTypesClient;
 
 	public printZones: PrintZonesClient;
+
+	public printPreviews: PrintPreviewsClient;
 
 	public designs: DesignsClient;
 
@@ -33,6 +36,7 @@ export class MerchMasterRestClient extends RestClientWithOAuth {
 		this.products = new ProductsClient(this);
 		this.printTypes = new PrintTypesClient(this);
 		this.printZones = new PrintZonesClient(this);
+		this.printPreviews = new PrintPreviewsClient(this);
 		this.designs = new DesignsClient(this);
 		this.productColors = new ProductColorsClient(this);
 

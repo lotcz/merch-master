@@ -131,7 +131,7 @@ export default function PrintTypeDetail() {
 				() => {
 					setDeleting(true);
 					restClient
-						.products
+						.printTypes
 						.delete(Number(data.printType.id))
 						.then(
 							(f) => {
