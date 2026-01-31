@@ -22,7 +22,7 @@ export default function DesignerWrapper({uuid, onFinished}: DesignerParams) {
 		() => {
 			if (!uuid) {
 				// create new design
-				client.createNewDesign()
+				client.createNewDesign(1)
 					.then(setDesign)
 					.catch((e: Error) => setError(e.message));
 			} else {

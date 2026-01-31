@@ -34,40 +34,31 @@ export class DesignerRestClient extends RestClient {
 		return this.getJson(`print-types/${printTypeId}`);
 	}
 
-	createNewDesign(): Promise<DesignPayload> {
-		return this.loadProducts()
+	createNewDesign(productId: number): Promise<DesignPayload> {
+		return this.loadPrintTypesByProduct(productId)
 			.then(
-				(products) => {
-					if (products.length === 0) {
-						throw new Error("NO PRODUCTS!");
+				(printTypes) => {
+					if (printTypes.length === 0) {
+						throw new Error("NO PRINT TYPES!");
 					}
-					const productId = Number(products[0].id);
-					return this.loadPrintTypesByProduct(productId)
+					const printTypeId = Number(printTypes[0].id);
+					return this.loadColorsByProduct(productId)
 						.then(
-							(printTypes) => {
-								if (products.length === 0) {
-									throw new Error("NO PRINT TYPES!");
+							(colors) => {
+								if (colors.length === 0) {
+									throw new Error("NO COLORS!");
 								}
-								const printTypeId = Number(printTypes[0].id);
-								return this.loadColorsByProduct(productId)
-									.then(
-										(colors) => {
-											if (colors.length === 0) {
-												throw new Error("NO COLORS!");
-											}
-											const colorId = Number(colors[0].id);
-											return {
-												design: {
-													printTypeId: printTypeId,
-													productColorId: colorId,
-													confirmed: false
-												},
-												files: []
-											};
-										}
-									)
+								const colorId = Number(colors[0].id);
+								return {
+									design: {
+										printTypeId: printTypeId,
+										productColorId: colorId,
+										confirmed: false
+									},
+									files: []
+								};
 							}
-						);
+						)
 				}
 			);
 	}

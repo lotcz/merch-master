@@ -7,7 +7,7 @@ export type ColorPreviewParams = {
 
 export default function ColorPreview({color}: ColorPreviewParams) {
 	return <div className="d-flex align-items-center gap-2">
-		<div style={{width: 25, height: 25, backgroundColor: color.color, borderRadius: 12}}>
+		<div className="color-preview" style={{backgroundColor: color.color}}>
 
 		</div>
 		<div>

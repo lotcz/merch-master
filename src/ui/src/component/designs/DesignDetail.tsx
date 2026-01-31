@@ -19,7 +19,7 @@ const COL_1_LG = 2;
 const COL_2_LG = 6;
 
 export default function DesignDetail() {
-	const {id} = useParams();
+	const {id, productId} = useParams();
 	const navigate = useNavigate();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const restClient = useContext(MerchMasterRestClientContext);
@@ -66,7 +66,7 @@ export default function DesignDetail() {
 					.catch((e: Error) => userAlerts.err(e));
 			} else {
 				// create new design
-				restClient.designer.createNewDesign()
+				restClient.designer.createNewDesign(Number(productId))
 					.then(setData)
 					.catch((e: Error) => userAlerts.err(e));
 			}

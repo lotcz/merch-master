@@ -51,7 +51,7 @@ export default function Main() {
 						<Route path="designs">
 							<Route path="" element={<DesignsList/>}/>
 							<Route path="detail">
-								<Route path="add" element={<DesignDetail/>}/>
+								<Route path="add/:productId" element={<DesignDetail/>}/>
 								<Route path=":id" element={<DesignDetail/>}/>
 							</Route>
 							<Route path=":pagingString" element={<DesignsList/>}/>

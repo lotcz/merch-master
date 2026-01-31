@@ -1,5 +1,5 @@
 import React, {FormEvent, useCallback, useContext, useEffect, useMemo, useState} from 'react';
-import {Button, Form, Stack} from 'react-bootstrap';
+import {Button, Dropdown, Form, Spinner, Stack} from 'react-bootstrap';
 import {DateTime, SelectableTableHeader, TablePlaceholder, TableWithSelect, TextInputWithReset} from "zavadil-react-common";
 import {ObjectUtil, Page, PagingRequest, PagingUtil, StringUtil} from "zavadil-ts-common";
 import {useNavigate, useParams} from "react-router";
@@ -8,6 +8,7 @@ import {UserAlertsContext} from "../../util/UserAlerts";
 import RefreshIconButton from "../general/RefreshIconButton";
 import {Design} from "../../types/Design";
 import ColorPreview from "../productColor/ColorPreview";
+import {Product} from "../../types/Product";
 
 const HEADER: SelectableTableHeader<Design> = [
 	{name: 'id', label: 'ID'},
@@ -27,6 +28,7 @@ export default function DesignsList() {
 	const restClient = useContext(MerchMasterRestClientContext);
 	const userAlerts = useContext(UserAlertsContext);
 	const [data, setData] = useState<Page<Design> | null>(null);
+	const [products, setProducts] = useState<Array<Product>>();
 
 	const paging = useMemo(
 		() => StringUtil.isBlank(pagingString) ? ObjectUtil.clone(DEFAULT_PAGING)
@@ -36,9 +38,19 @@ export default function DesignsList() {
 
 	const [searchInput, setSearchInput] = useState<string>(StringUtil.getNonEmpty(paging.search));
 
-	const navigateToCreateNew = useCallback(
+	useEffect(
 		() => {
-			navigate("/designs/detail/add?tab=designer")
+			restClient.products
+				.loadPage({page: 0, size: 10})
+				.then((p) => setProducts(p.content))
+				.catch((e) => userAlerts.err(e));
+		},
+		[]
+	);
+
+	const navigateToCreateNew = useCallback(
+		(productId: number) => {
+			navigate(`/designs/detail/add/${productId}`)
 		},
 		[navigate]
 	);
@@ -104,7 +116,23 @@ export default function DesignsList() {
 			<div className="pt-2 ps-3">
 				<Stack direction="horizontal" gap={2}>
 					<RefreshIconButton onClick={reload}/>
-					<Button onClick={navigateToCreateNew} className="text-nowrap">+ Add</Button>
+					<Dropdown>
+						<Dropdown.Toggle variant="primary" className="d-flex align-items-center gap-2 border">Add +</Dropdown.Toggle>
+						<Dropdown.Menu>
+							{
+								products ? products.map(
+										(product, index) => <Dropdown.Item
+											key={index}
+											eventKey={String(product.id)}
+											onClick={() => navigateToCreateNew(Number(product.id))}
+										>
+											{product.name}
+										</Dropdown.Item>
+									)
+									: <Spinner/>
+							}
+						</Dropdown.Menu>
+					</Dropdown>
 					<div style={{width: '250px'}}>
 						<Form onSubmit={applySearch} id="topics-search-form">
 							<TextInputWithReset
