@@ -108,12 +108,13 @@ export default function DesignerPrintZone({
 	);
 
 	const [isResizing, setIsResizing] = useState<boolean>(false);
-	const [isMoving, setIsMoving] = useState<boolean>(false);
+	//const [isMoving, setIsMoving] = useState<boolean>(false);
+	const [moveImagePosition, setMoveImagePosition] = useState<Vector2>();
 
 	const onMouseMove: MouseEventHandler<HTMLDivElement> = useCallback(
 		(e: MouseEvent<HTMLDivElement>) => {
 			if (!selectedFile) return;
-			if (!(isMoving || isResizing)) return;
+			if (!(moveImagePosition || isResizing)) return;
 
 			const pos = new Vector2(e.nativeEvent.offsetX, e.nativeEvent.offsetY).multiply(1 / scale).multiply(1 / PIXEL_PER_MM);
 
@@ -128,14 +129,14 @@ export default function DesignerPrintZone({
 					selectedFile.imageHeightMm = selectedFile.imageWidthMm / aspect;
 				}
 
-			} else if (isMoving) {
-				selectedFile.positionXMm = pos.x - (selectedFile.imageWidthMm / 2);
-				selectedFile.positionYMm = pos.y - (selectedFile.imageHeightMm / 2);
+			} else if (moveImagePosition) {
+				selectedFile.positionXMm = pos.x - moveImagePosition.x;
+				selectedFile.positionYMm = pos.y - moveImagePosition.y;
 			}
 
 			updateFile(selectedFile);
 		},
-		[isResizing, isMoving, selectedFile, scale, updateFile]
+		[isResizing, moveImagePosition, selectedFile, scale, updateFile]
 	);
 
 	const files = useMemo(
@@ -151,19 +152,19 @@ export default function DesignerPrintZone({
 				<Button size="sm" onClick={uploadImage}>Nahrát obrázek...</Button>
 			</div>
 			<div
-				className={`boundary ${isResizing ? 'resizing' : ''} ${isMoving ? 'moving' : ''}`}
+				className={`boundary ${isResizing ? 'resizing' : ''} ${moveImagePosition ? 'moving' : ''}`}
 				style={{width: widthMm * PIXEL_PER_MM * scale, height: heightMm * PIXEL_PER_MM * scale}}
 				onMouseMove={onMouseMove}
 				onMouseUp={
 					(e: MouseEvent<HTMLDivElement>) => {
 						setIsResizing(false);
-						setIsMoving(false);
+						setMoveImagePosition(undefined);
 					}
 				}
 				onMouseLeave={
 					(e: MouseEvent<HTMLDivElement>) => {
 						setIsResizing(false);
-						setIsMoving(false);
+						setMoveImagePosition(undefined);
 					}
 				}
 			>
@@ -176,10 +177,10 @@ export default function DesignerPrintZone({
 							maxWidth={maxWidth}
 							maxHeight={maxHeight}
 							isSelected={file === selectedFile}
-							isManipulating={isResizing || isMoving}
+							isManipulating={isResizing || moveImagePosition !== undefined}
 							onSelected={() => onFileSelected(file)}
-							onStartMove={() => setIsMoving(true)}
-							onEndMove={() => setIsMoving(false)}
+							onStartMove={setMoveImagePosition}
+							onEndMove={() => setMoveImagePosition(undefined)}
 							onStartResize={() => setIsResizing(true)}
 							onEndResize={() => setIsResizing(false)}
 							onDeleted={

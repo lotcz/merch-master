@@ -1,8 +1,9 @@
-import React from "react";
+import React, {MouseEvent} from "react";
 import {DesignFileStub} from "../../types/DesignFile";
 import {PIXEL_PER_MM} from "../../util/ImageUtil";
 import {ImagezImage} from "../images/ImagezImage";
 import {BsArrowDownRight, BsLock, BsTrash, BsUnlock} from "react-icons/bs";
+import {Vector2} from "zavadil-ts-common";
 
 export type DesignerFileParams = {
 	file: DesignFileStub;
@@ -12,7 +13,7 @@ export type DesignerFileParams = {
 	isSelected: boolean;
 	isManipulating: boolean;
 	onSelected: () => any;
-	onStartMove: () => any;
+	onStartMove: (pos: Vector2) => any;
 	onEndMove: () => any;
 	onStartResize: () => any;
 	onEndResize: () => any;
@@ -51,11 +52,13 @@ export default function DesignerFile(
 				}
 			}
 			onMouseDown={
-				(e) => {
+				(e: MouseEvent<HTMLDivElement>) => {
 					e.stopPropagation();
 					e.preventDefault();
 					if (!isSelected) onSelected();
-					onStartMove();
+					const pos = new Vector2(e.nativeEvent.offsetX, e.nativeEvent.offsetY).multiply(1 / (PIXEL_PER_MM * scale));
+					console.log(pos.toString());
+					onStartMove(pos);
 				}
 			}
 			onMouseUp={
