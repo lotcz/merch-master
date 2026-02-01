@@ -1,4 +1,4 @@
-import {Col, Form, Row, Spinner, Stack, Tab, Tabs} from "react-bootstrap";
+import {Col, Form, Row, Spinner, Stack, Tab, Table, Tabs} from "react-bootstrap";
 import {useNavigate, useParams, useSearchParams} from "react-router";
 import React, {useCallback, useContext, useEffect, useState} from "react";
 import {NumberUtil, StringUtil} from "zavadil-ts-common";
@@ -12,7 +12,7 @@ import {ImagezUploadInput} from "../images/ImagezUploadInput";
 import PrintPreviewDesigner from "./PrintPreviewDesigner";
 
 const TAB_PARAM_NAME = 'tab';
-const DEFAULT_TAB = 'design-zones';
+const DEFAULT_TAB = 'design';
 
 const COL_1_MD = 3;
 const COL_2_MD = 5;
@@ -231,13 +231,42 @@ export default function PrintPreviewDetail() {
 						activeKey={activeTab}
 						onSelect={(key) => setActiveTab(StringUtil.getNonEmpty(key, DEFAULT_TAB))}
 					>
-						<Tab title="Design Zones" eventKey="design-zones">
+						<Tab title="Design" eventKey="design">
 							{
 								data.printPreview.id && <PrintPreviewDesigner
 									printPreview={data}
 									onChange={onChanged}
 								/>
 							}
+						</Tab>
+						<Tab title="Zones" eventKey="zones">
+							<Table>
+								<thead>
+								<tr>
+									<td>Zone ID</td>
+									<td>Name</td>
+									<td>StartX</td>
+									<td>StartY</td>
+									<td>Width</td>
+									<td>Height</td>
+								</tr>
+								</thead>
+								<tbody>
+								{
+									data.zones.map(
+										(previewZone) => <tr>
+											<td>{previewZone.printZoneId}</td>
+											<td>{previewZone.printZoneId}</td>
+											<td>{previewZone.startXPx}</td>
+											<td>{previewZone.startYPx}</td>
+											<td>{previewZone.widthPx}</td>
+											<td>{previewZone.heightPx}</td>
+										</tr>
+									)
+								}
+								</tbody>
+							</Table>
+
 						</Tab>
 					</Tabs>
 				</div>

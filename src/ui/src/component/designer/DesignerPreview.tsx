@@ -5,11 +5,13 @@ import {DesignPayload} from "../../types/Design";
 import {PrintPreviewPayload, PrintPreviewStub} from "../../types/PrintPreview";
 import {DesignerRestClient} from "../../client/DesignerRestClient";
 import DesignerPreviewZone from "./DesignerPreviewZone";
+import {PrintZoneStub} from "../../types/PrintZone";
 
 export type DesignerPreviewParams = {
 	client: DesignerRestClient;
 	design: DesignPayload;
 	preview: PrintPreviewStub;
+	zones: Array<PrintZoneStub>;
 	maxWidth: number;
 	maxHeight: number;
 }
@@ -19,6 +21,7 @@ export default function DesignerPreview(
 		client,
 		design,
 		preview,
+		zones,
 		maxHeight,
 		maxWidth
 	}: DesignerPreviewParams
@@ -61,8 +64,9 @@ export default function DesignerPreview(
 				previewPayload && previewPayload.zones.map(
 					(previewZone) => <DesignerPreviewZone
 						design={design}
+						zones={zones}
 						previewZone={previewZone}
-						scale={scale}
+						previewScale={scale}
 					/>
 				)
 			}

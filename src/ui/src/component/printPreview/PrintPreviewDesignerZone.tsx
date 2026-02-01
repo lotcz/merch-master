@@ -1,5 +1,4 @@
 import React, {MouseEvent} from "react";
-import {PIXEL_PER_MM} from "../../util/ImageUtil";
 import {BsArrowDownRight, BsLock, BsTrash, BsUnlock} from "react-icons/bs";
 import {Vector2} from "zavadil-ts-common";
 import {PrintPreviewZoneStub} from "../../types/PrintPreviewZone";
@@ -43,10 +42,10 @@ export default function PrintPreviewDesignerZone(
 			draggable={false}
 			style={
 				{
-					top: previewZone.startYMm * PIXEL_PER_MM * scale,
-					left: previewZone.startXMm * PIXEL_PER_MM * scale,
-					width: previewZone.widthMm * PIXEL_PER_MM * scale,
-					height: previewZone.heightMm * PIXEL_PER_MM * scale
+					top: previewZone.startYPx * scale,
+					left: previewZone.startXPx * scale,
+					width: previewZone.widthPx * scale,
+					height: previewZone.heightPx * scale
 				}
 			}
 			onMouseDown={
@@ -54,7 +53,7 @@ export default function PrintPreviewDesignerZone(
 					e.stopPropagation();
 					e.preventDefault();
 					if (!isSelected) onSelected();
-					const pos = new Vector2(e.nativeEvent.offsetX, e.nativeEvent.offsetY).multiply(1 / (PIXEL_PER_MM * scale));
+					const pos = new Vector2(e.nativeEvent.offsetX, e.nativeEvent.offsetY).multiply(1 / scale);
 					onStartMove(pos);
 				}
 			}

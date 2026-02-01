@@ -84,15 +84,15 @@ export default function PrintPreviewDesigner({
 				printPreview.printPreview.imageWidthPx,
 				printPreview.printPreview.imageHeightPx,
 			);
-			const zoneWidth = zone.widthMm * zoneScale;
-			const zoneHeight = zone.heightMm * zoneScale;
+			const zoneWidth = zone.widthMm * PIXEL_PER_MM * zoneScale;
+			const zoneHeight = zone.heightMm * PIXEL_PER_MM * zoneScale;
 			const newZone: PrintPreviewZoneStub = {
 				printPreviewId: Number(printPreview.printPreview.id),
 				printZoneId: printZoneId,
-				widthMm: zoneWidth,
-				heightMm: zoneHeight,
-				startYMm: 0,
-				startXMm: 0,
+				widthPx: zoneWidth,
+				heightPx: zoneHeight,
+				startYPx: 0,
+				startXPx: 0,
 				aspectLocked: true
 			};
 			printPreview.zones = [...printPreview.zones, newZone];
@@ -113,36 +113,36 @@ export default function PrintPreviewDesigner({
 	);
 
 	const [isResizing, setIsResizing] = useState<boolean>(false);
-	const [moveZonePosition, setMoveZonePosition] = useState<Vector2>();
+	const [moveZonePositionPx, setMoveZonePositionPx] = useState<Vector2>();
 
 	const onMouseMove: MouseEventHandler<HTMLDivElement> = useCallback(
 		(e: MouseEvent<HTMLDivElement>) => {
 			if (!selectedPreviewZone) return;
-			if (!(moveZonePosition || isResizing)) return;
+			if (!(moveZonePositionPx || isResizing)) return;
 
-			const pos = new Vector2(e.nativeEvent.offsetX, e.nativeEvent.offsetY).multiply(1 / scale).multiply(1 / PIXEL_PER_MM);
+			const pos = new Vector2(e.nativeEvent.offsetX, e.nativeEvent.offsetY).multiply(1 / scale);
 
 			if (isResizing) {
-				const width = pos.x - selectedPreviewZone.startXMm;
-				const height = pos.y - selectedPreviewZone.startYMm;
-				selectedPreviewZone.widthMm = width;
-				selectedPreviewZone.heightMm = height;
+				const width = pos.x - selectedPreviewZone.startXPx;
+				const height = pos.y - selectedPreviewZone.startYPx;
+				selectedPreviewZone.widthPx = width;
+				selectedPreviewZone.heightPx = height;
 
 				if (productZones && selectedPreviewZone.aspectLocked) {
 					const zone = productZones.find((z) => z.id === selectedPreviewZone.printZoneId);
 					if (zone) {
 						const aspect = zone.widthMm / zone.heightMm;
-						selectedPreviewZone.heightMm = selectedPreviewZone.widthMm / aspect;
+						selectedPreviewZone.heightPx = selectedPreviewZone.widthPx / aspect;
 					}
 				}
-			} else if (moveZonePosition) {
-				selectedPreviewZone.startXMm = pos.x - moveZonePosition.x;
-				selectedPreviewZone.startYMm = pos.y - moveZonePosition.y;
+			} else if (moveZonePositionPx) {
+				selectedPreviewZone.startXPx = pos.x - moveZonePositionPx.x;
+				selectedPreviewZone.startYPx = pos.y - moveZonePositionPx.y;
 			}
 
 			updateZone(selectedPreviewZone);
 		},
-		[isResizing, moveZonePosition, selectedPreviewZone, scale, updateZone]
+		[isResizing, moveZonePositionPx, selectedPreviewZone, scale, updateZone, productZones]
 	);
 
 	if (!productZones) {
@@ -171,7 +171,7 @@ export default function PrintPreviewDesigner({
 				</Dropdown>
 			</div>
 			<div
-				className={`boundary ${isResizing ? 'resizing' : ''} ${moveZonePosition ? 'moving' : ''}`}
+				className={`boundary ${isResizing ? 'resizing' : ''} ${moveZonePositionPx ? 'moving' : ''}`}
 				style={{
 					width: printPreview.printPreview.imageWidthPx * scale,
 					height: printPreview.printPreview.imageHeightPx * scale
@@ -180,13 +180,13 @@ export default function PrintPreviewDesigner({
 				onMouseUp={
 					(e: MouseEvent<HTMLDivElement>) => {
 						setIsResizing(false);
-						setMoveZonePosition(undefined);
+						setMoveZonePositionPx(undefined);
 					}
 				}
 				onMouseLeave={
 					(e: MouseEvent<HTMLDivElement>) => {
 						setIsResizing(false);
-						setMoveZonePosition(undefined);
+						setMoveZonePositionPx(undefined);
 					}
 				}
 			>
@@ -199,10 +199,10 @@ export default function PrintPreviewDesigner({
 							key={index}
 							scale={scale}
 							isSelected={previewZone === selectedPreviewZone}
-							isManipulating={isResizing || moveZonePosition !== undefined}
+							isManipulating={isResizing || moveZonePositionPx !== undefined}
 							onSelected={() => setSelectedPreviewZone(previewZone)}
-							onStartMove={setMoveZonePosition}
-							onEndMove={() => setMoveZonePosition(undefined)}
+							onStartMove={setMoveZonePositionPx}
+							onEndMove={() => setMoveZonePositionPx(undefined)}
 							onStartResize={() => setIsResizing(true)}
 							onEndResize={() => setIsResizing(false)}
 							onDeleted={
@@ -222,7 +222,7 @@ export default function PrintPreviewDesigner({
 										const zone = productZones.find((z) => z.id === previewZone.printZoneId);
 										if (zone) {
 											const aspect = zone.widthMm / zone.heightMm;
-											previewZone.heightMm = previewZone.widthMm / aspect;
+											previewZone.heightPx = previewZone.widthPx / aspect;
 										}
 									}
 									updateZone(previewZone);

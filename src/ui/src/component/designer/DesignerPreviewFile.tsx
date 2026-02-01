@@ -2,11 +2,11 @@ import React from "react";
 import {DesignFileStub} from "../../types/DesignFile";
 import {PIXEL_PER_MM} from "../../util/ImageUtil";
 import {ImagezImage} from "../images/ImagezImage";
-import {NumberUtil} from "zavadil-ts-common";
+import {NumberUtil, Vector2} from "zavadil-ts-common";
 
 export type DesignerPreviewFileParams = {
 	file: DesignFileStub;
-	scale: number;
+	zoneScale: Vector2;
 	maxWidth: number;
 	maxHeight: number;
 }
@@ -14,7 +14,7 @@ export type DesignerPreviewFileParams = {
 export default function DesignerPreviewFile(
 	{
 		file,
-		scale,
+		zoneScale,
 		maxHeight,
 		maxWidth
 	}: DesignerPreviewFileParams
@@ -26,10 +26,10 @@ export default function DesignerPreviewFile(
 			draggable={false}
 			style={
 				{
-					top: file.positionYMm * PIXEL_PER_MM * scale,
-					left: file.positionXMm * PIXEL_PER_MM * scale,
-					width: file.imageWidthMm * PIXEL_PER_MM * scale,
-					height: file.imageHeightMm * PIXEL_PER_MM * scale
+					top: file.positionYMm * PIXEL_PER_MM * zoneScale.y,
+					left: file.positionXMm * PIXEL_PER_MM * zoneScale.x,
+					width: file.imageWidthMm * PIXEL_PER_MM * zoneScale.x,
+					height: file.imageHeightMm * PIXEL_PER_MM * zoneScale.y
 				}
 			}
 		>

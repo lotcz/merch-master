@@ -129,6 +129,7 @@ export default function Designer({design, client, onChange, onError}: DesignerPa
 									preview={preview}
 									design={design}
 									client={client}
+									zones={printType.zones}
 									maxWidth={previewAreaSize.x}
 									maxHeight={MAX_HEIGHT}
 								/>

@@ -1,25 +1,45 @@
 import React, {useMemo} from "react";
-import {PIXEL_PER_MM} from "../../util/ImageUtil";
 import {PrintPreviewZoneStub} from "../../types/PrintPreviewZone";
 import {DesignPayload} from "../../types/Design";
 import DesignerPreviewFile from "./DesignerPreviewFile";
+import {PrintZoneStub} from "../../types/PrintZone";
+import {Vector2} from "zavadil-ts-common";
+import {PIXEL_PER_MM} from "../../util/ImageUtil";
 
 export type DesignerPreviewZoneParams = {
 	design: DesignPayload;
+	zones: Array<PrintZoneStub>;
 	previewZone: PrintPreviewZoneStub;
-	scale: number;
+	previewScale: number;
 }
 
 export default function DesignerPreviewZone(
 	{
 		design,
+		zones,
 		previewZone,
-		scale
+		previewScale
 	}: DesignerPreviewZoneParams
 ) {
 	const files = useMemo(
 		() => design.files.filter((f) => f.printZoneId === previewZone.printZoneId),
 		[design, previewZone]
+	);
+
+	const zone = useMemo(
+		() => zones.find((z) => z.id === previewZone.printZoneId),
+		[zones, previewZone]
+	);
+
+	const zoneScale: Vector2 = useMemo(
+		() => {
+			if (!zone) return new Vector2(1, 1);
+			return new Vector2(
+				previewZone.widthPx / (zone.widthMm * PIXEL_PER_MM),
+				previewZone.heightPx / (zone.heightMm * PIXEL_PER_MM)
+			).multiply(previewScale)
+		},
+		[zone, previewZone, previewScale]
 	);
 
 	return (
@@ -28,10 +48,10 @@ export default function DesignerPreviewZone(
 			draggable={false}
 			style={
 				{
-					top: previewZone.startYMm * PIXEL_PER_MM * scale,
-					left: previewZone.startXMm * PIXEL_PER_MM * scale,
-					width: previewZone.widthMm * PIXEL_PER_MM * scale,
-					height: previewZone.heightMm * PIXEL_PER_MM * scale
+					top: previewZone.startYPx * previewScale,
+					left: previewZone.startXPx * previewScale,
+					width: previewZone.widthPx * previewScale,
+					height: previewZone.heightPx * previewScale
 				}
 			}
 		>
@@ -39,9 +59,9 @@ export default function DesignerPreviewZone(
 				files.map(
 					(file) => <DesignerPreviewFile
 						file={file}
-						scale={scale}
-						maxWidth={previewZone.widthMm * PIXEL_PER_MM * scale}
-						maxHeight={previewZone.heightMm * PIXEL_PER_MM * scale}
+						zoneScale={zoneScale}
+						maxWidth={previewZone.widthPx * previewScale}
+						maxHeight={previewZone.heightPx * previewScale}
 					/>
 				)
 			}

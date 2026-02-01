@@ -3,10 +3,10 @@ import {PrintZone} from "./PrintZone";
 import {PrintPreview} from "./PrintPreview";
 
 export type PrintPreviewZoneBase = EntityBase & {
-	startXMm: number;
-	startYMm: number;
-	widthMm: number;
-	heightMm: number;
+	startXPx: number;
+	startYPx: number;
+	widthPx: number;
+	heightPx: number;
 	aspectLocked: boolean;
 }
 
