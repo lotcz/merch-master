@@ -51,7 +51,8 @@ export default function DesignerPreviewZone(
 					top: previewZone.startYPx * previewScale,
 					left: previewZone.startXPx * previewScale,
 					width: previewZone.widthPx * previewScale,
-					height: previewZone.heightPx * previewScale
+					height: previewZone.heightPx * previewScale,
+					rotate: `${previewZone.rotateDeg}deg`
 				}
 			}
 		>
@@ -60,8 +61,6 @@ export default function DesignerPreviewZone(
 					(file) => <DesignerPreviewFile
 						file={file}
 						zoneScale={zoneScale}
-						maxWidth={previewZone.widthPx * previewScale}
-						maxHeight={previewZone.heightPx * previewScale}
 					/>
 				)
 			}

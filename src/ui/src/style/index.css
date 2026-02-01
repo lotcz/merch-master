@@ -233,6 +233,11 @@ tr.selectable.selected td {
 	-ms-user-select: none;
 }
 
+.designer-preview .foreground {
+	position: absolute;
+	top: 0;
+}
+
 .designer-preview .designer-preview-zone,
 .designer-preview .designer-preview-zone .designer-preview-file {
 	position: absolute;
@@ -265,4 +270,5 @@ tr.selectable.selected td {
 	font-size: 75%;
 	position: absolute;
 	top: -20px;
+	text-wrap: nowrap;
 }

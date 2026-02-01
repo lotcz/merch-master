@@ -45,7 +45,8 @@ export default function PrintPreviewDesignerZone(
 					top: previewZone.startYPx * scale,
 					left: previewZone.startXPx * scale,
 					width: previewZone.widthPx * scale,
-					height: previewZone.heightPx * scale
+					height: previewZone.heightPx * scale,
+					rotate: `${previewZone.rotateDeg}deg`
 				}
 			}
 			onMouseDown={

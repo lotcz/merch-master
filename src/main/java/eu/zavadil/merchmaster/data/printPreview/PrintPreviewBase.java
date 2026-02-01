@@ -12,6 +12,8 @@ public class PrintPreviewBase extends EntityWithNameBase {
 
 	private String imageName;
 
+	private String foregroundName;
+
 	private int imageWidthPx;
 
 	private int imageHeightPx;

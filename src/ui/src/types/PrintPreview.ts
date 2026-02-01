@@ -4,6 +4,7 @@ import {PrintPreviewZoneStub} from "./PrintPreviewZone";
 
 export type PrintPreviewBase = EntityWithName & {
 	imageName?: string | null;
+	foregroundName?: string | null;
 	imageWidthPx: number;
 	imageHeightPx: number;
 }

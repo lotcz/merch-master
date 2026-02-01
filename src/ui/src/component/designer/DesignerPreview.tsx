@@ -70,6 +70,11 @@ export default function DesignerPreview(
 					/>
 				)
 			}
+			{
+				preview.foregroundName && <div className="foreground">
+					<ImagezImage name={preview.foregroundName} type="Fit" width={maxWidth} height={maxHeight}/>
+				</div>
+			}
 		</div>
 	)
 }

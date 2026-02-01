@@ -119,7 +119,7 @@ export default function PrintPreviewDetail() {
 						.delete(Number(data.printPreview.id))
 						.then(
 							(f) => {
-								navigate(`/products/${data.printPreview.productId}`);
+								navigate(`/products/detail/${data.printPreview.productId}`);
 							})
 						.catch((e: Error) => userAlerts.err(e))
 						.finally(() => setDeleting(false))
@@ -178,6 +178,24 @@ export default function PrintPreviewDetail() {
 											data.printPreview.imageName = name;
 											data.printPreview.imageHeightPx = health.height;
 											data.printPreview.imageWidthPx = health.width;
+											onChanged();
+										}
+									}
+								/>
+							</div>
+						</Col>
+					</Row>
+					<Row className="align-items-center">
+						<Col md={COL_1_MD} lg={COL_1_LG}>
+							<Form.Label>Foreground:</Form.Label>
+						</Col>
+						<Col md={COL_2_MD} lg={COL_2_LG}>
+							<div>
+								<ImagezUploadInput
+									name={data.printPreview.foregroundName}
+									onSelected={
+										(name, health) => {
+											data.printPreview.foregroundName = name;
 											onChanged();
 										}
 									}

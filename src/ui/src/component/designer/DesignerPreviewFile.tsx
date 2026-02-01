@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useMemo} from "react";
 import {DesignFileStub} from "../../types/DesignFile";
 import {PIXEL_PER_MM} from "../../util/ImageUtil";
 import {ImagezImage} from "../images/ImagezImage";
@@ -7,18 +7,24 @@ import {NumberUtil, Vector2} from "zavadil-ts-common";
 export type DesignerPreviewFileParams = {
 	file: DesignFileStub;
 	zoneScale: Vector2;
-	maxWidth: number;
-	maxHeight: number;
 }
 
 export default function DesignerPreviewFile(
 	{
 		file,
-		zoneScale,
-		maxHeight,
-		maxWidth
+		zoneScale
 	}: DesignerPreviewFileParams
 ) {
+
+	const width = useMemo(
+		() => NumberUtil.round(file.imageWidthMm * PIXEL_PER_MM * zoneScale.x),
+		[file, zoneScale]
+	);
+
+	const height = useMemo(
+		() => NumberUtil.round(file.imageHeightMm * PIXEL_PER_MM * zoneScale.x),
+		[file, zoneScale]
+	);
 
 	return (
 		<div
@@ -28,16 +34,16 @@ export default function DesignerPreviewFile(
 				{
 					top: file.positionYMm * PIXEL_PER_MM * zoneScale.y,
 					left: file.positionXMm * PIXEL_PER_MM * zoneScale.x,
-					width: file.imageWidthMm * PIXEL_PER_MM * zoneScale.x,
-					height: file.imageHeightMm * PIXEL_PER_MM * zoneScale.y
+					width: width,
+					height: height
 				}
 			}
 		>
 			<ImagezImage
 				name={file.imageName}
 				type="Fit"
-				width={NumberUtil.round(maxWidth)}
-				height={NumberUtil.round(maxHeight)}
+				width={width}
+				height={height}
 			/>
 		</div>
 	)

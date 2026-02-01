@@ -1,6 +1,6 @@
 import React, {MouseEvent, MouseEventHandler, useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
 import {Vector2} from "zavadil-ts-common";
-import {Dropdown, Spinner} from "react-bootstrap";
+import {Button, Dropdown, Form, Spinner, Stack} from "react-bootstrap";
 import ImageUtil, {PIXEL_PER_MM} from "../../util/ImageUtil";
 import {PrintPreviewPayload} from "../../types/PrintPreview";
 import {PrintPreviewZoneStub} from "../../types/PrintPreviewZone";
@@ -93,6 +93,7 @@ export default function PrintPreviewDesigner({
 				heightPx: zoneHeight,
 				startYPx: 0,
 				startXPx: 0,
+				rotateDeg: 0,
 				aspectLocked: true
 			};
 			printPreview.zones = [...printPreview.zones, newZone];
@@ -170,68 +171,102 @@ export default function PrintPreviewDesigner({
 					</Dropdown.Menu>
 				</Dropdown>
 			</div>
-			<div
-				className={`boundary ${isResizing ? 'resizing' : ''} ${moveZonePositionPx ? 'moving' : ''}`}
-				style={{
-					width: printPreview.printPreview.imageWidthPx * scale,
-					height: printPreview.printPreview.imageHeightPx * scale
-				}}
-				onMouseMove={onMouseMove}
-				onMouseUp={
-					(e: MouseEvent<HTMLDivElement>) => {
-						setIsResizing(false);
-						setMoveZonePositionPx(undefined);
+			<Stack direction="horizontal" className="mt-2 gap-2 align-items-start">
+				<div
+					className={`boundary ${isResizing ? 'resizing' : ''} ${moveZonePositionPx ? 'moving' : ''}`}
+					style={{
+						width: printPreview.printPreview.imageWidthPx * scale,
+						height: printPreview.printPreview.imageHeightPx * scale
+					}}
+					onMouseMove={onMouseMove}
+					onMouseUp={
+						(e: MouseEvent<HTMLDivElement>) => {
+							setIsResizing(false);
+							setMoveZonePositionPx(undefined);
+						}
 					}
-				}
-				onMouseLeave={
-					(e: MouseEvent<HTMLDivElement>) => {
-						setIsResizing(false);
-						setMoveZonePositionPx(undefined);
+					onMouseLeave={
+						(e: MouseEvent<HTMLDivElement>) => {
+							setIsResizing(false);
+							setMoveZonePositionPx(undefined);
+						}
 					}
-				}
-			>
-				<ImagezImage name={printPreview.printPreview.imageName} type="Fit" width={designerAreaSize.x} height={MAX_HEIGHT}/>
-				{
-					printPreview.zones.map(
-						(previewZone, index) => <PrintPreviewDesignerZone
-							zone={productZones.find((z) => z.id === previewZone.printZoneId)}
-							previewZone={previewZone}
-							key={index}
-							scale={scale}
-							isSelected={previewZone === selectedPreviewZone}
-							isManipulating={isResizing || moveZonePositionPx !== undefined}
-							onSelected={() => setSelectedPreviewZone(previewZone)}
-							onStartMove={setMoveZonePositionPx}
-							onEndMove={() => setMoveZonePositionPx(undefined)}
-							onStartResize={() => setIsResizing(true)}
-							onEndResize={() => setIsResizing(false)}
-							onDeleted={
-								() => {
-									onChange(
-										{
-											printPreview: printPreview.printPreview,
-											zones: printPreview.zones.filter(z => z !== previewZone)
-										}
-									);
+				>
+					<ImagezImage name={printPreview.printPreview.imageName} type="Fit" width={designerAreaSize.x} height={MAX_HEIGHT}/>
+					{
+						printPreview.zones.map(
+							(previewZone, index) => <PrintPreviewDesignerZone
+								zone={productZones.find((z) => z.id === previewZone.printZoneId)}
+								previewZone={previewZone}
+								key={index}
+								scale={scale}
+								isSelected={previewZone === selectedPreviewZone}
+								isManipulating={isResizing || moveZonePositionPx !== undefined}
+								onSelected={() => setSelectedPreviewZone(previewZone)}
+								onStartMove={setMoveZonePositionPx}
+								onEndMove={() => setMoveZonePositionPx(undefined)}
+								onStartResize={() => setIsResizing(true)}
+								onEndResize={() => setIsResizing(false)}
+								onDeleted={
+									() => {
+										onChange(
+											{
+												printPreview: printPreview.printPreview,
+												zones: printPreview.zones.filter(z => z !== previewZone)
+											}
+										);
+									}
 								}
-							}
-							onLockUnlock={
-								() => {
-									previewZone.aspectLocked = !previewZone.aspectLocked;
-									if (previewZone.aspectLocked) {
-										const zone = productZones.find((z) => z.id === previewZone.printZoneId);
-										if (zone) {
-											const aspect = zone.widthMm / zone.heightMm;
-											previewZone.heightPx = previewZone.widthPx / aspect;
+								onLockUnlock={
+									() => {
+										previewZone.aspectLocked = !previewZone.aspectLocked;
+										if (previewZone.aspectLocked) {
+											const zone = productZones.find((z) => z.id === previewZone.printZoneId);
+											if (zone) {
+												const aspect = zone.widthMm / zone.heightMm;
+												previewZone.heightPx = previewZone.widthPx / aspect;
+											}
+										}
+										updateZone(previewZone);
+									}
+								}
+							/>
+						)
+					}
+				</div>
+				{
+					selectedPreviewZone && <div className="print-preview-designer-zone-form">
+						<Form>
+							<Form.Group>
+								<Form.Label>
+									<span>Rotate ({selectedPreviewZone.rotateDeg}°)</span>
+									<Button
+										size="sm"
+										onClick={
+											() => {
+												selectedPreviewZone.rotateDeg = 0;
+												updateZone(selectedPreviewZone);
+											}
+										}
+									>Reset</Button>
+								</Form.Label>
+								<Form.Range
+									value={selectedPreviewZone.rotateDeg}
+									min={-180}
+									max={180}
+									onChange={
+										(deg) => {
+											selectedPreviewZone.rotateDeg = Number(deg.target.value);
+											updateZone(selectedPreviewZone);
 										}
 									}
-									updateZone(previewZone);
-								}
-							}
-						/>
-					)
+
+								/>
+							</Form.Group>
+						</Form>
+					</div>
 				}
-			</div>
+			</Stack>
 		</div>
 	)
 }
