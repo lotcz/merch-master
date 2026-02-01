@@ -132,31 +132,37 @@ tr.selectable.selected td {
 	margin: 0;
 }
 
-.designer .print-zone .boundary {
+.designer .print-zone .boundary,
+.print-preview-designer .boundary {
 	position: relative;
 	border: dashed 3px #ffa5a5;
 	overflow: hidden;
 }
 
-.designer .print-zone .boundary.resizing {
+.designer .print-zone .boundary.resizing,
+.print-preview-designer .boundary.resizing {
 	cursor: se-resize;
 }
 
-.designer .print-zone .boundary.moving {
+.designer .print-zone .boundary.moving,
+.print-preview-designer .boundary.moving {
 	cursor: move;
 }
 
-.designer .print-zone .design-file {
+.designer .print-zone .design-file,
+.print-preview-designer .print-preview-designer-zone {
 	position: absolute;
 	border: solid 2px transparent;
 	cursor: move;
 }
 
-.designer .print-zone .design-file.manipulating {
+.designer .print-zone .design-file.manipulating,
+.print-preview-designer .print-preview-designer-zone.manipulating {
 	pointer-events: none;
 }
 
-.designer .print-zone .design-file.selected {
+.designer .print-zone .design-file.selected,
+.print-preview-designer .print-preview-designer-zone.selected {
 	border: solid 2px #ff0000;
 }
 
@@ -166,9 +172,8 @@ tr.selectable.selected td {
 	user-select: none;
 }
 
-.designer .print-zone .design-file .delete-button,
-.designer .print-zone .design-file .aspect-lock-button,
-.designer .print-zone .design-file .resize-button {
+.designer .design-file .action-button,
+.print-preview-designer .print-preview-designer-zone .action-button {
 	display: none;
 	position: absolute;
 	color: #fff;
@@ -180,38 +185,84 @@ tr.selectable.selected td {
 	border-radius: 3px;
 }
 
-.designer .print-zone .design-file:hover .delete-button,
-.designer .print-zone .design-file.selected .delete-button,
-.designer .print-zone .design-file:hover .aspect-lock-button,
-.designer .print-zone .design-file.selected .aspect-lock-button,
-.designer .print-zone .design-file:hover .resize-button,
-.designer .print-zone .design-file.selected .resize-button {
+.designer .print-zone .design-file:hover .action-button,
+.designer .print-zone .design-file.selected .action-button,
+.print-preview-designer .print-preview-designer-zone:hover .action-button,
+.print-preview-designer .print-preview-designer-zone.selected .action-button {
 	display: flex;
 }
 
-.designer .print-zone .design-file .delete-button {
+.designer .print-zone .design-file .delete-button,
+.print-preview-designer .print-preview-designer-zone .delete-button {
 	cursor: pointer;
 	right: -10px;
 	top: -10px;
 }
 
-.designer .print-zone .design-file .aspect-lock-button.unlocked {
-	background-color: white;
-	color: #ff0000;
-	border: solid 1px #ff0000;
-}
-
-.designer .print-zone .design-file .aspect-lock-button {
+.designer .print-zone .design-file .aspect-lock-button,
+.print-preview-designer .print-preview-designer-zone .aspect-lock-button {
 	cursor: pointer;
 	left: 50%;
 	margin-left: -10px;
 	bottom: -15px;
 }
 
-.designer .print-zone .design-file .resize-button {
+.designer .print-zone .design-file .aspect-lock-button.unlocked,
+.print-preview-designer .print-preview-designer-zone .aspect-lock-button.unlocked {
+	background-color: white;
+	color: #ff0000;
+	border: solid 1px #ff0000;
+}
+
+.designer .print-zone .design-file .resize-button,
+.print-preview-designer .print-preview-designer-zone .resize-button {
 	cursor: se-resize;
 	right: -10px;
 	bottom: -10px;
 	width: 20px;
 	height: 20px;
+}
+
+/* PREVIEW */
+
+.designer-preview {
+	position: relative;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+}
+
+.designer-preview .designer-preview-zone,
+.designer-preview .designer-preview-zone .designer-preview-file {
+	position: absolute;
+	overflow: hidden;
+}
+
+.designer-preview .designer-preview-zone .designer-preview-file img {
+	width: 100%;
+	height: 100%;
+	user-select: none;
+}
+
+/* PREVIEW DESIGNER */
+
+.print-preview-designer {
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+}
+
+.print-preview-designer .print-preview-designer-zone {
+	background-image: url('../img/designer-bg.png');
+	background-repeat: repeat;
+}
+
+.print-preview-designer .print-preview-designer-zone .label {
+	color: red;
+	background-color: white;
+	font-size: 75%;
+	position: absolute;
+	top: -20px;
 }

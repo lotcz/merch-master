@@ -9,6 +9,7 @@ import {ConfirmDialogContext, DeleteButton, SaveButton} from "zavadil-react-comm
 import BackIconLink from "../general/BackIconLink";
 import {PrintPreviewPayload} from "../../types/PrintPreview";
 import {ImagezUploadInput} from "../images/ImagezUploadInput";
+import PrintPreviewDesigner from "./PrintPreviewDesigner";
 
 const TAB_PARAM_NAME = 'tab';
 const DEFAULT_TAB = 'design-zones';
@@ -48,9 +49,9 @@ export default function PrintPreviewDetail() {
 	);
 
 	const onChanged = useCallback(
-		() => {
+		(newData?: PrintPreviewPayload) => {
 			if (!data) return;
-			setData({...data});
+			setData(newData ? newData : {...data});
 			setChanged(true);
 		},
 		[data]
@@ -231,7 +232,12 @@ export default function PrintPreviewDetail() {
 						onSelect={(key) => setActiveTab(StringUtil.getNonEmpty(key, DEFAULT_TAB))}
 					>
 						<Tab title="Design Zones" eventKey="design-zones">
-
+							{
+								data.printPreview.id && <PrintPreviewDesigner
+									printPreview={data}
+									onChange={onChanged}
+								/>
+							}
 						</Tab>
 					</Tabs>
 				</div>

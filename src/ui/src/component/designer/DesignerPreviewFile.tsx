@@ -2,6 +2,7 @@ import React from "react";
 import {DesignFileStub} from "../../types/DesignFile";
 import {PIXEL_PER_MM} from "../../util/ImageUtil";
 import {ImagezImage} from "../images/ImagezImage";
+import {NumberUtil} from "zavadil-ts-common";
 
 export type DesignerPreviewFileParams = {
 	file: DesignFileStub;
@@ -32,7 +33,12 @@ export default function DesignerPreviewFile(
 				}
 			}
 		>
-			<ImagezImage name={file.imageName} type="Fit" width={maxWidth} height={maxHeight}/>
+			<ImagezImage
+				name={file.imageName}
+				type="Fit"
+				width={NumberUtil.round(maxWidth)}
+				height={NumberUtil.round(maxHeight)}
+			/>
 		</div>
 	)
 }

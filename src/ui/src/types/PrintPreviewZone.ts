@@ -7,6 +7,7 @@ export type PrintPreviewZoneBase = EntityBase & {
 	startYMm: number;
 	widthMm: number;
 	heightMm: number;
+	aspectLocked: boolean;
 }
 
 export type PrintPreviewZone = PrintPreviewZoneBase & {

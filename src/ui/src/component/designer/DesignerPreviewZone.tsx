@@ -40,8 +40,8 @@ export default function DesignerPreviewZone(
 					(file) => <DesignerPreviewFile
 						file={file}
 						scale={scale}
-						maxWidth={previewZone.widthMm}
-						maxHeight={previewZone.heightMm}
+						maxWidth={previewZone.widthMm * PIXEL_PER_MM * scale}
+						maxHeight={previewZone.heightMm * PIXEL_PER_MM * scale}
 					/>
 				)
 			}

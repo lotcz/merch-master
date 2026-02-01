@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from "react";
-import ImageUtil, {PIXEL_PER_MM} from "../../util/ImageUtil";
+import ImageUtil from "../../util/ImageUtil";
 import {ImagezImage} from "../images/ImagezImage";
 import {DesignPayload} from "../../types/Design";
 import {PrintPreviewPayload, PrintPreviewStub} from "../../types/PrintPreview";
@@ -36,8 +36,8 @@ export default function DesignerPreview(
 	const scale = useMemo(
 		() => {
 			return ImageUtil.getMaxScale(
-				preview.imageWidthPx * PIXEL_PER_MM,
-				preview.imageHeightPx * PIXEL_PER_MM,
+				preview.imageWidthPx,
+				preview.imageHeightPx,
 				maxWidth,
 				maxHeight
 			);
@@ -51,8 +51,8 @@ export default function DesignerPreview(
 			draggable={false}
 			style={
 				{
-					width: preview.imageWidthPx * PIXEL_PER_MM * scale,
-					height: preview.imageHeightPx * PIXEL_PER_MM * scale
+					width: preview.imageWidthPx * scale,
+					height: preview.imageHeightPx * scale
 				}
 			}
 		>

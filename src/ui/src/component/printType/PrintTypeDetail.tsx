@@ -202,9 +202,10 @@ export default function PrintTypeDetail() {
 								<Form>
 									{
 										productZones && productZones.map(
-											(productZone) => <div>
+											(productZone, index) => <div>
 												{
 													productZone.id && <Switch
+														key={index}
 														id={`zone-${productZone.id}`}
 														checked={data.zones.includes(productZone.id)}
 														onChange={

@@ -1,15 +1,14 @@
 import React, {MouseEvent} from "react";
-import {DesignFileStub} from "../../types/DesignFile";
 import {PIXEL_PER_MM} from "../../util/ImageUtil";
-import {ImagezImage} from "../images/ImagezImage";
 import {BsArrowDownRight, BsLock, BsTrash, BsUnlock} from "react-icons/bs";
 import {Vector2} from "zavadil-ts-common";
+import {PrintPreviewZoneStub} from "../../types/PrintPreviewZone";
+import {PrintZoneStub} from "../../types/PrintZone";
 
-export type DesignerFileParams = {
-	file: DesignFileStub;
+export type PrintPreviewDesignerZoneParams = {
+	zone?: PrintZoneStub;
+	previewZone: PrintPreviewZoneStub;
 	scale: number;
-	maxWidth: number;
-	maxHeight: number;
 	isSelected: boolean;
 	isManipulating: boolean;
 	onSelected: () => any;
@@ -21,12 +20,11 @@ export type DesignerFileParams = {
 	onLockUnlock: () => any;
 }
 
-export default function DesignerFile(
+export default function PrintPreviewDesignerZone(
 	{
-		file,
+		zone,
+		previewZone,
 		scale,
-		maxHeight,
-		maxWidth,
 		isSelected,
 		onSelected,
 		onStartMove,
@@ -36,19 +34,19 @@ export default function DesignerFile(
 		isManipulating,
 		onDeleted,
 		onLockUnlock
-	}: DesignerFileParams
+	}: PrintPreviewDesignerZoneParams
 ) {
 
 	return (
 		<div
-			className={`design-file ${isSelected ? 'selected' : ''} ${isManipulating ? 'manipulating' : ''}`}
+			className={`print-preview-designer-zone ${isSelected ? 'selected' : ''} ${isManipulating ? 'manipulating' : ''}`}
 			draggable={false}
 			style={
 				{
-					top: file.positionYMm * PIXEL_PER_MM * scale,
-					left: file.positionXMm * PIXEL_PER_MM * scale,
-					width: file.imageWidthMm * PIXEL_PER_MM * scale,
-					height: file.imageHeightMm * PIXEL_PER_MM * scale
+					top: previewZone.startYMm * PIXEL_PER_MM * scale,
+					left: previewZone.startXMm * PIXEL_PER_MM * scale,
+					width: previewZone.widthMm * PIXEL_PER_MM * scale,
+					height: previewZone.heightMm * PIXEL_PER_MM * scale
 				}
 			}
 			onMouseDown={
@@ -57,7 +55,6 @@ export default function DesignerFile(
 					e.preventDefault();
 					if (!isSelected) onSelected();
 					const pos = new Vector2(e.nativeEvent.offsetX, e.nativeEvent.offsetY).multiply(1 / (PIXEL_PER_MM * scale));
-					console.log(pos.toString());
 					onStartMove(pos);
 				}
 			}
@@ -69,7 +66,9 @@ export default function DesignerFile(
 			}
 
 		>
-			<ImagezImage name={file.imageName} type="Fit" width={maxWidth} height={maxHeight}/>
+			<div className="label">
+				{zone?.name}
+			</div>
 			<div
 				className="action-button delete-button"
 				onMouseDown={
@@ -82,7 +81,7 @@ export default function DesignerFile(
 				<BsTrash size={20}/>
 			</div>
 			<div
-				className={`action-button aspect-lock-button ${file.aspectLocked ? 'locked' : 'unlocked'}`}
+				className={`action-button aspect-lock-button ${previewZone.aspectLocked ? 'locked' : 'unlocked'}`}
 				onMouseDown={
 					(e) => {
 						e.stopPropagation();
@@ -92,7 +91,7 @@ export default function DesignerFile(
 				}
 			>
 				{
-					file.aspectLocked ? <BsLock size={20}/> : <BsUnlock size={20}/>
+					previewZone.aspectLocked ? <BsLock size={20}/> : <BsUnlock size={20}/>
 				}
 			</div>
 			<div

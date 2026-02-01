@@ -36,7 +36,7 @@ export default function Designer({design, client, onChange, onError}: DesignerPa
 		[designerAreaRef, previewAreaRef]
 	);
 
-	useEffect(updateAreaSize, []);
+	useEffect(updateAreaSize, [designerAreaRef, previewAreaRef]);
 
 	const [printType, setPrintType] = useState<PrintTypePayload | null>();
 	const [selectedFile, setSelectedFile] = useState<DesignFileStub>();

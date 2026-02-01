@@ -1,6 +1,5 @@
 package eu.zavadil.merchmaster.data.printPreviewZone;
 
-import eu.zavadil.merchmaster.data.printPreview.PrintPreviewBase;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Index;
@@ -17,7 +16,7 @@ import lombok.EqualsAndHashCode;
 		@Index(columnList = "printPreviewId"),
 	}
 )
-public class PrintPreviewZoneStub extends PrintPreviewBase {
+public class PrintPreviewZoneStub extends PrintPreviewZoneBase {
 
 	@Column(name = "print_preview_id")
 	private int printPreviewId;
