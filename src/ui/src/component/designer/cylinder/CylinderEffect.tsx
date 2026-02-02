@@ -1,8 +1,14 @@
+import {useMemo} from "react";
+
 export type CylinderEffectParams = {
 	imageUrl: string;
 	width: number;
 	height: number;
-	verticalAngle: number
+	verticalAngle?: number;
+	slices?: number;
+	radius?: number;
+	startAngle?: number;
+	endAngle?: number;
 }
 
 export default function CylinderEffect(
@@ -10,13 +16,26 @@ export default function CylinderEffect(
 		imageUrl,
 		width,
 		height,
-		verticalAngle
+		verticalAngle = -10,
+		slices = 10,
+		radius = 60,
+		startAngle = -75,
+		endAngle = 75
 	}: CylinderEffectParams
 ) {
-	const slices = 20; // More slices = smoother curve
-	const sliceWidth = 10; // Width in pixels
-	const radius = 60; // How "deep" the cylinder is
+	const totalAngle = useMemo(
+		() => endAngle - startAngle,
+		[startAngle, endAngle]
+	);
 
+	const sliceWidth = useMemo(
+		() => {
+			const totalLength = (2 * Math.PI * radius) * (totalAngle / 360);
+			return Math.ceil(totalLength / slices);
+		},
+		[slices, radius, totalAngle]
+	);
+	
 	return (
 		<div
 			className="cylinder-effect"
@@ -42,7 +61,7 @@ export default function CylinderEffect(
 				}
 			>
 				{[...Array(slices)].map((_, i) => {
-					const angle = (i / slices) * 180 - 90; // Arc from -90 to 90 degrees
+					const angle = startAngle + ((i / slices) * totalAngle);
 					return (
 						<div
 							key={i}

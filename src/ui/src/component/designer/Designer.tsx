@@ -127,6 +127,10 @@ export default function Designer({design, client, onChange, onError}: DesignerPa
 								width={designerAreaSize.x}
 								height={MAX_HEIGHT}
 								verticalAngle={-10}
+								slices={7}
+								radius={150}
+								startAngle={-45}
+								endAngle={45}
 							/>
 						</div>
 					</Stack>
