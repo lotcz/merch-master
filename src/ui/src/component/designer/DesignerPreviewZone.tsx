@@ -58,7 +58,8 @@ export default function DesignerPreviewZone(
 		>
 			{
 				files.map(
-					(file) => <DesignerPreviewFile
+					(file, index) => <DesignerPreviewFile
+						key={index}
 						file={file}
 						zoneScale={zoneScale}
 					/>

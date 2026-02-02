@@ -1,4 +1,4 @@
-import {Col, Container, Row, Spinner} from "react-bootstrap";
+import {Col, Container, Row, Spinner, Stack} from "react-bootstrap";
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {DesignPayload} from "../../types/Design";
 import {PrintTypePayload} from "../../types/PrintType";
@@ -9,6 +9,7 @@ import DesignerMenu from "./DesignerMenu";
 import {Vector2} from "zavadil-ts-common";
 import {PrintPreviewStub} from "../../types/PrintPreview";
 import DesignerPreview from "./DesignerPreview";
+import CylinderEffect from "./cylinder/CylinderEffect";
 
 const MAX_WIDTH = 800;
 const MAX_HEIGHT = 350;
@@ -103,22 +104,32 @@ export default function Designer({design, client, onChange, onError}: DesignerPa
 					/>
 				</Col>
 				<Col md={5} lg={5}>
-					<div ref={designerAreaRef}>
-						{
-							printType ? printType.zones.map(
-								(zone, index) => <DesignerPrintZone
-									key={index}
-									printZone={zone}
-									design={design}
-									onChange={onChange}
-									maxWidth={designerAreaSize.x}
-									maxHeight={MAX_HEIGHT}
-									selectedFile={selectedFile}
-									onFileSelected={setSelectedFile}
-								/>
-							) : <Spinner/>
-						}
-					</div>
+					<Stack direction="horizontal">
+						<div ref={designerAreaRef}>
+							{
+								printType ? printType.zones.map(
+									(zone, index) => <DesignerPrintZone
+										key={index}
+										printZone={zone}
+										design={design}
+										onChange={onChange}
+										maxWidth={designerAreaSize.x}
+										maxHeight={MAX_HEIGHT}
+										selectedFile={selectedFile}
+										onFileSelected={setSelectedFile}
+									/>
+								) : <Spinner/>
+							}
+						</div>
+						<div>
+							<CylinderEffect
+								imageUrl="http://localhost:8080/images/resized/2ff54ff4779b5270637215893ae5f557.png?width=712&type=fit&height=350&token=bc33bb45"
+								width={designerAreaSize.x}
+								height={MAX_HEIGHT}
+								verticalAngle={-10}
+							/>
+						</div>
+					</Stack>
 				</Col>
 				<Col md={4} lg={5}>
 					<div ref={previewAreaRef}>

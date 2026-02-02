@@ -62,7 +62,8 @@ export default function DesignerPreview(
 			<ImagezImage name={preview.imageName} type="Fit" width={maxWidth} height={maxHeight}/>
 			{
 				previewPayload && previewPayload.zones.map(
-					(previewZone) => <DesignerPreviewZone
+					(previewZone, index) => <DesignerPreviewZone
+						key={index}
 						design={design}
 						zones={zones}
 						previewZone={previewZone}

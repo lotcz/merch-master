@@ -120,12 +120,16 @@ export default function DesignerPrintZone({
 			if (isResizing) {
 				const width = pos.x - selectedFile.positionXMm;
 				const height = pos.y - selectedFile.positionYMm;
-				selectedFile.imageWidthMm = width;
-				selectedFile.imageHeightMm = height;
+				selectedFile.imageWidthMm = Math.min(width, printZone.widthMm);
+				selectedFile.imageHeightMm = Math.min(height, printZone.heightMm);
 
 				if (selectedFile.aspectLocked) {
 					const aspect = selectedFile.originalImageWidthPx / selectedFile.originalImageHeightPx;
 					selectedFile.imageHeightMm = selectedFile.imageWidthMm / aspect;
+					if (selectedFile.imageHeightMm > printZone.heightMm) {
+						selectedFile.imageHeightMm = printZone.heightMm;
+						selectedFile.imageWidthMm = printZone.heightMm * aspect;
+					}
 				}
 
 			} else if (moveImagePosition) {
@@ -135,7 +139,7 @@ export default function DesignerPrintZone({
 
 			updateFile(selectedFile);
 		},
-		[isResizing, moveImagePosition, selectedFile, scale, updateFile]
+		[isResizing, moveImagePosition, selectedFile, scale, updateFile, printZone]
 	);
 
 	const files = useMemo(
