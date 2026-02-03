@@ -1,7 +1,7 @@
 import {Spinner} from "react-bootstrap";
 import {Link} from "react-router";
 import React, {useCallback, useContext, useEffect, useState} from "react";
-import {MerchMasterRestClientContext} from "../../client/MerchMasterRestClient";
+import {MerchMasterRestClientContext} from "../../client/merchMaster/MerchMasterRestClient";
 import {UserAlertsContext} from "../../util/UserAlerts";
 import {Product} from "../../types/Product";
 

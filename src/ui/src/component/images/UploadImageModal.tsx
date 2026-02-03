@@ -1,10 +1,10 @@
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {Form, Modal} from 'react-bootstrap';
-import {MerchMasterRestClientContext} from "../../client/MerchMasterRestClient";
 import {UserAlertsContext} from "../../util/UserAlerts";
 import {Img} from "./Img";
 import {SaveButton} from "zavadil-react-common";
 import {ImageHealth} from "../../types/Image";
+import {ImagezRestClientContext} from "../../client/imagez/ImagezClient";
 
 export type UploadImageModalProps = {
 	onClose: () => any;
@@ -12,7 +12,7 @@ export type UploadImageModalProps = {
 }
 
 export function UploadImageModal({onClose, onSelected}: UploadImageModalProps) {
-	const restClient = useContext(MerchMasterRestClientContext);
+	const restClient = useContext(ImagezRestClientContext);
 	const alerts = useContext(UserAlertsContext);
 	const [uploading, setUploading] = useState<boolean>(false);
 	const [file, setFile] = useState<File>();
@@ -34,7 +34,6 @@ export function UploadImageModal({onClose, onSelected}: UploadImageModalProps) {
 			if (!file) return;
 			setUploading(true);
 			restClient
-				.imagez
 				.uploadFile(file)
 				.then((ih) => onSelected(ih.name, ih))
 				.catch(

@@ -1,7 +1,7 @@
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {useNavigate} from "react-router";
 import {DateTime, TablePlaceholder} from "zavadil-react-common";
-import {MerchMasterRestClientContext} from "../../client/MerchMasterRestClient";
+import {MerchMasterRestClientContext} from "../../client/merchMaster/MerchMasterRestClient";
 import {UserAlertsContext} from "../../util/UserAlerts";
 import {Button, Table} from "react-bootstrap";
 import ColorPreview from "../productColor/ColorPreview";

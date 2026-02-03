@@ -1,5 +1,5 @@
 import {Page, PagingRequest, PagingUtil, RestClient} from "zavadil-ts-common";
-import {Design, DesignPayload} from "../types/Design";
+import {Design, DesignPayload} from "../../types/Design";
 
 export class DesignsClient {
 

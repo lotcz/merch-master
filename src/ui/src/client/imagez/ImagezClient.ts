@@ -1,5 +1,7 @@
 import {RestClient, StringUtil} from "zavadil-ts-common";
-import {ImageHealth} from "../types/Image";
+import {ImageHealth} from "../../types/Image";
+import {createContext} from "react";
+import conf from "../../config/conf.json";
 
 export class ImagezClient {
 
@@ -42,3 +44,5 @@ export class ImagezClient {
 	}
 
 }
+
+export const ImagezRestClientContext = createContext(new ImagezClient(new RestClient(conf.API_URL)));

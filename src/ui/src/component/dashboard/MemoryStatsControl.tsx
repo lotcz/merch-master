@@ -2,7 +2,7 @@ import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {UserAlertsContext} from "../../util/UserAlerts";
 import {Card, Placeholder} from "react-bootstrap";
 import {JavaHeapControl} from "zavadil-react-common";
-import {MerchMasterRestClientContext} from "../../client/MerchMasterRestClient";
+import {MerchMasterRestClientContext} from "../../client/merchMaster/MerchMasterRestClient";
 import {MerchMasterStats} from "../../types/Stats";
 
 function MemoryStatsControl() {

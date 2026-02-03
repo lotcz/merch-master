@@ -2,7 +2,7 @@ import React, {useCallback, useContext} from 'react';
 import {NavLink, useNavigate} from "react-router";
 import {UserAlertsContext} from '../util/UserAlerts';
 import {Localize} from "zavadil-react-common";
-import {MerchMasterRestClientContext} from "../client/MerchMasterRestClient";
+import {MerchMasterRestClientContext} from "../client/merchMaster/MerchMasterRestClient";
 
 function MainMenu() {
 	const navigate = useNavigate();

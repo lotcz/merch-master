@@ -1,19 +1,28 @@
 import {createContext} from "react";
-import conf from "../config/conf.json";
-import {RestClientWithOAuth} from "zavadil-ts-common";
-import {MerchMasterStats} from "../types/Stats";
-import {ImagezClient} from "./ImagezClient";
+import conf from "../../config/conf.json";
+import {RefreshTokenPayload, RestClientWithOAuth} from "zavadil-ts-common";
+import {MerchMasterStats} from "../../types/Stats";
 import {ProductsClient} from "./ProductsClient";
 import {PrintTypesClient} from "./PrintTypesClient";
 import {DesignsClient} from "./DesignsClient";
 import {ProductColorsClient} from "./ProductColorsClient";
-import {DesignerRestClient} from "./DesignerRestClient";
 import {PrintZonesClient} from "./PrintZonesClient";
 import {PrintPreviewsClient} from "./PrintPreviewsClient";
+import {OAuthRefreshTokenProvider} from "zavadil-ts-common/dist/oauth/tokenprovider/OAuthRefreshTokenProvider";
+
+class NoOauthToken implements OAuthRefreshTokenProvider {
+
+	getRefreshToken(): Promise<RefreshTokenPayload> {
+		throw new Error("This client does not support OAuth!");
+		return Promise.reject("This client does not support OAuth!");
+	}
+
+	reset(): Promise<any> {
+		return Promise.resolve();
+	}
+}
 
 export class MerchMasterRestClient extends RestClientWithOAuth {
-
-	public imagez: ImagezClient;
 
 	public products: ProductsClient;
 
@@ -27,12 +36,9 @@ export class MerchMasterRestClient extends RestClientWithOAuth {
 
 	public productColors: ProductColorsClient;
 
-	public designer: DesignerRestClient;
+	constructor(useOauth: boolean) {
+		super(conf.API_URL, useOauth ? undefined : new NoOauthToken());
 
-	constructor() {
-		super(conf.API_URL);
-
-		this.imagez = new ImagezClient(this);
 		this.products = new ProductsClient(this);
 		this.printTypes = new PrintTypesClient(this);
 		this.printZones = new PrintZonesClient(this);
@@ -40,7 +46,6 @@ export class MerchMasterRestClient extends RestClientWithOAuth {
 		this.designs = new DesignsClient(this);
 		this.productColors = new ProductColorsClient(this);
 
-		this.designer = new DesignerRestClient();
 	}
 
 	version(): Promise<string> {
@@ -53,4 +58,4 @@ export class MerchMasterRestClient extends RestClientWithOAuth {
 
 }
 
-export const MerchMasterRestClientContext = createContext(new MerchMasterRestClient());
+export const MerchMasterRestClientContext = createContext(new MerchMasterRestClient(false));

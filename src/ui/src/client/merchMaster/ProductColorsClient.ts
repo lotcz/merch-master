@@ -1,5 +1,5 @@
 import {EntityClient, RestClient} from "zavadil-ts-common";
-import {ProductColorStub} from "../types/ProductColor";
+import {ProductColorStub} from "../../types/ProductColor";
 
 export class ProductColorsClient extends EntityClient<ProductColorStub> {
 

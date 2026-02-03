@@ -1,5 +1,5 @@
 import {RestClient} from "zavadil-ts-common";
-import {PrintTypeAdminPayload, PrintTypeStub} from "../types/PrintType";
+import {PrintTypeAdminPayload, PrintTypeStub} from "../../types/PrintType";
 
 export class PrintTypesClient {
 

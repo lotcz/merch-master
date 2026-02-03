@@ -67,6 +67,7 @@ public class SecurityConfig {
 					auth
 						.requestMatchers(
 							String.format("%s/status/**", this.apiBaseUrl),
+							String.format("%s/imagez/**", this.apiBaseUrl),
 							String.format("%s/designer/**", this.apiBaseUrl)
 						)
 						.permitAll()

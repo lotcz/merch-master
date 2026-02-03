@@ -1,5 +1,5 @@
 import {RestClient} from "zavadil-ts-common";
-import {PrintPreviewPayload, PrintPreviewStub} from "../types/PrintPreview";
+import {PrintPreviewPayload, PrintPreviewStub} from "../../types/PrintPreview";
 
 export class PrintPreviewsClient {
 

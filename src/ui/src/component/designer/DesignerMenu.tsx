@@ -1,7 +1,7 @@
 import {Form, Spinner} from "react-bootstrap";
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useContext, useEffect, useState} from "react";
 import {PrintTypeStub} from "../../types/PrintType";
-import {DesignerRestClient} from "../../client/DesignerRestClient";
+import {DesignerRestClientContext} from "../../client/designer/DesignerRestClient";
 import {Product} from "../../types/Product";
 import {EntityWithNameIdSelect} from "zavadil-react-common";
 import {ProductColorStub} from "../../types/ProductColor";
@@ -14,10 +14,10 @@ export type DesignerMenuParams = {
 	onColorChange: (colorId: number) => any;
 	onPrintTypeChange: (printTypeId: number) => any;
 	onError: (error: string) => any;
-	client: DesignerRestClient;
 }
 
-export default function DesignerMenu({client, productId, colorId, printTypeId, onPrintTypeChange, onColorChange, onError}: DesignerMenuParams) {
+export default function DesignerMenu({productId, colorId, printTypeId, onPrintTypeChange, onColorChange, onError}: DesignerMenuParams) {
+	const client = useContext(DesignerRestClientContext);
 	const [product, setProduct] = useState<Product>();
 
 	const loadProduct = useCallback(

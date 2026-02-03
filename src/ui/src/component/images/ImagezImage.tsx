@@ -1,6 +1,6 @@
 import {useContext, useEffect, useState} from "react";
-import {MerchMasterRestClientContext} from "../../client/MerchMasterRestClient";
 import {Img} from "./Img";
+import {ImagezRestClientContext} from "../../client/imagez/ImagezClient";
 
 export type ImagezImageProps = {
 	name?: string | null;
@@ -13,14 +13,13 @@ export type ImagezImageProps = {
 };
 
 export function ImagezImage({name, type, width, height, ext, verticalAlign, horizontalAlign}: ImagezImageProps) {
-	const restClient = useContext(MerchMasterRestClientContext);
+	const restClient = useContext(ImagezRestClientContext);
 	const [url, setUrl] = useState<string | null>(null);
 
 	useEffect(
 		() => {
 			if (name) {
 				restClient
-					.imagez
 					.getResizedUrl(name, type, width, height, ext, verticalAlign, horizontalAlign)
 					.then(setUrl);
 			} else {

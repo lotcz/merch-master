@@ -1,8 +1,8 @@
 import {Col, Container, Row, Spinner, Stack} from "react-bootstrap";
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useCallback, useContext, useEffect, useRef, useState} from "react";
 import {DesignPayload} from "../../types/Design";
 import {PrintTypePayload} from "../../types/PrintType";
-import {DesignerRestClient} from "../../client/DesignerRestClient";
+import {DesignerRestClientContext} from "../../client/designer/DesignerRestClient";
 import DesignerPrintZone from "./DesignerPrintZone";
 import {DesignFileStub} from "../../types/DesignFile";
 import DesignerMenu from "./DesignerMenu";
@@ -15,10 +15,10 @@ export type DesignerParams = {
 	design: DesignPayload;
 	onChange: (design: DesignPayload) => any;
 	onError: (error: string) => any;
-	client: DesignerRestClient;
 }
 
-export default function Designer({design, client, onChange, onError}: DesignerParams) {
+export default function Designer({design, onChange, onError}: DesignerParams) {
+	const client = useContext(DesignerRestClientContext);
 	const designerAreaRef = useRef<HTMLDivElement>(null);
 	const previewAreaRef = useRef<HTMLDivElement>(null);
 	const [designerAreaSize, setDesignerAreaSize] = useState<Vector2>(new Vector2(DESIGNER_MAX_WIDTH, DESIGNER_MAX_HEIGHT));
@@ -81,7 +81,6 @@ export default function Designer({design, client, onChange, onError}: DesignerPa
 			<Row>
 				<Col md={3} lg={2}>
 					<DesignerMenu
-						client={client}
 						productId={printType.printType.productId}
 						colorId={design.design.productColorId}
 						printTypeId={design.design.printTypeId}
@@ -131,19 +130,6 @@ export default function Designer({design, client, onChange, onError}: DesignerPa
 									productZones={printType.zones}
 									maxWidth={previewAreaSize.x}
 									maxHeight={DESIGNER_MAX_HEIGHT}
-									onError={onError}
-								/>
-							) : <Spinner/>
-						}
-						{
-							previews ? previews.map(
-								(preview, index) => <DesignerPreview
-									key={index}
-									preview={preview}
-									design={design}
-									productZones={printType.zones}
-									maxWidth={previewAreaSize.x * 2}
-									maxHeight={DESIGNER_MAX_HEIGHT * 2}
 									onError={onError}
 								/>
 							) : <Spinner/>

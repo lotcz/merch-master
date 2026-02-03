@@ -15,23 +15,23 @@ import {
 	UserAlertsWidget
 } from "zavadil-react-common";
 import {Spinner} from "react-bootstrap";
-import {BrowserRouter} from "react-router";
 import {WaitingDialogContext, WaitingDialogContextContent} from "../util/WaitingDialogContext";
 import WaitingDialog, {WaitingDialogProps} from "./general/WaitingDialog";
 import {BsRepeat} from "react-icons/bs";
-import {MerchMasterRestClientContext} from "../client/MerchMasterRestClient";
 import {UploadImageModal, UploadImageModalProps} from "./images/UploadImageModal";
 import {UploadImageDialogContext, UploadImageDialogContextContent} from "../util/UploadImageDialogContext";
+import {MerchMasterRestClient, MerchMasterRestClientContext} from "../client/merchMaster/MerchMasterRestClient";
 
 export default function App() {
 	const userAlerts = useContext(UserAlertsContext);
-	const restClient = useContext(MerchMasterRestClientContext);
 	const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogProps>();
 	const [waitingDialog, setWaitingDialog] = useState<WaitingDialogProps>();
 	const [uploadImageDialog, setUploadImageDialog] = useState<UploadImageModalProps>();
 	const [session, setSession] = useState<UserSession>(new UserSession());
 	const [initialized, setInitialized] = useState<boolean>();
 	const [showAlerts, setShowAlerts] = useState<boolean>();
+
+	const restClient = useMemo(() => new MerchMasterRestClient(true), []);
 
 	const updateSessionValues = useCallback(
 		(s: UserSession) => {
@@ -141,12 +141,12 @@ export default function App() {
 	);
 
 	return (
-		<UserSessionContext.Provider value={session}>
-			<UserSessionUpdateContext.Provider value={saveSession}>
-				<UploadImageDialogContext.Provider value={uploadImageDialogContext}>
-					<WaitingDialogContext.Provider value={waitingDialogContext}>
-						<ConfirmDialogContext.Provider value={confirmDialogContext}>
-							<BrowserRouter>
+		<MerchMasterRestClientContext.Provider value={restClient}>
+			<UserSessionContext.Provider value={session}>
+				<UserSessionUpdateContext.Provider value={saveSession}>
+					<UploadImageDialogContext.Provider value={uploadImageDialogContext}>
+						<WaitingDialogContext.Provider value={waitingDialogContext}>
+							<ConfirmDialogContext.Provider value={confirmDialogContext}>
 								<div className="min-h-100 d-flex flex-column align-items-stretch">
 									{
 										(initialized === undefined) && <Spread>
@@ -188,11 +188,11 @@ export default function App() {
 										showAlerts && <UserAlertsWidget userAlerts={userAlerts}/>
 									}
 								</div>
-							</BrowserRouter>
-						</ConfirmDialogContext.Provider>
-					</WaitingDialogContext.Provider>
-				</UploadImageDialogContext.Provider>
-			</UserSessionUpdateContext.Provider>
-		</UserSessionContext.Provider>
+							</ConfirmDialogContext.Provider>
+						</WaitingDialogContext.Provider>
+					</UploadImageDialogContext.Provider>
+				</UserSessionUpdateContext.Provider>
+			</UserSessionContext.Provider>
+		</MerchMasterRestClientContext.Provider>
 	)
 }

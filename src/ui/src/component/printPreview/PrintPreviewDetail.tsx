@@ -3,7 +3,7 @@ import {useNavigate, useParams, useSearchParams} from "react-router";
 import conf from "../../config/conf.json";
 import React, {useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {NumberUtil, StringUtil} from "zavadil-ts-common";
-import {MerchMasterRestClientContext} from "../../client/MerchMasterRestClient";
+import {MerchMasterRestClientContext} from "../../client/merchMaster/MerchMasterRestClient";
 import {UserAlertsContext} from "../../util/UserAlerts";
 import RefreshIconButton from "../general/RefreshIconButton";
 import {ConfirmDialogContext, DeleteButton, SaveButton} from "zavadil-react-common";

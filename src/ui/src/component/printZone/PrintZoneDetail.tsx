@@ -2,7 +2,7 @@ import {Col, Form, Row, Spinner, Stack} from "react-bootstrap";
 import {useNavigate, useParams} from "react-router";
 import React, {useCallback, useContext, useEffect, useState} from "react";
 import {NumberUtil} from "zavadil-ts-common";
-import {MerchMasterRestClientContext} from "../../client/MerchMasterRestClient";
+import {MerchMasterRestClientContext} from "../../client/merchMaster/MerchMasterRestClient";
 import {UserAlertsContext} from "../../util/UserAlerts";
 import RefreshIconButton from "../general/RefreshIconButton";
 import {ConfirmDialogContext, DeleteButton, SaveButton} from "zavadil-react-common";

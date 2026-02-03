@@ -2,7 +2,7 @@ import {Col, Form, Row, Spinner, Stack, Tab, Tabs} from "react-bootstrap";
 import {useNavigate, useParams, useSearchParams} from "react-router";
 import React, {useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {NumberUtil, StringUtil} from "zavadil-ts-common";
-import {MerchMasterRestClientContext} from "../../client/MerchMasterRestClient";
+import {MerchMasterRestClientContext} from "../../client/merchMaster/MerchMasterRestClient";
 import {UserAlertsContext} from "../../util/UserAlerts";
 import RefreshIconButton from "../general/RefreshIconButton";
 import {ConfirmDialogContext, DeleteButton, SaveButton, Switch} from "zavadil-react-common";
@@ -202,10 +202,9 @@ export default function PrintTypeDetail() {
 								<Form>
 									{
 										productZones && productZones.map(
-											(productZone, index) => <div>
+											(productZone, index) => <div key={index}>
 												{
 													productZone.id && <Switch
-														key={index}
 														id={`zone-${productZone.id}`}
 														checked={data.zones.includes(productZone.id)}
 														onChange={

@@ -3,8 +3,8 @@ import {DesignFileStub} from "../../../../types/DesignFile";
 import {PrintPreviewZoneStub} from "../../../../types/PrintPreviewZone";
 import {StringUtil, Vector2} from "zavadil-ts-common";
 import CylinderEffect from "./CylinderEffect";
-import {MerchMasterRestClientContext} from "../../../../client/MerchMasterRestClient";
 import {PIXEL_PER_MM} from "../../../../util/ImageUtil";
+import {ImagezRestClientContext} from "../../../../client/imagez/ImagezClient";
 
 export type DesignerPreviewCylinderZoneParams = {
 	files: Array<DesignFileStub>;
@@ -35,7 +35,7 @@ export default function DesignerPreviewCylinderZone({
 	designerWidth,
 	onError
 }: DesignerPreviewCylinderZoneParams) {
-	const restClient = useContext(MerchMasterRestClientContext);
+	const imagezClient = useContext(ImagezRestClientContext);
 
 	const width = useMemo(() => Math.round(previewZone.widthPx * previewScale), [previewZone, previewScale]);
 	const height = useMemo(() => Math.round(previewZone.heightPx * previewScale), [previewZone, previewScale]);
@@ -55,8 +55,7 @@ export default function DesignerPreviewCylinderZone({
 			if (StringUtil.isBlank(fileNames)) return;
 			const names = fileNames.split(';');
 			const promises: Array<Promise<FileImageUrl>> = names.map(
-				(n): Promise<FileImageUrl> => restClient.imagez
-					.getResizedUrl(n, 'Fit', designerWidth, designerHeight)
+				(n): Promise<FileImageUrl> => imagezClient.getResizedUrl(n, 'Fit', designerWidth, designerHeight)
 					.then(
 						(url): FileImageUrl => {
 							return {
@@ -79,7 +78,7 @@ export default function DesignerPreviewCylinderZone({
 					setFileUrls(urls);
 				});
 		},
-		[fileNames, designerWidth, designerHeight, restClient, onError]
+		[fileNames, designerWidth, designerHeight, imagezClient, onError]
 	);
 
 	useEffect(loadFileUrls, [fileNames, designerWidth, designerHeight]);

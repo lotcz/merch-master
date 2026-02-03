@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {MerchMasterRestClientContext} from "../client/MerchMasterRestClient";
+import {MerchMasterRestClientContext} from "../client/merchMaster/MerchMasterRestClient";
 
 function Footer() {
 	const restClient = useContext(MerchMasterRestClientContext);

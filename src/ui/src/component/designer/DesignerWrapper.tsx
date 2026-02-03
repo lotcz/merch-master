@@ -1,22 +1,26 @@
 import {Alert, Button, Spinner} from "react-bootstrap";
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, {useCallback, useContext, useEffect, useState} from "react";
 import {StringUtil} from "zavadil-ts-common";
 import {DesignPayload} from "../../types/Design";
-import {DesignerRestClient} from "../../client/DesignerRestClient";
 import Designer from "./Designer";
+import {DesignerRestClientContext} from "../../client/designer/DesignerRestClient";
+import {useParams} from "react-router";
 
-export type DesignerParams = {
-	uuid?: string | null;
-	onFinished: (uuid: string) => any;
-}
-
-export default function DesignerWrapper({uuid, onFinished}: DesignerParams) {
-	const client = useMemo(() => new DesignerRestClient(), []);
+export default function DesignerWrapper() {
+	const client = useContext(DesignerRestClientContext);
+	const {uuid} = useParams();
 
 	const [design, setDesign] = useState<DesignPayload>();
 	const [changed, setChanged] = useState<boolean>(false);
 	const [saving, setSaving] = useState<boolean>(false);
 	const [error, setError] = useState<string>();
+
+	const onFinished = useCallback(
+		() => {
+
+		},
+		[]
+	);
 
 	const loadDesign = useCallback(
 		() => {
@@ -52,7 +56,7 @@ export default function DesignerWrapper({uuid, onFinished}: DesignerParams) {
 							if (StringUtil.isBlank(design.design.uuid)) {
 								setError("No UUID assigned!");
 							} else {
-								onFinished(design.design.uuid);
+								onFinished();
 							}
 						} else {
 							setDesign(d);
@@ -66,13 +70,13 @@ export default function DesignerWrapper({uuid, onFinished}: DesignerParams) {
 	);
 
 	if (!design) {
+		if (error) return <Alert variant="danger">{error}</Alert>
 		return <Spinner/>
 	}
 
 	return (
-		<div>
+		<div className="designer-wrapper">
 			<Designer
-				client={client}
 				design={design}
 				onChange={
 					(d) => {

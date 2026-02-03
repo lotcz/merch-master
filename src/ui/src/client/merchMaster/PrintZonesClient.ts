@@ -1,5 +1,5 @@
 import {RestClient} from "zavadil-ts-common";
-import {PrintZoneStub} from "../types/PrintZone";
+import {PrintZoneStub} from "../../types/PrintZone";
 
 export class PrintZonesClient {
 

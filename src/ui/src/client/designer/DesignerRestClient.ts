@@ -1,10 +1,11 @@
-import conf from "../config/conf.json";
+import conf from "../../config/conf.json";
 import {RestClient} from "zavadil-ts-common";
-import {Product} from "../types/Product";
-import {PrintTypePayload, PrintTypeStub} from "../types/PrintType";
-import {DesignPayload} from "../types/Design";
-import {ProductColorStub} from "../types/ProductColor";
-import {PrintPreviewPayload} from "../types/PrintPreview";
+import {Product} from "../../types/Product";
+import {PrintTypePayload, PrintTypeStub} from "../../types/PrintType";
+import {DesignPayload} from "../../types/Design";
+import {ProductColorStub} from "../../types/ProductColor";
+import {PrintPreviewPayload} from "../../types/PrintPreview";
+import {createContext} from "react";
 
 /**
  * Client for public Designer - all endpoints should be unprotected
@@ -81,3 +82,5 @@ export class DesignerRestClient extends RestClient {
 	}
 
 }
+
+export const DesignerRestClientContext = createContext(new DesignerRestClient());

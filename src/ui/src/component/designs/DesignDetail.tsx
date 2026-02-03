@@ -2,13 +2,14 @@ import {Col, Form, Row, Spinner, Stack, Tab, Table, Tabs} from "react-bootstrap"
 import {useNavigate, useParams, useSearchParams} from "react-router";
 import React, {useCallback, useContext, useEffect, useState} from "react";
 import {NumberUtil, StringUtil} from "zavadil-ts-common";
-import {MerchMasterRestClientContext} from "../../client/MerchMasterRestClient";
+import {MerchMasterRestClientContext} from "../../client/merchMaster/MerchMasterRestClient";
 import {UserAlertsContext} from "../../util/UserAlerts";
 import RefreshIconButton from "../general/RefreshIconButton";
 import {ConfirmDialogContext, DeleteButton, SaveButton} from "zavadil-react-common";
 import BackIconLink from "../general/BackIconLink";
 import {DesignPayload} from "../../types/Design";
 import Designer from "../designer/Designer";
+import {DesignerRestClientContext} from "../../client/designer/DesignerRestClient";
 
 const TAB_PARAM_NAME = 'tab';
 const DEFAULT_TAB = 'designer';
@@ -23,6 +24,7 @@ export default function DesignDetail() {
 	const navigate = useNavigate();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const restClient = useContext(MerchMasterRestClientContext);
+	const designerClient = useContext(DesignerRestClientContext);
 	const userAlerts = useContext(UserAlertsContext);
 	const confirmDialog = useContext(ConfirmDialogContext);
 	const [activeTab, setActiveTab] = useState<string>();
@@ -66,12 +68,12 @@ export default function DesignDetail() {
 					.catch((e: Error) => userAlerts.err(e));
 			} else {
 				// create new design
-				restClient.designer.createNewDesign(Number(productId))
+				designerClient.createNewDesign(Number(productId))
 					.then(setData)
 					.catch((e: Error) => userAlerts.err(e));
 			}
 		},
-		[id, restClient, userAlerts, productId]
+		[id, restClient, designerClient, userAlerts, productId]
 	);
 
 	useEffect(reload, [id]);
@@ -190,7 +192,6 @@ export default function DesignDetail() {
 				<div>
 					{
 						activeTab === 'designer' && <Designer
-							client={restClient.designer}
 							design={data}
 							onChange={onChanged}
 							onError={(e) => userAlerts.err(e)}
