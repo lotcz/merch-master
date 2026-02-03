@@ -13,4 +13,6 @@ public class PrintTypePayload {
 
 	private List<PrintZoneStub> zones;
 
+	private List<PrintPreviewPayload> previews;
+
 }

@@ -1,4 +1,4 @@
-package eu.zavadil.merchmaster.data.printTypeZone;
+package eu.zavadil.merchmaster.data.printType.printTypeZone;
 
 import jakarta.persistence.*;
 import lombok.Data;

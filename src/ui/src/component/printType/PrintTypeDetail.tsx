@@ -10,6 +10,7 @@ import BackIconLink from "../general/BackIconLink";
 import {PrintTypeAdminPayload} from "../../types/PrintType";
 import ProductPreview from "../products/ProductPreview";
 import {PrintZoneStub} from "../../types/PrintZone";
+import {PrintPreviewStub} from "../../types/PrintPreview";
 
 const TAB_PARAM_NAME = 'tab';
 const DEFAULT_TAB = 'print-zones';
@@ -28,7 +29,7 @@ export default function PrintTypeDetail() {
 	const confirmDialog = useContext(ConfirmDialogContext);
 	const [activeTab, setActiveTab] = useState<string>(DEFAULT_TAB);
 	const [data, setData] = useState<PrintTypeAdminPayload>();
-	const [productZones, setProductZones] = useState<Array<PrintZoneStub>>();
+
 	const [changed, setChanged] = useState<boolean>(false);
 	const [deleting, setDeleting] = useState<boolean>(false);
 	const [saving, setSaving] = useState<boolean>(false);
@@ -57,6 +58,8 @@ export default function PrintTypeDetail() {
 		[data]
 	);
 
+	const [productZones, setProductZones] = useState<Array<PrintZoneStub>>();
+
 	const loadZones = useCallback(
 		() => {
 			setProductZones(undefined);
@@ -69,6 +72,21 @@ export default function PrintTypeDetail() {
 	);
 
 	useEffect(loadZones, [effectiveProductId]);
+
+	const [productPreviews, setProductPreviews] = useState<Array<PrintPreviewStub>>();
+
+	const loadPreviews = useCallback(
+		() => {
+			setProductPreviews(undefined);
+			if (!effectiveProductId) return;
+			restClient.printPreviews
+				.loadByProduct(effectiveProductId)
+				.then(setProductPreviews);
+		},
+		[restClient, effectiveProductId]
+	);
+
+	useEffect(loadPreviews, [effectiveProductId]);
 
 	const reload = useCallback(
 		() => {
@@ -88,7 +106,8 @@ export default function PrintTypeDetail() {
 							name: '',
 							productId: NumberUtil.parseNumber(productId) || 0
 						},
-						zones: []
+						zones: [],
+						previews: []
 					}
 				);
 			}
@@ -197,35 +216,70 @@ export default function PrintTypeDetail() {
 						activeKey={activeTab}
 						onSelect={(key) => setActiveTab(StringUtil.getNonEmpty(key, DEFAULT_TAB))}
 					>
-						<Tab title="Print Zones" eventKey="print-zones">
+						<Tab title="Display" eventKey="print-zones">
 							<div className="p-2">
 								<Form>
-									{
-										productZones && productZones.map(
-											(productZone, index) => <div key={index}>
-												{
-													productZone.id && <Switch
-														id={`zone-${productZone.id}`}
-														checked={data.zones.includes(productZone.id)}
-														onChange={
-															(checked) => {
-																if (!productZone.id) return;
-																const exists = data.zones.includes(productZone.id);
-																if (exists && !checked) {
-																	data.zones = data.zones.filter(z => z !== productZone.id);
+									<Stack direction="horizontal" gap={5} className="align-items-start">
+										<div>
+											<h2>Zones</h2>
+											{
+												productZones && productZones.map(
+													(productZone, index) => <div key={index}>
+														{
+															productZone.id && <Switch
+																id={`zone-${productZone.id}`}
+																checked={data.zones.includes(productZone.id)}
+																onChange={
+																	(checked) => {
+																		if (!productZone.id) return;
+																		const exists = data.zones.includes(productZone.id);
+																		if (exists && !checked) {
+																			data.zones = data.zones.filter(z => z !== productZone.id);
+																		}
+																		if (checked && !exists) {
+																			data.zones.push(productZone.id);
+																		}
+																		onChanged();
+																	}
 																}
-																if (checked && !exists) {
-																	data.zones.push(productZone.id);
-																}
-																onChanged();
-															}
+																label={productZone.name}
+															/>
 														}
-														label={productZone.name}
-													/>
-												}
-											</div>
-										)
-									}
+													</div>
+												)
+											}
+										</div>
+										<div>
+											<h2>Previews</h2>
+
+											{
+												productPreviews && productPreviews.map(
+													(productPreview, index) => <div key={index}>
+														{
+															productPreview.id && <Switch
+																id={`zone-${productPreview.id}`}
+																checked={data.previews.includes(productPreview.id)}
+																onChange={
+																	(checked) => {
+																		if (!productPreview.id) return;
+																		const exists = data.previews.includes(productPreview.id);
+																		if (exists && !checked) {
+																			data.previews = data.previews.filter(z => z !== productPreview.id);
+																		}
+																		if (checked && !exists) {
+																			data.previews.push(productPreview.id);
+																		}
+																		onChanged();
+																	}
+																}
+																label={productPreview.name}
+															/>
+														}
+													</div>
+												)
+											}
+										</div>
+									</Stack>
 								</Form>
 							</div>
 						</Tab>

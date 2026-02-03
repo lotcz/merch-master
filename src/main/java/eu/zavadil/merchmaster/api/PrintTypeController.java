@@ -1,12 +1,12 @@
 package eu.zavadil.merchmaster.api;
 
 import eu.zavadil.merchmaster.api.payload.PrintTypeAdminPayload;
-import eu.zavadil.merchmaster.data.printPreview.PrintPreviewStubRepository;
 import eu.zavadil.merchmaster.data.printType.PrintTypeStub;
 import eu.zavadil.merchmaster.data.printType.PrintTypeStubRepository;
-import eu.zavadil.merchmaster.data.printTypeZone.PrintTypeZone;
-import eu.zavadil.merchmaster.data.printTypeZone.PrintTypeZoneRepository;
-import eu.zavadil.merchmaster.data.printZone.PrintZoneStubRepository;
+import eu.zavadil.merchmaster.data.printType.printTypePreview.PrintTypePreview;
+import eu.zavadil.merchmaster.data.printType.printTypePreview.PrintTypePreviewRepository;
+import eu.zavadil.merchmaster.data.printType.printTypeZone.PrintTypeZone;
+import eu.zavadil.merchmaster.data.printType.printTypeZone.PrintTypeZoneRepository;
 import eu.zavadil.merchmaster.service.PrintTypesService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -25,13 +25,10 @@ public class PrintTypeController {
 	PrintTypeStubRepository stubRepository;
 
 	@Autowired
-	PrintZoneStubRepository zoneStubRepository;
+	PrintTypePreviewRepository printTypePreviewRepository;
 
 	@Autowired
 	PrintTypeZoneRepository printTypeZoneRepository;
-
-	@Autowired
-	PrintPreviewStubRepository previewStubRepository;
 
 	@Autowired
 	PrintTypesService printTypesService;
@@ -51,6 +48,8 @@ public class PrintTypeController {
 		stub = this.stubRepository.save(stub);
 		int printTypeId = stub.getId();
 
+		/* zones */
+
 		payload.getZones().forEach(
 			zoneId -> {
 				PrintTypeZone ptz = new PrintTypeZone();
@@ -65,10 +64,23 @@ public class PrintTypeController {
 			payload.getZones()
 		);
 
-		PrintTypeAdminPayload response = new PrintTypeAdminPayload();
-		response.setPrintType(stub);
-		response.setZones(payload.getZones());
-		return response;
+		/* previews */
+
+		payload.getPreviews().forEach(
+			previewId -> {
+				PrintTypePreview ptp = new PrintTypePreview();
+				ptp.setPrintTypeId(printTypeId);
+				ptp.setPrintPreviewId(previewId);
+				this.printTypePreviewRepository.save(ptp);
+			}
+		);
+
+		this.printTypePreviewRepository.deleteAllByPrintTypeIdAndIdNotIn(
+			printTypeId,
+			payload.getPreviews()
+		);
+
+		return this.load(printTypeId);
 	}
 
 	@PostMapping("")

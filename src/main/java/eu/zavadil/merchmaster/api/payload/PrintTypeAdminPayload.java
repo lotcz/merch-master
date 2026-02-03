@@ -12,4 +12,6 @@ public class PrintTypeAdminPayload {
 
 	private List<Integer> zones;
 
+	private List<Integer> previews;
+
 }

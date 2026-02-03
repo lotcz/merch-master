@@ -12,19 +12,17 @@ export type CylinderEffectParams = {
 	endAngle?: number;
 }
 
-export default function CylinderEffect(
-	{
-		imageUrl,
-		width,
-		height,
-		verticalAngle = -10,
-		perspective = -10,
-		slices = 10,
-		radius = 60,
-		startAngle = -75,
-		endAngle = 75
-	}: CylinderEffectParams
-) {
+export default function CylinderEffect({
+	imageUrl,
+	width,
+	height,
+	verticalAngle = -10,
+	perspective = -10,
+	slices = 10,
+	radius = 60,
+	startAngle = -75,
+	endAngle = 75
+}: CylinderEffectParams) {
 	const totalAngle = useMemo(
 		() => endAngle - startAngle,
 		[startAngle, endAngle]
@@ -74,7 +72,6 @@ export default function CylinderEffect(
 								backgroundImage: `url(${imageUrl})`,
 								backgroundSize: `${slices * sliceWidth}px 100%`,
 								backgroundPosition: `-${i * sliceWidth}px 0`,
-								// The "Magic": Rotate and push forward
 								transform: `rotateY(${angle}deg) translateZ(${radius}px)`,
 								backfaceVisibility: 'hidden',
 							}}

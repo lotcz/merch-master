@@ -1,4 +1,4 @@
-package eu.zavadil.merchmaster.data.printTypeZone;
+package eu.zavadil.merchmaster.data.printType.printTypeZone;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -8,15 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface PrintTypeZoneRepository extends JpaRepository<PrintTypeZone, PrintTypeZoneId> {
-
-	@Query(
-		"""
-				select ptz.printZoneId
-				from PrintTypeZone ptz
-				where ptz.printTypeId = :printTypeId
-			"""
-	)
-	List<Integer> findAllZoneIdsByPrintTypeId(int printTypeId);
 
 	@Modifying
 	@Transactional

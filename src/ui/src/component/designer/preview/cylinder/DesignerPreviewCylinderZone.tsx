@@ -122,14 +122,22 @@ export default function DesignerPreviewCylinderZone({
 		[]
 	);
 
-	const canvasAsUrl = useMemo(
+	const context = useMemo(
+		() => canvas.getContext('2d'),
+		[canvas]
+	);
+
+	useEffect(
 		() => {
 			canvas.width = width;
 			canvas.height = height;
+		},
+		[canvas, width, height]
+	);
 
-			const context = canvas.getContext('2d');
+	const canvasAsUrl = useMemo(
+		() => {
 			if (!context) return;
-
 			context.clearRect(0, 0, width, height);
 
 			files.forEach(
@@ -150,7 +158,7 @@ export default function DesignerPreviewCylinderZone({
 			return canvas.toDataURL();
 
 		},
-		[canvas, width, height, zoneScale, files, fileImages]
+		[canvas, context, width, height, zoneScale, files, fileImages]
 	);
 
 	return (

@@ -7,7 +7,6 @@ import DesignerPrintZone from "./DesignerPrintZone";
 import {DesignFileStub} from "../../types/DesignFile";
 import DesignerMenu from "./DesignerMenu";
 import {Vector2} from "zavadil-ts-common";
-import {PrintPreviewPayload} from "../../types/PrintPreview";
 import DesignerPreview from "./preview/DesignerPreview";
 import {DESIGNER_MAX_HEIGHT, DESIGNER_MAX_WIDTH} from "../../util/ImageUtil";
 
@@ -38,7 +37,6 @@ export default function Designer({design, onChange, onError}: DesignerParams) {
 
 	const [printType, setPrintType] = useState<PrintTypePayload | null>();
 	const [selectedFile, setSelectedFile] = useState<DesignFileStub>();
-	const [previews, setPreviews] = useState<Array<PrintPreviewPayload>>();
 
 	const loadPrintType = useCallback(
 		() => {
@@ -55,22 +53,6 @@ export default function Designer({design, onChange, onError}: DesignerParams) {
 	);
 
 	useEffect(loadPrintType, [design]);
-
-	const loadPreviews = useCallback(
-		() => {
-			if (!printType) {
-				setPreviews(undefined);
-				return;
-			}
-			client
-				.loadPreviews(printType.printType.productId)
-				.then(setPreviews)
-				.catch((e: Error) => onError(e.message))
-		},
-		[client, printType, onError]
-	);
-
-	useEffect(loadPreviews, [printType]);
 
 	if (!printType) {
 		return <Spinner/>
@@ -122,7 +104,7 @@ export default function Designer({design, onChange, onError}: DesignerParams) {
 				<Col md={4} lg={5}>
 					<div ref={previewAreaRef}>
 						{
-							previews ? previews.map(
+							printType.previews.map(
 								(preview, index) => <DesignerPreview
 									key={index}
 									preview={preview}
@@ -132,7 +114,7 @@ export default function Designer({design, onChange, onError}: DesignerParams) {
 									maxHeight={DESIGNER_MAX_HEIGHT}
 									onError={onError}
 								/>
-							) : <Spinner/>
+							)
 						}
 					</div>
 				</Col>
