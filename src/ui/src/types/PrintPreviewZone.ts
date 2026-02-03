@@ -8,6 +8,8 @@ export type PrintPreviewZoneBase = EntityBase & {
 	widthPx: number;
 	heightPx: number;
 	rotateDeg: number;
+	skewXDeg: number;
+	skewYDeg: number;
 	aspectLocked: boolean;
 	useCylinderEffect: boolean;
 	cylinderSlices: number;

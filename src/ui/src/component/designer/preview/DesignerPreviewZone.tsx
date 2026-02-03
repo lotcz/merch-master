@@ -27,12 +27,7 @@ export default function DesignerPreviewZone({
 	onError
 }: DesignerPreviewZoneParams) {
 	const files = useMemo(
-		() => {
-			console.log(design.files);
-			const fs = design.files.filter((f) => f.printZoneId === previewZone.printZoneId);
-			console.log(fs);
-			return fs;
-		},
+		() => design.files.filter((f) => f.printZoneId === previewZone.printZoneId),
 		[design, previewZone]
 	);
 

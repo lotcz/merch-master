@@ -118,21 +118,6 @@ export default function Designer({design, client, onChange, onError}: DesignerPa
 								) : <Spinner/>
 							}
 						</div>
-						{
-							/*<div>
-								<CylinderEffect
-									imageUrl="http://localhost:8080/images/resized/2ff54ff4779b5270637215893ae5f557.png?width=712&type=fit&height=350&token=bc33bb45"
-									width={309}
-									height={302}
-									verticalAngle={-10}
-									slices={10}
-									radius={150}
-									startAngle={-45.5}
-									endAngle={50.1}
-								/>
-							</div>
-							 */
-						}
 					</Stack>
 				</Col>
 				<Col md={4} lg={5}>
@@ -146,6 +131,19 @@ export default function Designer({design, client, onChange, onError}: DesignerPa
 									productZones={printType.zones}
 									maxWidth={previewAreaSize.x}
 									maxHeight={DESIGNER_MAX_HEIGHT}
+									onError={onError}
+								/>
+							) : <Spinner/>
+						}
+						{
+							previews ? previews.map(
+								(preview, index) => <DesignerPreview
+									key={index}
+									preview={preview}
+									design={design}
+									productZones={printType.zones}
+									maxWidth={previewAreaSize.x * 2}
+									maxHeight={DESIGNER_MAX_HEIGHT * 2}
 									onError={onError}
 								/>
 							) : <Spinner/>

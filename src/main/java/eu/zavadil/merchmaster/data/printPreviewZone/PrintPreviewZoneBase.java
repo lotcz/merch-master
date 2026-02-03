@@ -10,15 +10,19 @@ import lombok.EqualsAndHashCode;
 @MappedSuperclass
 public class PrintPreviewZoneBase extends EntityBase {
 
-	private int startXPx;
+	private int startXPx = 0;
 
-	private int startYPx;
+	private int startYPx = 0;
 
-	private int widthPx;
+	private int widthPx = 100;
 
-	private int heightPx;
+	private int heightPx = 100;
 
 	private double rotateDeg = 0;
+
+	private double skewXDeg = 0;
+
+	private double skewYDeg = 0;
 
 	private boolean aspectLocked = true;
 

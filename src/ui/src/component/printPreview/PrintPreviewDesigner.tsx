@@ -87,6 +87,8 @@ export default function PrintPreviewDesigner({
 				startYPx: 0,
 				startXPx: 0,
 				rotateDeg: 0,
+				skewXDeg: 0,
+				skewYDeg: 0,
 				aspectLocked: true,
 				useCylinderEffect: false,
 				cylinderVerticalAngle: -10,
@@ -254,9 +256,44 @@ export default function PrintPreviewDesigner({
 									value={selectedPreviewZone.rotateDeg}
 									min={-180}
 									max={180}
+									step={0.1}
 									onChange={
 										(deg) => {
 											selectedPreviewZone.rotateDeg = Number(deg.target.value);
+											updateZone(selectedPreviewZone);
+										}
+									}
+								/>
+							</Form.Group>
+							<Form.Group>
+								<Form.Label>
+									<span>Skew X ({selectedPreviewZone.skewXDeg}°)</span>
+								</Form.Label>
+								<Form.Range
+									value={selectedPreviewZone.skewXDeg}
+									min={-180}
+									max={180}
+									step={0.1}
+									onChange={
+										(deg) => {
+											selectedPreviewZone.skewXDeg = Number(deg.target.value);
+											updateZone(selectedPreviewZone);
+										}
+									}
+								/>
+							</Form.Group>
+							<Form.Group>
+								<Form.Label>
+									<span>Skew Y ({selectedPreviewZone.skewYDeg}°)</span>
+								</Form.Label>
+								<Form.Range
+									value={selectedPreviewZone.skewYDeg}
+									min={-180}
+									max={180}
+									step={0.1}
+									onChange={
+										(deg) => {
+											selectedPreviewZone.skewYDeg = Number(deg.target.value);
 											updateZone(selectedPreviewZone);
 										}
 									}

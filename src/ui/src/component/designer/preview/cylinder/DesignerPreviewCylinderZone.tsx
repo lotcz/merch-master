@@ -41,13 +41,10 @@ export default function DesignerPreviewCylinderZone({
 	const height = useMemo(() => Math.round(previewZone.heightPx * previewScale), [previewZone, previewScale]);
 
 	const fileNames = useMemo(
-		() => {
-			//console.log(files);
-			return files
-				.filter(f => StringUtil.notBlank(f.imageName))
-				.map(f => f.imageName)
-				.join(';');
-		},
+		() => files
+			.filter(f => StringUtil.notBlank(f.imageName))
+			.map(f => f.imageName)
+			.join(';'),
 		[files]
 	);
 
@@ -167,7 +164,8 @@ export default function DesignerPreviewCylinderZone({
 					left: previewZone.startXPx * previewScale,
 					width: width,
 					height: height,
-					rotate: `${previewZone.rotateDeg}deg`
+					transformStyle: 'preserve-3d',
+					transform: `rotate(${previewZone.rotateDeg}deg) skewX(${previewZone.skewXDeg}deg) skewY(${previewZone.skewYDeg}deg)`
 				}
 			}
 		>

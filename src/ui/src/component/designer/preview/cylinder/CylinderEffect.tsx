@@ -48,7 +48,7 @@ export default function CylinderEffect(
 					height: height,
 					display: 'flex',
 					justifyContent: 'center',
-					alignItems: 'start',
+					alignItems: 'start'
 				}
 			}
 		>
