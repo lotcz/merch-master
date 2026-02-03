@@ -100,8 +100,9 @@ public class DesignerController {
 	}
 
 	@GetMapping("previews/by-product/{productId}")
-	public List<PrintPreviewStub> loadPreviews(@PathVariable int productId) {
-		return this.previewStubRepository.findAllByProductId(productId);
+	public List<PrintPreviewPayload> loadPreviews(@PathVariable int productId) {
+		List<PrintPreviewStub> stubs = this.previewStubRepository.findAllByProductId(productId);
+		return stubs.stream().map(s -> this.previewsService.load(s)).toList();
 	}
 
 }

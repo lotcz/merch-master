@@ -5,24 +5,25 @@ import ImageUtil, {PIXEL_PER_MM} from "../../util/ImageUtil";
 import {PrintPreviewPayload} from "../../types/PrintPreview";
 import {PrintPreviewZoneStub} from "../../types/PrintPreviewZone";
 import {PrintZoneStub} from "../../types/PrintZone";
-import {MerchMasterRestClientContext} from "../../client/MerchMasterRestClient";
 import {UserAlertsContext} from "../../util/UserAlerts";
 import PrintPreviewDesignerZone from "./PrintPreviewDesignerZone";
 import {ImagezImage} from "../images/ImagezImage";
+import {Switch} from "zavadil-react-common";
 
 const MAX_WIDTH = 800;
 const MAX_HEIGHT = 350;
 
 export type PrintPreviewDesignerParams = {
 	printPreview: PrintPreviewPayload;
+	productZones: Array<PrintZoneStub>;
 	onChange: (preview: PrintPreviewPayload) => any;
 }
 
 export default function PrintPreviewDesigner({
 	printPreview,
+	productZones,
 	onChange
 }: PrintPreviewDesignerParams) {
-	const restClient = useContext(MerchMasterRestClientContext);
 	const userAlerts = useContext(UserAlertsContext);
 
 	const designerAreaRef = useRef<HTMLDivElement>(null);
@@ -40,6 +41,15 @@ export default function PrintPreviewDesigner({
 
 	const [selectedPreviewZone, setSelectedPreviewZone] = useState<PrintPreviewZoneStub>();
 
+	useEffect(
+		() => {
+			if (!selectedPreviewZone) return;
+			const selected = printPreview.zones.find((p) => p.id === selectedPreviewZone.id);
+			setSelectedPreviewZone(selected);
+		},
+		[printPreview]
+	);
+
 	const scale = useMemo(
 		() => {
 			return ImageUtil.getMaxScale(
@@ -52,23 +62,6 @@ export default function PrintPreviewDesigner({
 		[printPreview, designerAreaSize]
 	);
 
-	const [productZones, setProductZones] = useState<Array<PrintZoneStub>>();
-
-	const effectiveProductId = useMemo(
-		() => printPreview.printPreview.productId,
-		[printPreview]
-	);
-
-	const loadZones = useCallback(
-		() => {
-			restClient.printZones
-				.loadByProduct(effectiveProductId)
-				.then(setProductZones);
-		},
-		[restClient, effectiveProductId]
-	);
-
-	useEffect(loadZones, [effectiveProductId]);
 
 	const addPreviewZone = useCallback(
 		(printZoneId: number) => {
@@ -94,7 +87,14 @@ export default function PrintPreviewDesigner({
 				startYPx: 0,
 				startXPx: 0,
 				rotateDeg: 0,
-				aspectLocked: true
+				aspectLocked: true,
+				useCylinderEffect: false,
+				cylinderVerticalAngle: -10,
+				cylinderSlices: 10,
+				cylinderPerspective: 1000,
+				cylinderRadius: 60,
+				cylinderStartAngle: -75,
+				cylinderEndAngle: 75
 			};
 			printPreview.zones = [...printPreview.zones, newZone];
 			onChange({...printPreview});
@@ -260,9 +260,109 @@ export default function PrintPreviewDesigner({
 											updateZone(selectedPreviewZone);
 										}
 									}
-
 								/>
 							</Form.Group>
+							<Form.Group>
+								<Switch
+									id="cylinder-effect"
+									label="Cylinder Effect"
+									checked={selectedPreviewZone.useCylinderEffect}
+									onChange={
+										(checked) => {
+											selectedPreviewZone.useCylinderEffect = checked;
+											updateZone(selectedPreviewZone);
+										}
+									}
+								/>
+							</Form.Group>
+							{
+								selectedPreviewZone.useCylinderEffect && <div className="p-2">
+									<Form.Group>
+										<Form.Label>Slices ({selectedPreviewZone.cylinderSlices})</Form.Label>
+										<Form.Range
+											value={selectedPreviewZone.cylinderSlices}
+											min={2}
+											max={100}
+											onChange={
+												(deg) => {
+													selectedPreviewZone.cylinderSlices = Number(deg.target.value);
+													updateZone(selectedPreviewZone);
+												}
+											}
+										/>
+									</Form.Group>
+									<Form.Group>
+										<Form.Label>Radius ({selectedPreviewZone.cylinderRadius}px)</Form.Label>
+										<Form.Range
+											value={selectedPreviewZone.cylinderRadius}
+											min={1}
+											max={1000}
+											onChange={
+												(deg) => {
+													selectedPreviewZone.cylinderRadius = Number(deg.target.value);
+													updateZone(selectedPreviewZone);
+												}
+											}
+										/>
+									</Form.Group>
+									<Form.Group>
+										<Form.Label>Perspective ({selectedPreviewZone.cylinderPerspective}°)</Form.Label>
+										<Form.Range
+											value={selectedPreviewZone.cylinderPerspective}
+											min={0}
+											max={2000}
+											onChange={
+												(deg) => {
+													selectedPreviewZone.cylinderPerspective = Number(deg.target.value);
+													updateZone(selectedPreviewZone);
+												}
+											}
+										/>
+									</Form.Group>
+									<Form.Group>
+										<Form.Label>Start ({selectedPreviewZone.cylinderStartAngle}°)</Form.Label>
+										<Form.Range
+											value={selectedPreviewZone.cylinderStartAngle}
+											min={-90}
+											max={90}
+											onChange={
+												(deg) => {
+													selectedPreviewZone.cylinderStartAngle = Number(deg.target.value);
+													updateZone(selectedPreviewZone);
+												}
+											}
+										/>
+									</Form.Group>
+									<Form.Group>
+										<Form.Label>End ({selectedPreviewZone.cylinderEndAngle}°)</Form.Label>
+										<Form.Range
+											value={selectedPreviewZone.cylinderEndAngle}
+											min={-90}
+											max={90}
+											onChange={
+												(deg) => {
+													selectedPreviewZone.cylinderEndAngle = Number(deg.target.value);
+													updateZone(selectedPreviewZone);
+												}
+											}
+										/>
+									</Form.Group>
+									<Form.Group>
+										<Form.Label>Vertical ({selectedPreviewZone.cylinderVerticalAngle}°)</Form.Label>
+										<Form.Range
+											value={selectedPreviewZone.cylinderVerticalAngle}
+											min={-90}
+											max={90}
+											onChange={
+												(deg) => {
+													selectedPreviewZone.cylinderVerticalAngle = Number(deg.target.value);
+													updateZone(selectedPreviewZone);
+												}
+											}
+										/>
+									</Form.Group>
+								</div>
+							}
 						</Form>
 					</div>
 				}

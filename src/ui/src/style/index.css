@@ -244,6 +244,10 @@ tr.selectable.selected td {
 	overflow: hidden;
 }
 
+.designer-preview .designer-preview-zone-cylinder {
+	position: absolute;
+}
+
 .designer-preview .designer-preview-zone .designer-preview-file img {
 	width: 100%;
 	height: 100%;

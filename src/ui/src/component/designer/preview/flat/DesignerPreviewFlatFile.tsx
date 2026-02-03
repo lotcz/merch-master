@@ -1,19 +1,19 @@
 import React, {useMemo} from "react";
-import {DesignFileStub} from "../../types/DesignFile";
-import {PIXEL_PER_MM} from "../../util/ImageUtil";
-import {ImagezImage} from "../images/ImagezImage";
+import {DesignFileStub} from "../../../../types/DesignFile";
+import {PIXEL_PER_MM} from "../../../../util/ImageUtil";
+import {ImagezImage} from "../../../images/ImagezImage";
 import {NumberUtil, Vector2} from "zavadil-ts-common";
 
-export type DesignerPreviewFileParams = {
+export type DesignerPreviewFlatFileParams = {
 	file: DesignFileStub;
 	zoneScale: Vector2;
 }
 
-export default function DesignerPreviewFile(
+export default function DesignerPreviewFlatFile(
 	{
 		file,
 		zoneScale
-	}: DesignerPreviewFileParams
+	}: DesignerPreviewFlatFileParams
 ) {
 
 	const width = useMemo(

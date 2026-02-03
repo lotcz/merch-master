@@ -4,7 +4,7 @@ import {Product} from "../types/Product";
 import {PrintTypePayload, PrintTypeStub} from "../types/PrintType";
 import {DesignPayload} from "../types/Design";
 import {ProductColorStub} from "../types/ProductColor";
-import {PrintPreviewPayload, PrintPreviewStub} from "../types/PrintPreview";
+import {PrintPreviewPayload} from "../types/PrintPreview";
 
 /**
  * Client for public Designer - all endpoints should be unprotected
@@ -72,10 +72,10 @@ export class DesignerRestClient extends RestClient {
 		return this.putJson(`designs`, design);
 	}
 
-	loadPreviews(productId: number): Promise<Array<PrintPreviewStub>> {
+	loadPreviews(productId: number): Promise<Array<PrintPreviewPayload>> {
 		return this.getJson(`previews/by-product/${productId}`);
 	}
-	
+
 	loadPreview(id: number): Promise<PrintPreviewPayload> {
 		return this.getJson(`previews/${id}`);
 	}

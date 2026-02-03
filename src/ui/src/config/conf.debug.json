@@ -1,3 +1,4 @@
 {
-  "API_URL": "http://localhost:8089/api"
+  "API_URL": "http://localhost:8089/api",
+  "PREVIEW_ZONE_IMAGE": "fdefa10ea3fe7ae284a5ff5882f2fd94.png"
 }

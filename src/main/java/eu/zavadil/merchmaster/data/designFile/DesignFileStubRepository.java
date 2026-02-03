@@ -12,6 +12,18 @@ public interface DesignFileStubRepository extends EntityRepository<DesignFileStu
 
 	@Modifying
 	@Transactional
-	void deleteAllByDesignIdAndIdNotIn(int designId, List<Integer> previewIds);
+	void deleteAllByDesignIdAndIdNotIn(int designId, List<Integer> fileIds);
 
+	@Modifying
+	@Transactional
+	void deleteAllByDesignId(int designId);
+
+	@Modifying
+	@Transactional
+	default void cleanOtherFiles(int designId, List<Integer> fileIds) {
+		if (fileIds == null || fileIds.isEmpty())
+			this.deleteAllByDesignId(designId);
+		else
+			this.deleteAllByDesignIdAndIdNotIn(designId, fileIds);
+	}
 }

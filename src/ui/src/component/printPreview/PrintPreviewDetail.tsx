@@ -1,6 +1,7 @@
 import {Col, Form, Row, Spinner, Stack, Tab, Table, Tabs} from "react-bootstrap";
 import {useNavigate, useParams, useSearchParams} from "react-router";
-import React, {useCallback, useContext, useEffect, useState} from "react";
+import conf from "../../config/conf.json";
+import React, {useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {NumberUtil, StringUtil} from "zavadil-ts-common";
 import {MerchMasterRestClientContext} from "../../client/MerchMasterRestClient";
 import {UserAlertsContext} from "../../util/UserAlerts";
@@ -10,6 +11,9 @@ import BackIconLink from "../general/BackIconLink";
 import {PrintPreviewPayload} from "../../types/PrintPreview";
 import {ImagezUploadInput} from "../images/ImagezUploadInput";
 import PrintPreviewDesigner from "./PrintPreviewDesigner";
+import DesignerPreview from "../designer/preview/DesignerPreview";
+import {PrintZoneStub} from "../../types/PrintZone";
+import {DesignPayload} from "../../types/Design";
 
 const TAB_PARAM_NAME = 'tab';
 const DEFAULT_TAB = 'design';
@@ -56,6 +60,25 @@ export default function PrintPreviewDetail() {
 		},
 		[data]
 	);
+
+	const [productZones, setProductZones] = useState<Array<PrintZoneStub>>();
+
+	const effectiveProductId = useMemo(
+		() => data?.printPreview.productId,
+		[data]
+	);
+
+	const loadZones = useCallback(
+		() => {
+			if (!effectiveProductId) return;
+			restClient.printZones
+				.loadByProduct(effectiveProductId)
+				.then(setProductZones);
+		},
+		[restClient, effectiveProductId]
+	);
+
+	useEffect(loadZones, [effectiveProductId]);
 
 	const reload = useCallback(
 		() => {
@@ -127,6 +150,40 @@ export default function PrintPreviewDetail() {
 			);
 		},
 		[restClient, data, userAlerts, navigate, confirmDialog]
+	);
+
+	const dummyDesign: DesignPayload | undefined = useMemo(
+		() => {
+			if (!data) return;
+			if (!productZones) return;
+			return {
+				design: {
+					id: 0,
+					printTypeId: 0,
+					productColorId: 0,
+					confirmed: false
+				},
+				files: data.zones.map(
+					(z, index) => {
+						const productZone = productZones.find((pz) => pz.id === z.printZoneId);
+						return {
+							id: index,
+							printZoneId: Number(z.printZoneId),
+							designId: 0,
+							imageName: conf.PREVIEW_ZONE_IMAGE,
+							originalImageWidthPx: 0,
+							originalImageHeightPx: 0,
+							positionXMm: 0,
+							positionYMm: 0,
+							imageWidthMm: Number(productZone?.widthMm),
+							imageHeightMm: Number(productZone?.heightMm),
+							aspectLocked: false
+						}
+					}
+				)
+			};
+		},
+		[data, productZones]
 	);
 
 	if (!data) {
@@ -251,16 +308,30 @@ export default function PrintPreviewDetail() {
 					>
 						<Tab title="Design" eventKey="design">
 							{
-								data.printPreview.id && <PrintPreviewDesigner
-									printPreview={data}
-									onChange={onChanged}
-								/>
+								productZones && <Stack direction="horizontal">
+									<PrintPreviewDesigner
+										printPreview={data}
+										productZones={productZones}
+										onChange={onChanged}
+									/>
+									{
+										dummyDesign && <DesignerPreview
+											design={dummyDesign}
+											preview={data}
+											productZones={productZones}
+											maxWidth={600}
+											maxHeight={400}
+											onError={(e) => userAlerts.err(e)}
+										/>
+									}
+								</Stack>
 							}
 						</Tab>
 						<Tab title="Zones" eventKey="zones">
 							<Table>
 								<thead>
 								<tr>
+									<td>Preview Zone ID</td>
 									<td>Zone ID</td>
 									<td>Name</td>
 									<td>StartX</td>
@@ -272,9 +343,10 @@ export default function PrintPreviewDetail() {
 								<tbody>
 								{
 									data.zones.map(
-										(previewZone) => <tr>
+										(previewZone, index) => <tr key={index}>
+											<td>{previewZone.id}</td>
 											<td>{previewZone.printZoneId}</td>
-											<td>{previewZone.printZoneId}</td>
+											<td>{productZones?.find((z) => z.id === previewZone.printZoneId)?.name}</td>
 											<td>{previewZone.startXPx}</td>
 											<td>{previewZone.startYPx}</td>
 											<td>{previewZone.widthPx}</td>

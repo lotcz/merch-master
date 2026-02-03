@@ -57,7 +57,6 @@ export default function DesignerFile(
 					e.preventDefault();
 					if (!isSelected) onSelected();
 					const pos = new Vector2(e.nativeEvent.offsetX, e.nativeEvent.offsetY).multiply(1 / (PIXEL_PER_MM * scale));
-					console.log(pos.toString());
 					onStartMove(pos);
 				}
 			}

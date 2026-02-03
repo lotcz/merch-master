@@ -7,12 +7,9 @@ import DesignerPrintZone from "./DesignerPrintZone";
 import {DesignFileStub} from "../../types/DesignFile";
 import DesignerMenu from "./DesignerMenu";
 import {Vector2} from "zavadil-ts-common";
-import {PrintPreviewStub} from "../../types/PrintPreview";
-import DesignerPreview from "./DesignerPreview";
-import CylinderEffect from "./cylinder/CylinderEffect";
-
-const MAX_WIDTH = 800;
-const MAX_HEIGHT = 350;
+import {PrintPreviewPayload} from "../../types/PrintPreview";
+import DesignerPreview from "./preview/DesignerPreview";
+import {DESIGNER_MAX_HEIGHT, DESIGNER_MAX_WIDTH} from "../../util/ImageUtil";
 
 export type DesignerParams = {
 	design: DesignPayload;
@@ -24,8 +21,8 @@ export type DesignerParams = {
 export default function Designer({design, client, onChange, onError}: DesignerParams) {
 	const designerAreaRef = useRef<HTMLDivElement>(null);
 	const previewAreaRef = useRef<HTMLDivElement>(null);
-	const [designerAreaSize, setDesignerAreaSize] = useState<Vector2>(new Vector2(MAX_WIDTH, MAX_HEIGHT));
-	const [previewAreaSize, setPreviewAreaSize] = useState<Vector2>(new Vector2(MAX_WIDTH, MAX_HEIGHT));
+	const [designerAreaSize, setDesignerAreaSize] = useState<Vector2>(new Vector2(DESIGNER_MAX_WIDTH, DESIGNER_MAX_HEIGHT));
+	const [previewAreaSize, setPreviewAreaSize] = useState<Vector2>(new Vector2(DESIGNER_MAX_WIDTH, DESIGNER_MAX_HEIGHT));
 
 	const updateAreaSize = useCallback(
 		() => {
@@ -41,7 +38,7 @@ export default function Designer({design, client, onChange, onError}: DesignerPa
 
 	const [printType, setPrintType] = useState<PrintTypePayload | null>();
 	const [selectedFile, setSelectedFile] = useState<DesignFileStub>();
-	const [previews, setPreviews] = useState<Array<PrintPreviewStub>>();
+	const [previews, setPreviews] = useState<Array<PrintPreviewPayload>>();
 
 	const loadPrintType = useCallback(
 		() => {
@@ -114,25 +111,28 @@ export default function Designer({design, client, onChange, onError}: DesignerPa
 										design={design}
 										onChange={onChange}
 										maxWidth={designerAreaSize.x}
-										maxHeight={MAX_HEIGHT}
+										maxHeight={DESIGNER_MAX_HEIGHT}
 										selectedFile={selectedFile}
 										onFileSelected={setSelectedFile}
 									/>
 								) : <Spinner/>
 							}
 						</div>
-						<div>
-							<CylinderEffect
-								imageUrl="http://localhost:8080/images/resized/2ff54ff4779b5270637215893ae5f557.png?width=712&type=fit&height=350&token=bc33bb45"
-								width={designerAreaSize.x}
-								height={MAX_HEIGHT}
-								verticalAngle={-10}
-								slices={7}
-								radius={150}
-								startAngle={-45}
-								endAngle={45}
-							/>
-						</div>
+						{
+							/*<div>
+								<CylinderEffect
+									imageUrl="http://localhost:8080/images/resized/2ff54ff4779b5270637215893ae5f557.png?width=712&type=fit&height=350&token=bc33bb45"
+									width={309}
+									height={302}
+									verticalAngle={-10}
+									slices={10}
+									radius={150}
+									startAngle={-45.5}
+									endAngle={50.1}
+								/>
+							</div>
+							 */
+						}
 					</Stack>
 				</Col>
 				<Col md={4} lg={5}>
@@ -143,10 +143,10 @@ export default function Designer({design, client, onChange, onError}: DesignerPa
 									key={index}
 									preview={preview}
 									design={design}
-									client={client}
-									zones={printType.zones}
+									productZones={printType.zones}
 									maxWidth={previewAreaSize.x}
-									maxHeight={MAX_HEIGHT}
+									maxHeight={DESIGNER_MAX_HEIGHT}
+									onError={onError}
 								/>
 							) : <Spinner/>
 						}

@@ -1,6 +1,7 @@
 package eu.zavadil.merchmaster.service;
 
 import eu.zavadil.merchmaster.api.payload.PrintPreviewPayload;
+import eu.zavadil.merchmaster.data.printPreview.PrintPreviewStub;
 import eu.zavadil.merchmaster.data.printPreview.PrintPreviewStubRepository;
 import eu.zavadil.merchmaster.data.printPreviewZone.PrintPreviewZoneStubRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +16,16 @@ public class PrintPreviewsService {
 	@Autowired
 	PrintPreviewZoneStubRepository zoneStubRepository;
 
-	public PrintPreviewPayload load(int id) {
+	public PrintPreviewPayload load(PrintPreviewStub stub) {
 		PrintPreviewPayload response = new PrintPreviewPayload();
-		response.setPrintPreview(this.stubRepository.findById(id).orElseThrow());
-		response.setZones(this.zoneStubRepository.findAllByPrintPreviewId(id));
+		response.setPrintPreview(stub);
+		response.setZones(this.zoneStubRepository.findAllByPrintPreviewId(stub.getId()));
 		return response;
+	}
+
+	public PrintPreviewPayload load(int id) {
+		PrintPreviewStub stub = this.stubRepository.findById(id).orElseThrow();
+		return this.load(stub);
 	}
 
 }

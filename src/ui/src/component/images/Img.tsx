@@ -17,5 +17,6 @@ export function Img({url, alt, maxWidth, maxHeight}: ImgProps) {
 		alt={alt || 'image'}
 		style={{maxHeight, maxWidth}}
 		draggable={false}
+		crossOrigin="anonymous"
 	/>
 }

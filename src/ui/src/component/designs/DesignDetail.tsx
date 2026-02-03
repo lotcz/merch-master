@@ -71,7 +71,7 @@ export default function DesignDetail() {
 					.catch((e: Error) => userAlerts.err(e));
 			}
 		},
-		[id, restClient, userAlerts]
+		[id, restClient, userAlerts, productId]
 	);
 
 	useEffect(reload, [id]);

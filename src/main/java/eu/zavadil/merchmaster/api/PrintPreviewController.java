@@ -50,7 +50,7 @@ public class PrintPreviewController {
 			}
 		).toList();
 
-		this.previewZoneRepository.deleteAllByPrintPreviewIdAndIdNotIn(
+		this.previewZoneRepository.cleanOtherPreviews(
 			previewId,
 			zones.stream().map(PrintPreviewZoneStub::getId).toList()
 		);

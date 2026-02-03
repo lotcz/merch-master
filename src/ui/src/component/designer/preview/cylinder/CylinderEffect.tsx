@@ -5,6 +5,7 @@ export type CylinderEffectParams = {
 	width: number;
 	height: number;
 	verticalAngle?: number;
+	perspective?: number;
 	slices?: number;
 	radius?: number;
 	startAngle?: number;
@@ -17,6 +18,7 @@ export default function CylinderEffect(
 		width,
 		height,
 		verticalAngle = -10,
+		perspective = -10,
 		slices = 10,
 		radius = 60,
 		startAngle = -75,
@@ -35,7 +37,7 @@ export default function CylinderEffect(
 		},
 		[slices, radius, totalAngle]
 	);
-	
+
 	return (
 		<div
 			className="cylinder-effect"
@@ -54,7 +56,7 @@ export default function CylinderEffect(
 				style={
 					{
 						position: 'relative',
-						perspective: '1000px',
+						perspective: `${perspective}px`,
 						transformStyle: 'preserve-3d',
 						transform: `rotateX(${verticalAngle}deg)`
 					}

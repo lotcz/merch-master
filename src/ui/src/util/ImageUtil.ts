@@ -1,4 +1,6 @@
 export const PIXEL_PER_MM = 10;
+export const DESIGNER_MAX_WIDTH = 800;
+export const DESIGNER_MAX_HEIGHT = 350;
 
 export default class ImageUtil {
 

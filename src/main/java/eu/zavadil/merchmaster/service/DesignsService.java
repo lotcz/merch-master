@@ -36,7 +36,7 @@ public class DesignsService {
 		if (stub.getUuid() == null) {
 			stub.setUuid(UUID.randomUUID());
 		}
-		
+
 		PrintTypeStub printType = printTypeStubRepository.findById(stub.getPrintTypeId()).orElseThrow();
 		ProductColorStub color = productColorStubRepository.findById(stub.getProductColorId()).orElseThrow();
 
@@ -58,7 +58,7 @@ public class DesignsService {
 			}
 		).toList();
 
-		this.designFileStubRepository.deleteAllByDesignIdAndIdNotIn(
+		this.designFileStubRepository.cleanOtherFiles(
 			designId,
 			files.stream().map(EntityBase::getId).toList()
 		);

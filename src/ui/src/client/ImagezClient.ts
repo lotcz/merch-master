@@ -1,4 +1,4 @@
-import {RestClient} from "zavadil-ts-common";
+import {RestClient, StringUtil} from "zavadil-ts-common";
 import {ImageHealth} from "../types/Image";
 
 export class ImagezClient {
@@ -22,6 +22,9 @@ export class ImagezClient {
 		verticalAlign?: string | null,
 		horizontalAlign?: string | null
 	): Promise<string> {
+		if (StringUtil.isBlank(name)) {
+			return Promise.reject('Image name cannot be empty!');
+		}
 		return this.client.get(
 			`imagez/url/resized/${name}`,
 			{type, width, height, ext, verticalAlign, horizontalAlign}

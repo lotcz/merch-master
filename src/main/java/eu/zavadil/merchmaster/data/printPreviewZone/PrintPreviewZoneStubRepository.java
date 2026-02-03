@@ -14,4 +14,16 @@ public interface PrintPreviewZoneStubRepository extends EntityRepository<PrintPr
 	@Transactional
 	void deleteAllByPrintPreviewIdAndIdNotIn(int printPreviewId, List<Integer> previewZoneIds);
 
+	@Modifying
+	@Transactional
+	void deleteAllByPrintPreviewId(int printPreviewId);
+
+	@Modifying
+	@Transactional
+	default void cleanOtherPreviews(int designId, List<Integer> previewZoneIds) {
+		if (previewZoneIds == null || previewZoneIds.isEmpty())
+			this.deleteAllByPrintPreviewId(designId);
+		else
+			this.deleteAllByPrintPreviewIdAndIdNotIn(designId, previewZoneIds);
+	}
 }
