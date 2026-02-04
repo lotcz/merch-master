@@ -201,8 +201,13 @@ export default function DesignDetail() {
 					{
 						activeTab === 'designer' && <Designer
 							design={data}
+							saving={saving}
+							changed={changed}
+							readOnly={false}
+							admin={false}
 							onChange={onChanged}
 							onFinished={saveData}
+							onCancel={() => null}
 							onError={(e) => userAlerts.err(e)}
 						/>
 					}

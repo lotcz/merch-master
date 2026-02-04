@@ -251,13 +251,12 @@ export default function PrintTypeDetail() {
 										</div>
 										<div>
 											<h2>Previews</h2>
-
 											{
 												productPreviews && productPreviews.map(
 													(productPreview, index) => <div key={index}>
 														{
 															productPreview.id && <Switch
-																id={`zone-${productPreview.id}`}
+																id={`preview-${productPreview.id}`}
 																checked={data.previews.includes(productPreview.id)}
 																onChange={
 																	(checked) => {

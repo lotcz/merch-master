@@ -135,6 +135,10 @@ tr.selectable.selected td {
 	overflow: visible;
 }
 
+.designer .card {
+	border-color: #dee2e6;
+}
+
 .designer .row .card {
 	height: 100%;
 }
@@ -145,6 +149,8 @@ tr.selectable.selected td {
 	flex-direction: column;
 	justify-content: stretch;
 	overflow: hidden;
+	border-bottom-left-radius: 0.375rem;
+	border-bottom-right-radius: 0.375rem;
 }
 
 .designer-shadow {
@@ -158,9 +164,10 @@ tr.selectable.selected td {
 	border-width: 1px;
 	border-style: solid;
 	border-top-style: none;
+	border-right-style: none;
 	border-color: #dee2e6;
-	border-bottom-left-radius: 5px;
-	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 0.375rem;
+	border-bottom-right-radius: 0.375rem;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -216,6 +223,11 @@ tr.selectable.selected td {
 	cursor: move;
 }
 
+.designer .print-zone .design-file.read-only {
+	cursor: default;
+	border: none;
+}
+
 .designer .print-zone .design-file.manipulating,
 .print-preview-designer .print-preview-designer-zone.manipulating {
 	pointer-events: none;
@@ -250,6 +262,10 @@ tr.selectable.selected td {
 .print-preview-designer .print-preview-designer-zone:hover .action-button,
 .print-preview-designer .print-preview-designer-zone.selected .action-button {
 	display: flex;
+}
+
+.designer .print-zone .design-file.read-only:hover .action-button {
+	display: none;
 }
 
 .designer .print-zone .design-file .delete-button,
@@ -357,6 +373,32 @@ tr.selectable.selected td {
 	text-wrap: nowrap;
 }
 
+.designer .preview-full {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.designer .preview-full-container {
+	flex-grow: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	max-height: 100%;
+	max-width: 100%;
+}
+
+.designer .preview-action {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+}
+
+.designer .preview-action button > div {
+	justify-content: center;
+}
+
 /* DESIGNER WRAPPER */
 
 .designer-wrapper {
@@ -375,5 +417,5 @@ tr.selectable.selected td {
 .designer-wrapper .error {
 	position: absolute;
 	bottom: 0;
-	right: 0;
+	right: 10px;
 }

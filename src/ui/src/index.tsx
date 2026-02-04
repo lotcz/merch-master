@@ -15,6 +15,7 @@ root.render(
 		<BrowserRouter>
 			<Routes>
 				<Route path="/designer/:uuid" element={<DesignerWrapper/>}/>
+				<Route path="/designer/add/:productId" element={<DesignerWrapper/>}/>
 				<Route path="*" element={<App/>}/>
 			</Routes>
 		</BrowserRouter>

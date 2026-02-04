@@ -1,6 +1,7 @@
 import {useContext, useEffect, useState} from "react";
 import {Img} from "./Img";
 import {ImagezRestClientContext} from "../../client/imagez/ImagezClient";
+import {Spinner} from "react-bootstrap";
 
 export type ImagezImageProps = {
 	name?: string | null;
@@ -14,7 +15,7 @@ export type ImagezImageProps = {
 
 export function ImagezImage({name, type, width, height, ext, verticalAlign, horizontalAlign}: ImagezImageProps) {
 	const restClient = useContext(ImagezRestClientContext);
-	const [url, setUrl] = useState<string | null>(null);
+	const [url, setUrl] = useState<string | null>();
 
 	useEffect(
 		() => {
@@ -28,6 +29,8 @@ export function ImagezImage({name, type, width, height, ext, verticalAlign, hori
 		},
 		[restClient, name, type, width, height, ext, verticalAlign, horizontalAlign]
 	);
+
+	if (!url) return <Spinner size="sm"/>
 
 	return <Img url={url} maxWidth={width} maxHeight={height}/>
 }

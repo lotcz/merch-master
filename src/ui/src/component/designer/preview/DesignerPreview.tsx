@@ -11,6 +11,7 @@ export type DesignerPreviewParams = {
 	preview: PrintPreviewPayload;
 	productZones: Array<PrintZoneStub>;
 	onError: (error: string) => any;
+	onClick?: () => any;
 	maxWidth: number;
 	maxHeight: number;
 }
@@ -21,7 +22,8 @@ export default function DesignerPreview({
 	productZones,
 	maxHeight,
 	maxWidth,
-	onError
+	onError,
+	onClick
 }: DesignerPreviewParams) {
 	const scale = useMemo(
 		() => {
@@ -39,7 +41,7 @@ export default function DesignerPreview({
 	const previewHeight = useMemo(() => Math.round(preview.printPreview.imageHeightPx * scale), [preview, scale]);
 
 	return (
-		<div className="designer-preview-wrapper">
+		<div className={`designer-preview-wrapper ${onClick ? 'cursor-pointer' : ''}`} onClick={() => onClick ? onClick() : null}>
 			<div className="text-center"><strong>{preview.printPreview.name}</strong></div>
 			<div
 				className="designer-preview"

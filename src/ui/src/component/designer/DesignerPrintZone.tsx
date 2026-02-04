@@ -11,10 +11,11 @@ import ImageUtil, {PIXEL_PER_MM} from "../../util/ImageUtil";
 export type DesignerPrintZoneParams = {
 	printZone: PrintZoneStub;
 	design: DesignPayload;
-	onChange: (design: DesignPayload) => any;
 	maxWidth: number;
 	maxHeight: number;
 	selectedFile?: DesignFileStub;
+	readOnly: boolean;
+	onChange: (design: DesignPayload) => any;
 	onFileSelected: (selectedFile?: DesignFileStub) => any;
 }
 
@@ -23,8 +24,9 @@ export default function DesignerPrintZone({
 	design,
 	maxWidth,
 	maxHeight,
-	onChange,
+	readOnly,
 	selectedFile,
+	onChange,
 	onFileSelected
 }: DesignerPrintZoneParams) {
 	const uploadImageDialog = useContext(UploadImageDialogContext);
@@ -154,7 +156,9 @@ export default function DesignerPrintZone({
 		<div className="print-zone">
 			<div className="label mb-2">
 				Rozměry: {widthCm} x {heightCm} cm
-				<Button size="sm" onClick={uploadImage}>Nahrát obrázek...</Button>
+				{
+					(!readOnly) && <Button size="sm" onClick={uploadImage}>Nahrát obrázek...</Button>
+				}
 			</div>
 			<div
 				className={`boundary ${isResizing ? 'resizing' : ''} ${moveImagePosition ? 'moving' : ''}`}
@@ -177,12 +181,13 @@ export default function DesignerPrintZone({
 					files.map(
 						(file, index) => <DesignerFile
 							file={file}
-							key={index}
+							key={file.imageName}
 							scale={scale}
 							maxWidth={width}
 							maxHeight={height}
 							isSelected={file === selectedFile}
 							isManipulating={isResizing || moveImagePosition !== undefined}
+							readOnly={readOnly}
 							onSelected={() => onFileSelected(file)}
 							onStartMove={setMoveImagePosition}
 							onEndMove={() => setMoveImagePosition(undefined)}

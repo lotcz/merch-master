@@ -12,6 +12,7 @@ export type DesignerFileParams = {
 	maxHeight: number;
 	isSelected: boolean;
 	isManipulating: boolean;
+	readOnly: boolean;
 	onSelected: () => any;
 	onStartMove: (pos: Vector2) => any;
 	onEndMove: () => any;
@@ -28,12 +29,13 @@ export default function DesignerFile(
 		maxHeight,
 		maxWidth,
 		isSelected,
+		isManipulating,
+		readOnly,
 		onSelected,
 		onStartMove,
 		onEndMove,
 		onStartResize,
 		onEndResize,
-		isManipulating,
 		onDeleted,
 		onLockUnlock
 	}: DesignerFileParams
@@ -41,7 +43,7 @@ export default function DesignerFile(
 
 	return (
 		<div
-			className={`design-file ${isSelected ? 'selected' : ''} ${isManipulating ? 'manipulating' : ''}`}
+			className={`design-file ${isSelected ? 'selected' : ''} ${isManipulating ? 'manipulating' : ''} ${readOnly ? 'read-only' : ''}`}
 			draggable={false}
 			style={
 				{
@@ -53,6 +55,7 @@ export default function DesignerFile(
 			}
 			onMouseDown={
 				(e: MouseEvent<HTMLDivElement>) => {
+					if (readOnly) return;
 					e.stopPropagation();
 					e.preventDefault();
 					if (!isSelected) onSelected();
@@ -62,6 +65,7 @@ export default function DesignerFile(
 			}
 			onMouseUp={
 				(e) => {
+					if (readOnly) return;
 					onEndMove();
 					onEndResize();
 				}
@@ -73,6 +77,7 @@ export default function DesignerFile(
 				className="action-button delete-button"
 				onMouseDown={
 					(e) => {
+						if (readOnly) return;
 						e.stopPropagation();
 						onDeleted();
 					}
@@ -84,6 +89,7 @@ export default function DesignerFile(
 				className={`action-button aspect-lock-button ${file.aspectLocked ? 'locked' : 'unlocked'}`}
 				onMouseDown={
 					(e) => {
+						if (readOnly) return;
 						e.stopPropagation();
 						e.preventDefault();
 						onLockUnlock();
@@ -98,6 +104,7 @@ export default function DesignerFile(
 				className="action-button resize-button"
 				onMouseDown={
 					(e) => {
+						if (readOnly) return;
 						e.stopPropagation();
 						e.preventDefault();
 						onEndMove();

@@ -11,12 +11,23 @@ export type DesignerMenuParams = {
 	productId: number;
 	colorId: number;
 	printTypeId: number;
+	readOnly: boolean;
+	admin: boolean;
 	onColorChange: (colorId: number) => any;
 	onPrintTypeChange: (printTypeId: number) => any;
 	onError: (error: string) => any;
 }
 
-export default function DesignerMenu({productId, colorId, printTypeId, onPrintTypeChange, onColorChange, onError}: DesignerMenuParams) {
+export default function DesignerMenu({
+	productId,
+	colorId,
+	printTypeId,
+	readOnly,
+	admin,
+	onPrintTypeChange,
+	onColorChange,
+	onError
+}: DesignerMenuParams) {
 	const client = useContext(DesignerRestClientContext);
 	const [product, setProduct] = useState<Product>();
 
@@ -76,8 +87,9 @@ export default function DesignerMenu({productId, colorId, printTypeId, onPrintTy
 				{
 					colors ? <ColorSelectId
 							id={colorId}
-							onSelected={onColorChange}
 							colors={colors}
+							readOnly={readOnly}
+							onSelected={onColorChange}
 						/>
 						: <Spinner/>
 				}
@@ -87,6 +99,7 @@ export default function DesignerMenu({productId, colorId, printTypeId, onPrintTy
 				{
 					printTypes ? <EntityWithNameIdSelect
 							id={printTypeId}
+							disabled={readOnly}
 							onChange={
 								(printTypeId) => {
 									if (printTypeId) onPrintTypeChange(printTypeId);
