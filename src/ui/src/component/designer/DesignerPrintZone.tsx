@@ -61,6 +61,9 @@ export default function DesignerPrintZone({
 		[widthMm, heightMm, maxHeight, maxWidth]
 	);
 
+	const width = useMemo(() => Math.round(widthMm * PIXEL_PER_MM * scale), [widthMm, scale]);
+	const height = useMemo(() => Math.round(heightMm * PIXEL_PER_MM * scale), [heightMm, scale]);
+
 	const uploadImage = useCallback(
 		() => {
 			uploadImageDialog.show(
@@ -149,14 +152,13 @@ export default function DesignerPrintZone({
 
 	return (
 		<div className="print-zone">
-			<div className="label">
-				<h3>{printZone.name}</h3>
-				({widthCm} x {heightCm} cm)
+			<div className="label mb-2">
+				Rozměry: {widthCm} x {heightCm} cm
 				<Button size="sm" onClick={uploadImage}>Nahrát obrázek...</Button>
 			</div>
 			<div
 				className={`boundary ${isResizing ? 'resizing' : ''} ${moveImagePosition ? 'moving' : ''}`}
-				style={{width: widthMm * PIXEL_PER_MM * scale, height: heightMm * PIXEL_PER_MM * scale}}
+				style={{width: width, height: height}}
 				onMouseMove={onMouseMove}
 				onMouseUp={
 					(e: MouseEvent<HTMLDivElement>) => {
@@ -177,8 +179,8 @@ export default function DesignerPrintZone({
 							file={file}
 							key={index}
 							scale={scale}
-							maxWidth={maxWidth}
-							maxHeight={maxHeight}
+							maxWidth={width}
+							maxHeight={height}
 							isSelected={file === selectedFile}
 							isManipulating={isResizing || moveImagePosition !== undefined}
 							onSelected={() => onFileSelected(file)}

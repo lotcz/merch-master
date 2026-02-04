@@ -1,4 +1,4 @@
-import {Alert, Button, Spinner} from "react-bootstrap";
+import {Alert, Spinner} from "react-bootstrap";
 import React, {useCallback, useContext, useEffect, useState} from "react";
 import {StringUtil} from "zavadil-ts-common";
 import {DesignPayload} from "../../types/Design";
@@ -84,14 +84,15 @@ export default function DesignerWrapper() {
 						setChanged(true);
 					}
 				}
+				onFinished={onFinished}
 				onError={setError}
 			/>
 			{
-				error && <Alert variant="danger">{error}</Alert>
+				error && <div className="error">
+					<Alert variant="danger">{error}</Alert>
+				</div>
 			}
-			<div className="text-center">
-				<Button size="lg" onClick={() => saveDesign(true)}>Uložit</Button>
-			</div>
+
 		</div>
 	)
 }

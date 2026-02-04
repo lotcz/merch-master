@@ -113,6 +113,67 @@ tr.selectable.selected td {
 
 /* DESIGNER */
 
+.designer {
+	width: 100%;
+	overflow: visible;
+	display: flex;
+	flex-direction: row;
+	justify-content: stretch;
+	align-items: stretch;
+}
+
+.designer .container-fluid .row {
+	align-items: stretch;
+	height: 100%;
+}
+
+.designer .container-fluid,
+.designer .container-fluid .row,
+.designer .container-fluid .row > div,
+.designer .designer-tab {
+	max-height: 100%;
+	overflow: visible;
+}
+
+.designer .row .card {
+	height: 100%;
+}
+
+.designer .designer-main {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: stretch;
+	overflow: hidden;
+}
+
+.designer-shadow {
+	box-shadow: 10px 10px 5px #dee2e6;
+}
+
+.designer .designer-tab {
+	padding: 10px;
+	overflow: hidden;
+	flex-grow: 1;
+	border-width: 1px;
+	border-style: solid;
+	border-top-style: none;
+	border-color: #dee2e6;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.designer .print-zone {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
 .designer .form-label {
 	font-size: 75%;
 	margin-top: 10px;
@@ -123,7 +184,6 @@ tr.selectable.selected td {
 	display: flex;
 	align-items: center;
 	gap: 0.5rem;
-	margin-top: 10px;
 }
 
 .designer .print-zone .label h3 {
@@ -280,5 +340,20 @@ tr.selectable.selected td {
 /* DESIGNER WRAPPER */
 
 .designer-wrapper {
-	
+	padding: 10px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	display: flex;
+	flex-direction: row;
+	align-items: stretch;
+	justify-content: stretch;
+}
+
+.designer-wrapper .error {
+	position: absolute;
+	bottom: 0;
+	right: 0;
 }

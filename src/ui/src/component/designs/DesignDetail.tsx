@@ -189,11 +189,20 @@ export default function DesignDetail() {
 						</Table>
 					</Tab>
 				</Tabs>
-				<div>
+				<div className="p-2 "
+					 style={{
+						 height: 600,
+						 maxHeight: 600,
+						 display: 'flex',
+						 flexDirection: 'row',
+						 alignItems: 'stretch',
+						 justifyContent: 'stretch'
+					 }}>
 					{
 						activeTab === 'designer' && <Designer
 							design={data}
 							onChange={onChanged}
+							onFinished={saveData}
 							onError={(e) => userAlerts.err(e)}
 						/>
 					}
