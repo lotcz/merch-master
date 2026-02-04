@@ -1,10 +1,12 @@
 import {Alert, Spinner} from "react-bootstrap";
-import React, {useCallback, useContext, useEffect, useState} from "react";
+import React, {useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {StringUtil} from "zavadil-ts-common";
 import {DesignPayload} from "../../types/Design";
 import Designer from "./Designer";
 import {DesignerRestClientContext} from "../../client/designer/DesignerRestClient";
 import {useParams} from "react-router";
+import {UploadImageDialogContext, UploadImageDialogContextContent} from "../../util/UploadImageDialogContext";
+import {UploadImageModal, UploadImageModalProps} from "../images/UploadImageModal";
 
 export default function DesignerWrapper() {
 	const client = useContext(DesignerRestClientContext);
@@ -18,6 +20,18 @@ export default function DesignerWrapper() {
 	const onFinished = useCallback(
 		() => {
 
+		},
+		[]
+	);
+
+	const [uploadImageDialog, setUploadImageDialog] = useState<UploadImageModalProps>();
+
+	const uploadImageDialogContext = useMemo<UploadImageDialogContextContent>(
+		() => {
+			return {
+				show: (props: UploadImageModalProps) => setUploadImageDialog(props),
+				hide: () => setUploadImageDialog(undefined)
+			}
 		},
 		[]
 	);
@@ -75,24 +89,28 @@ export default function DesignerWrapper() {
 	}
 
 	return (
-		<div className="designer-wrapper">
-			<Designer
-				design={design}
-				onChange={
-					(d) => {
-						setDesign(d);
-						setChanged(true);
+		<UploadImageDialogContext.Provider value={uploadImageDialogContext}>
+			<div className="designer-wrapper">
+				<Designer
+					design={design}
+					onChange={
+						(d) => {
+							setDesign(d);
+							setChanged(true);
+						}
 					}
+					onFinished={onFinished}
+					onError={setError}
+				/>
+				{
+					uploadImageDialog && <UploadImageModal {...uploadImageDialog} />
 				}
-				onFinished={onFinished}
-				onError={setError}
-			/>
-			{
-				error && <div className="error">
-					<Alert variant="danger">{error}</Alert>
-				</div>
-			}
-
-		</div>
+				{
+					error && <div className="error">
+						<Alert variant="danger">{error}</Alert>
+					</div>
+				}
+			</div>
+		</UploadImageDialogContext.Provider>
 	)
 }

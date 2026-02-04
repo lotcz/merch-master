@@ -49,7 +49,7 @@ export function UploadImageModal({onClose, onSelected}: UploadImageModalProps) {
 		<Modal show={true} onHide={onClose} size="xl">
 			<Modal.Header closeButton className="align-items-start">
 				<div>
-					<Modal.Title>Upload image</Modal.Title>
+					<Modal.Title>Nahrát obrázek</Modal.Title>
 				</div>
 			</Modal.Header>
 			<Modal.Body className="p-0">
@@ -57,12 +57,13 @@ export function UploadImageModal({onClose, onSelected}: UploadImageModalProps) {
 					<div className="p-4">
 						<div className="p-2 text-center">
 							{
-								preview && <Img url={preview} maxHeight={600} maxWidth={800}/>
+								preview && <Img url={preview} maxHeight={400} maxWidth={600}/>
 							}
 						</div>
 						<Form>
 							<Form.Control
 								type="file"
+								accept="image/*"
 								onChange={(e) => {
 									setFile(undefined);
 									const filelist = (e.target as HTMLInputElement).files;
@@ -86,7 +87,7 @@ export function UploadImageModal({onClose, onSelected}: UploadImageModalProps) {
 							loading={uploading}
 							onClick={upload}
 							disabled={file === undefined}
-						>Upload</SaveButton>
+						>Nahrát</SaveButton>
 					</div>
 				</div>
 			</Modal.Body>

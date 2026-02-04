@@ -285,6 +285,26 @@ tr.selectable.selected td {
 
 /* PREVIEW */
 
+.designer .previews-section {
+	display: flex;
+	flex-direction: column;
+	justify-content: stretch;
+	gap: 10px;
+}
+
+.designer .previews-section .alert {
+	padding: 5px;
+	border: solid 1px orange;
+	margin: 0;
+}
+
+.designer .previews-section .previews {
+	flex-grow: 1;
+	overflow: scroll;
+	border: solid 1px #dee2e6;
+	border-radius: 5px;
+}
+
 .designer-preview {
 	position: relative;
 	user-select: none;

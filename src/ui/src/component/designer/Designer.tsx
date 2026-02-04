@@ -1,4 +1,4 @@
-import {Button, Col, Container, Row, Spinner, Tab, Tabs} from "react-bootstrap";
+import {Alert, Button, Col, Container, Row, Spinner, Tab, Tabs} from "react-bootstrap";
 import React, {useCallback, useContext, useEffect, useRef, useState} from "react";
 import {DesignPayload} from "../../types/Design";
 import {PrintTypePayload} from "../../types/PrintType";
@@ -143,9 +143,8 @@ export default function Designer({design, onChange, onError, onFinished}: Design
 						</div>
 					</Col>
 					<Col md={3} xl={2}>
-						<div className="card designer-shadow p-2">
-							<div className="previews mt-3">
-								<h3>Náhled</h3>
+						<div className="previews-section card designer-shadow p-2">
+							<div className="previews">
 								<div ref={previewAreaRef} className="preview-container">
 									{
 										printType.previews.map(
@@ -162,7 +161,8 @@ export default function Designer({design, onChange, onError, onFinished}: Design
 									}
 								</div>
 							</div>
-							<div className="text-center">
+							<Alert variant="warning">Náhledy tisku jsou pouze orientační!</Alert>
+							<div className="preview-action text-center">
 								<Button
 									size="lg"
 									variant="success"

@@ -35,40 +35,43 @@ export default function DesignerPreview({
 		[preview, maxHeight, maxWidth]
 	);
 
-	const designerWidth = useMemo(() => Math.round(preview.printPreview.imageWidthPx * scale), [preview, scale]);
-	const designerHeight = useMemo(() => Math.round(preview.printPreview.imageHeightPx * scale), [preview, scale]);
+	const previewWidth = useMemo(() => Math.round(preview.printPreview.imageWidthPx * scale), [preview, scale]);
+	const previewHeight = useMemo(() => Math.round(preview.printPreview.imageHeightPx * scale), [preview, scale]);
 
 	return (
-		<div
-			className="designer-preview"
-			draggable={false}
-			style={
-				{
-					width: designerWidth,
-					height: designerHeight
+		<div className="designer-preview-wrapper">
+			<div className="text-center"><strong>{preview.printPreview.name}</strong></div>
+			<div
+				className="designer-preview"
+				draggable={false}
+				style={
+					{
+						width: previewWidth,
+						height: previewHeight
+					}
 				}
-			}
-		>
-			<ImagezImage name={preview.printPreview.imageName} type="Fit" width={maxWidth} height={maxHeight}/>
-			{
-				preview.zones.map(
-					(previewZone, index) => <DesignerPreviewZone
-						key={index}
-						design={design}
-						zones={productZones}
-						previewZone={previewZone}
-						previewScale={scale}
-						designerWidth={designerWidth}
-						designerHeight={designerHeight}
-						onError={onError}
-					/>
-				)
-			}
-			{
-				preview.printPreview.foregroundName && <div className="foreground">
-					<ImagezImage name={preview.printPreview.foregroundName} type="Fit" width={maxWidth} height={maxHeight}/>
-				</div>
-			}
+			>
+				<ImagezImage name={preview.printPreview.imageName} type="Fit" width={maxWidth} height={maxHeight}/>
+				{
+					preview.zones.map(
+						(previewZone, index) => <DesignerPreviewZone
+							key={index}
+							design={design}
+							zones={productZones}
+							previewZone={previewZone}
+							previewScale={scale}
+							designerWidth={previewWidth}
+							designerHeight={previewHeight}
+							onError={onError}
+						/>
+					)
+				}
+				{
+					preview.printPreview.foregroundName && <div className="foreground">
+						<ImagezImage name={preview.printPreview.foregroundName} type="Fit" width={maxWidth} height={maxHeight}/>
+					</div>
+				}
+			</div>
 		</div>
 	)
 }
