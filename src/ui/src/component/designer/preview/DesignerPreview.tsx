@@ -55,7 +55,7 @@ export default function DesignerPreview({
 			>
 				{
 					preview.printPreview.imageName &&
-					<ImagezImage name={preview.printPreview.imageName} type="Fit" width={maxWidth} height={maxHeight}/>
+					<ImagezImage name={preview.printPreview.imageName} type="Fit" width={maxWidth} height={maxHeight} snap={true}/>
 				}
 				{
 					preview.zones.map(
@@ -73,7 +73,7 @@ export default function DesignerPreview({
 				}
 				{
 					preview.printPreview.foregroundName && <div className="foreground">
-						<ImagezImage name={preview.printPreview.foregroundName} type="Fit" width={maxWidth} height={maxHeight}/>
+						<ImagezImage name={preview.printPreview.foregroundName} type="Fit" width={maxWidth} height={maxHeight} snap={true}/>
 					</div>
 				}
 			</div>

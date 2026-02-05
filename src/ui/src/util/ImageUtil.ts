@@ -15,4 +15,7 @@ export default class ImageUtil {
 		return Math.min(wScale, hScale);
 	}
 
+	static snap(size: number) {
+		return Math.ceil(size / 100) * 100;
+	}
 }

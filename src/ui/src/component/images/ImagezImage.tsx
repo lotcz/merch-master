@@ -1,7 +1,8 @@
-import {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useMemo, useState} from "react";
 import {Img} from "./Img";
 import {ImagezRestClientContext} from "../../client/imagez/ImagezClient";
 import {Spinner} from "react-bootstrap";
+import ImageUtil from "../../util/ImageUtil";
 
 export type ImagezImageProps = {
 	name?: string | null;
@@ -11,23 +12,27 @@ export type ImagezImageProps = {
 	ext?: string;
 	verticalAlign?: string | null;
 	horizontalAlign?: string | null;
+	snap?: boolean;
 };
 
-export function ImagezImage({name, type, width, height, ext, verticalAlign, horizontalAlign}: ImagezImageProps) {
+export function ImagezImage({name, type, width, height, ext, snap = false, verticalAlign, horizontalAlign}: ImagezImageProps) {
 	const restClient = useContext(ImagezRestClientContext);
 	const [url, setUrl] = useState<string | null>();
+
+	const actualWidth = useMemo(() => snap ? ImageUtil.snap(width) : width, [width, snap]);
+	const actualHeight = useMemo(() => snap ? ImageUtil.snap(height) : height, [height, snap]);
 
 	useEffect(
 		() => {
 			if (name) {
 				restClient
-					.getResizedUrl(name, type, width, height, ext, verticalAlign, horizontalAlign)
+					.getResizedUrl(name, type, actualWidth, actualHeight, ext, verticalAlign, horizontalAlign)
 					.then(setUrl);
 			} else {
 				setUrl(null);
 			}
 		},
-		[restClient, name, type, width, height, ext, verticalAlign, horizontalAlign]
+		[restClient, name, type, actualWidth, actualHeight, ext, verticalAlign, horizontalAlign]
 	);
 
 	if (!url) return <Spinner size="sm"/>

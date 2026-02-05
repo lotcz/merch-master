@@ -72,7 +72,7 @@ export default function DesignerFile(
 			}
 
 		>
-			<ImagezImage name={file.imageName} type="Fit" width={maxWidth} height={maxHeight}/>
+			<ImagezImage name={file.imageName} type="Fit" width={maxWidth} height={maxHeight} snap={true}/>
 			<div
 				className="action-button delete-button"
 				onMouseDown={

@@ -2,6 +2,7 @@ import {RestClient, StringUtil} from "zavadil-ts-common";
 import {ImageHealth} from "../../types/Image";
 import {createContext} from "react";
 import conf from "../../config/conf.json";
+import ImageUtil from "../../util/ImageUtil";
 
 export class ImagezClient {
 
@@ -22,11 +23,20 @@ export class ImagezClient {
 		height: number,
 		ext?: string,
 		verticalAlign?: string | null,
-		horizontalAlign?: string | null
+		horizontalAlign?: string | null,
+		snap: boolean = false
 	): Promise<string> {
 		if (StringUtil.isBlank(name)) {
 			return Promise.reject('Image name cannot be empty!');
 		}
+
+		if (width === 0 || height === 0) return Promise.resolve('');
+
+		if (snap) {
+			width = ImageUtil.snap(width);
+			height = ImageUtil.snap(height);
+		}
+
 		return this.client.get(
 			`imagez/url/resized/${name}`,
 			{type, width, height, ext, verticalAlign, horizontalAlign}

@@ -195,7 +195,13 @@ export default function PrintPreviewDesigner({
 				>
 					{
 						printPreview.printPreview.imageName &&
-						<ImagezImage name={printPreview.printPreview.imageName} type="Fit" width={designerAreaSize.x} height={MAX_HEIGHT}/>
+						<ImagezImage
+							name={printPreview.printPreview.imageName}
+							type="Fit"
+							width={designerAreaSize.x}
+							height={MAX_HEIGHT}
+							snap={true}
+						/>
 					}
 					{
 						printPreview.zones.map(

@@ -44,6 +44,7 @@ export default function DesignerPreviewFlatFile(
 				type="Fit"
 				width={width}
 				height={height}
+				snap={true}
 			/>
 		</div>
 	)

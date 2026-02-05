@@ -55,14 +55,22 @@ export default function DesignerPreviewCylinderZone({
 			if (StringUtil.isBlank(fileNames)) return;
 			const names = fileNames.split(';');
 			const promises: Array<Promise<FileImageUrl>> = names.map(
-				(n): Promise<FileImageUrl> => imagezClient.getResizedUrl(n, 'Fit', designerWidth, designerHeight)
-					.then(
-						(url): FileImageUrl => {
-							return {
-								imageName: n,
-								imageUrl: url
-							}
-						})
+				(n): Promise<FileImageUrl> => imagezClient.getResizedUrl(
+					n,
+					'Fit',
+					designerWidth,
+					designerHeight,
+					undefined,
+					undefined,
+					undefined,
+					true
+				).then(
+					(url): FileImageUrl => {
+						return {
+							imageName: n,
+							imageUrl: url
+						}
+					})
 					.catch((e) => onError(String(e)))
 			);
 			Promise.all(promises).then(
