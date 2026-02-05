@@ -15,7 +15,9 @@ export function ImagezUploadInput({name, onSelected}: ImagezUploadInputProps) {
 
 	return <div>
 		<div className="d-flex gap-2 align-items-center">
-			<ImagezImageThumb name={name}/>
+			{
+				name && <ImagezImageThumb name={name}/>
+			}
 			<Form.Control
 				type="text"
 				disabled={true}

@@ -10,8 +10,8 @@
 	</parent>
 
 	<groupId>eu.zavadil.merchmaster</groupId>
-	<artifactId>merchmaster</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<artifactId>merch-master</artifactId>
+	<version>1.0.4</version>
 	<name>merch-master</name>
 	<description>Merch Master</description>
 

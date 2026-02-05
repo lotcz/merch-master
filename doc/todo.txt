@@ -1,3 +1,12 @@
+todo:
+
+- mobile designer
+- optimize imagez use (size buckets)
+- improve preview (use full screen size, zoom)
+- switch to prod OAuth (switch WorldNews first)
+
+ideas:
+
 - design merch
   - image + product + price(s)
 - legal info

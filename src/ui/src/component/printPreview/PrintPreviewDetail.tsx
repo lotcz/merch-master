@@ -14,6 +14,7 @@ import PrintPreviewDesigner from "./PrintPreviewDesigner";
 import DesignerPreview from "../designer/preview/DesignerPreview";
 import {PrintZoneStub} from "../../types/PrintZone";
 import {DesignPayload} from "../../types/Design";
+import ProductPreview from "../products/ProductPreview";
 
 const TAB_PARAM_NAME = 'tab';
 const DEFAULT_TAB = 'design';
@@ -204,6 +205,16 @@ export default function PrintPreviewDetail() {
 			<Form className="px-3 w-75">
 				<Stack direction="vertical" gap={2}>
 					<Row className="align-items-center">
+						<Row className="align-items-start">
+							<Col md={COL_1_MD} lg={COL_1_LG}>
+								<Form.Label>Product:</Form.Label>
+							</Col>
+							<Col md={COL_2_MD} lg={COL_2_LG}>
+								<div>
+									<ProductPreview productId={data.printPreview.productId}/>
+								</div>
+							</Col>
+						</Row>
 						<Col md={COL_1_MD} lg={COL_1_LG}>
 							<Form.Label>Name:</Form.Label>
 						</Col>
@@ -308,7 +319,7 @@ export default function PrintPreviewDetail() {
 					>
 						<Tab title="Design" eventKey="design">
 							{
-								productZones && <Stack direction="horizontal">
+								productZones && <Stack direction="horizontal" gap={2}>
 									<PrintPreviewDesigner
 										printPreview={data}
 										productZones={productZones}

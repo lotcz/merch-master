@@ -53,7 +53,10 @@ export default function DesignerPreview({
 					}
 				}
 			>
-				<ImagezImage name={preview.printPreview.imageName} type="Fit" width={maxWidth} height={maxHeight}/>
+				{
+					preview.printPreview.imageName &&
+					<ImagezImage name={preview.printPreview.imageName} type="Fit" width={maxWidth} height={maxHeight}/>
+				}
 				{
 					preview.zones.map(
 						(previewZone, index) => <DesignerPreviewZone

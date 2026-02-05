@@ -155,7 +155,6 @@ export default function PrintPreviewDesigner({
 	return (
 		<div className="print-preview-designer">
 			<div className="label">
-				<h3>{printPreview.printPreview.name}</h3>
 				<Dropdown>
 					<Dropdown.Toggle variant="primary" className="d-flex align-items-center gap-2 border">Add +</Dropdown.Toggle>
 					<Dropdown.Menu>
@@ -194,7 +193,10 @@ export default function PrintPreviewDesigner({
 						}
 					}
 				>
-					<ImagezImage name={printPreview.printPreview.imageName} type="Fit" width={designerAreaSize.x} height={MAX_HEIGHT}/>
+					{
+						printPreview.printPreview.imageName &&
+						<ImagezImage name={printPreview.printPreview.imageName} type="Fit" width={designerAreaSize.x} height={MAX_HEIGHT}/>
+					}
 					{
 						printPreview.zones.map(
 							(previewZone, index) => <PrintPreviewDesignerZone

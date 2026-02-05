@@ -11,7 +11,6 @@ import DesignerPreview from "./preview/DesignerPreview";
 import {DESIGNER_MAX_HEIGHT, DESIGNER_MAX_WIDTH} from "../../util/ImageUtil";
 import {PrintZoneStub} from "../../types/PrintZone";
 import {PrintPreviewPayload} from "../../types/PrintPreview";
-import {BsX} from "react-icons/bs";
 import {LoadingButton} from "zavadil-react-common";
 import {DesignerAdminZone} from "./DesignerAdminZone";
 
@@ -112,7 +111,9 @@ export default function Designer({
 		<div className="designer">
 			{
 				selectePreview ? <div className="preview-full card designer-shadow" onClick={() => setSelectedPreview(undefined)}>
-						<div className="d-flex justify-content-end cursor-pointer"><BsX size={50}/></div>
+						<div className="d-flex justify-content-end cursor-pointer">
+							<Button variant="link" size="sm" onClick={() => setSelectedPreview(undefined)}>Zavřít náhled</Button>
+						</div>
 						<div ref={fullPreviewAreaRef} className="preview-full-container">
 							<DesignerPreview
 								preview={selectePreview}
@@ -195,8 +196,8 @@ export default function Designer({
 							</Col>
 							<Col md={3} xl={2}>
 								<div className="previews-section card designer-shadow p-2">
-									<div className="previews">
-										<div ref={previewAreaRef} className="preview-container">
+									<div ref={previewAreaRef} className="previews">
+										<div className="preview-container">
 											{
 												printType.previews.map(
 													(preview, index) => <DesignerPreview

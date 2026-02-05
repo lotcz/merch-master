@@ -321,6 +321,12 @@ tr.selectable.selected td {
 	border-radius: 5px;
 }
 
+.designer .designer-preview-wrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
 .designer-preview {
 	position: relative;
 	user-select: none;

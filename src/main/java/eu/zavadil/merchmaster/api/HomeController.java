@@ -20,7 +20,9 @@ public class HomeController {
 	 */
 	@GetMapping(
 		value = {
-			"editor/**"
+			"designer/**",
+			"products/**",
+			"designs/**"
 		}
 	)
 	public @ResponseBody ResponseEntity<InputStreamResource> fallback() {
