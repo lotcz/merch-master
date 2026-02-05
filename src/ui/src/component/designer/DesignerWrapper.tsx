@@ -17,7 +17,7 @@ export default function DesignerWrapper() {
 	const [saving, setSaving] = useState<boolean>(false);
 	const [error, setError] = useState<string>();
 
-	const readOnly: boolean = useMemo(() => StringUtil.getNonEmpty(searchParams.get('readOnly')) === '1', [searchParams]);
+	const readOnly: boolean = useMemo(() => StringUtil.getNonEmpty(searchParams.get('read_only')) === '1', [searchParams]);
 	const admin: boolean = useMemo(() => StringUtil.getNonEmpty(searchParams.get('admin')) === '1', [searchParams]);
 
 	const [uploadImageDialog, setUploadImageDialog] = useState<UploadImageModalProps>();
