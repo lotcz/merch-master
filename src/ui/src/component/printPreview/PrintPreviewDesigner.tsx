@@ -351,7 +351,7 @@ export default function PrintPreviewDesigner({
 										/>
 									</Form.Group>
 									<Form.Group>
-										<Form.Label>Perspective ({selectedPreviewZone.cylinderPerspective}°)</Form.Label>
+										<Form.Label>Perspective ({selectedPreviewZone.cylinderPerspective}px)</Form.Label>
 										<Form.Range
 											value={selectedPreviewZone.cylinderPerspective}
 											min={0}

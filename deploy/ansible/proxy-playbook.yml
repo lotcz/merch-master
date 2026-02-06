@@ -11,6 +11,7 @@
         nginx_proxy_config: |
           server {
               listen 80;
+              client_max_body_size 50M;
               server_name {{ domain }};
 
               location / {

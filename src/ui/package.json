@@ -1,6 +1,6 @@
 {
   "name": "mm-ui",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "private": true,
   "devDependencies": {
     "react-scripts": "5.0.1",

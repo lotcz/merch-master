@@ -3,10 +3,11 @@ import {PrintZoneStub} from "../../types/PrintZone";
 import {DesignPayload} from "../../types/Design";
 import {NumberUtil, Vector2} from "zavadil-ts-common";
 import DesignerFile from "./DesignerFile";
-import {Button} from "react-bootstrap";
 import {UploadImageDialogContext} from "../../util/UploadImageDialogContext";
 import {DesignFileStub} from "../../types/DesignFile";
 import ImageUtil, {PIXEL_PER_MM} from "../../util/ImageUtil";
+import {ImageHealth} from "../../types/Image";
+import {ImagezUploadButton} from "../images/ImagezUploadButton";
 
 export type DesignerPrintZoneParams = {
 	printZone: PrintZoneStub;
@@ -67,37 +68,30 @@ export default function DesignerPrintZone({
 	const height = useMemo(() => Math.round(heightMm * PIXEL_PER_MM * scale), [heightMm, scale]);
 
 	const uploadImage = useCallback(
-		() => {
-			uploadImageDialog.show(
-				{
-					onSelected: (imageName, health) => {
-						const imageScale = ImageUtil.getMaxScale(
-							health.width / PIXEL_PER_MM,
-							health.height / PIXEL_PER_MM,
-							widthMm,
-							heightMm
-						);
-						const imageWidth = imageScale * health.width / PIXEL_PER_MM;
-						const imageHeight = imageScale * health.height / PIXEL_PER_MM;
-						const file: DesignFileStub = {
-							designId: Number(design.design.id),
-							printZoneId: Number(printZone.id),
-							imageName: imageName,
-							originalImageHeightPx: health.height,
-							originalImageWidthPx: health.width,
-							positionXMm: (widthMm - imageWidth) / 2,
-							positionYMm: (heightMm - imageHeight) / 2,
-							imageWidthMm: imageWidth,
-							imageHeightMm: imageHeight,
-							aspectLocked: true
-						};
-						design.files = [...design.files, file];
-						onChange({...design});
-						uploadImageDialog.hide();
-					},
-					onClose: () => uploadImageDialog.hide()
-				}
+		(imageName: string, health: ImageHealth) => {
+			const imageScale = ImageUtil.getMaxScale(
+				health.width / PIXEL_PER_MM,
+				health.height / PIXEL_PER_MM,
+				widthMm,
+				heightMm
 			);
+			const imageWidth = imageScale * health.width / PIXEL_PER_MM;
+			const imageHeight = imageScale * health.height / PIXEL_PER_MM;
+			const file: DesignFileStub = {
+				designId: Number(design.design.id),
+				printZoneId: Number(printZone.id),
+				imageName: imageName,
+				originalImageHeightPx: health.height,
+				originalImageWidthPx: health.width,
+				positionXMm: (widthMm - imageWidth) / 2,
+				positionYMm: (heightMm - imageHeight) / 2,
+				imageWidthMm: imageWidth,
+				imageHeightMm: imageHeight,
+				aspectLocked: true
+			};
+			design.files = [...design.files, file];
+			onChange({...design});
+			uploadImageDialog.hide();
 		},
 		[uploadImageDialog, design, printZone, onChange, widthMm, heightMm]
 	);
@@ -154,10 +148,10 @@ export default function DesignerPrintZone({
 
 	return (
 		<div className="print-zone">
-			<div className="label mb-2">
-				Rozměry: {widthCm} x {heightCm} cm
+			<div className="mb-2 d-flex align-items-center gap-2">
+				<div>Rozměry: {widthCm} x {heightCm} cm</div>
 				{
-					(!readOnly) && <Button size="sm" onClick={uploadImage}>Nahrát obrázek...</Button>
+					(!readOnly) && <ImagezUploadButton name="Nahrát..." onSelected={uploadImage}/>
 				}
 			</div>
 			<div

@@ -408,7 +408,8 @@ tr.selectable.selected td {
 /* DESIGNER WRAPPER */
 
 .designer-wrapper {
-	padding: 10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
 	position: absolute;
 	top: 0;
 	left: 0;
