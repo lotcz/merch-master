@@ -172,6 +172,7 @@ export default function PrintPreviewDetail() {
 							printZoneId: Number(z.printZoneId),
 							designId: 0,
 							imageName: conf.PREVIEW_ZONE_IMAGE,
+							originalImageName: 'dummy',
 							originalImageWidthPx: 0,
 							originalImageHeightPx: 0,
 							positionXMm: 0,

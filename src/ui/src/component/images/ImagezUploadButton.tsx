@@ -18,7 +18,7 @@ export function ImagezUploadButton({name, onSelected}: ImagezUploadButtonProps) 
 			setUploading(true);
 			restClient
 				.uploadFile(file)
-				.then((ih) => onSelected(ih.name, ih))
+				.then((ih) => onSelected(file.name, ih))
 				.catch((e) => console.error(e))
 				.finally(() => setUploading(false));
 		},

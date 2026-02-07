@@ -1,6 +1,6 @@
 import React, {MouseEvent, MouseEventHandler, useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
 import {Vector2} from "zavadil-ts-common";
-import {Button, Dropdown, Form, Spinner, Stack} from "react-bootstrap";
+import {Dropdown, Form, Spinner, Stack} from "react-bootstrap";
 import ImageUtil, {PIXEL_PER_MM} from "../../util/ImageUtil";
 import {PrintPreviewPayload} from "../../types/PrintPreview";
 import {PrintPreviewZoneStub} from "../../types/PrintPreviewZone";
@@ -9,6 +9,7 @@ import {UserAlertsContext} from "../../util/UserAlerts";
 import PrintPreviewDesignerZone from "./PrintPreviewDesignerZone";
 import {ImagezImage} from "../images/ImagezImage";
 import {Switch} from "zavadil-react-common";
+import ResetableRange from "../general/ResetableRange";
 
 const MAX_WIDTH = 800;
 const MAX_HEIGHT = 350;
@@ -52,7 +53,7 @@ export default function PrintPreviewDesigner({
 
 	const scale = useMemo(
 		() => {
-			return ImageUtil.getMaxScale(
+			return ImageUtil.imageFitScale(
 				printPreview.printPreview.imageWidthPx,
 				printPreview.printPreview.imageHeightPx,
 				designerAreaSize.x,
@@ -71,7 +72,7 @@ export default function PrintPreviewDesigner({
 				userAlerts.err('No zone found!');
 				return;
 			}
-			const zoneScale = ImageUtil.getMaxScale(
+			const zoneScale = ImageUtil.imageFitScale(
 				zone.widthMm * PIXEL_PER_MM,
 				zone.heightMm * PIXEL_PER_MM,
 				printPreview.printPreview.imageWidthPx,
@@ -247,66 +248,48 @@ export default function PrintPreviewDesigner({
 				{
 					selectedPreviewZone && <div className="print-preview-designer-zone-form">
 						<Form>
-							<Form.Group>
-								<Form.Label>
-									<span>Rotate ({selectedPreviewZone.rotateDeg}°)</span>
-									<Button
-										size="sm"
-										onClick={
-											() => {
-												selectedPreviewZone.rotateDeg = 0;
-												updateZone(selectedPreviewZone);
-											}
-										}
-									>Reset</Button>
-								</Form.Label>
-								<Form.Range
-									value={selectedPreviewZone.rotateDeg}
-									min={-180}
-									max={180}
-									step={0.1}
-									onChange={
-										(deg) => {
-											selectedPreviewZone.rotateDeg = Number(deg.target.value);
-											updateZone(selectedPreviewZone);
-										}
+							<ResetableRange
+								label={`Rotate (${selectedPreviewZone.rotateDeg}°)`}
+								defaultValue={0}
+								value={selectedPreviewZone.rotateDeg}
+								min={-180}
+								max={180}
+								step={0.1}
+								onChange={
+									(deg) => {
+										selectedPreviewZone.rotateDeg = deg;
+										updateZone(selectedPreviewZone);
 									}
-								/>
-							</Form.Group>
-							<Form.Group>
-								<Form.Label>
-									<span>Skew X ({selectedPreviewZone.skewXDeg}°)</span>
-								</Form.Label>
-								<Form.Range
-									value={selectedPreviewZone.skewXDeg}
-									min={-180}
-									max={180}
-									step={0.1}
-									onChange={
-										(deg) => {
-											selectedPreviewZone.skewXDeg = Number(deg.target.value);
-											updateZone(selectedPreviewZone);
-										}
+								}
+							/>
+							<ResetableRange
+								label={`Skew X (${selectedPreviewZone.skewXDeg}°)`}
+								defaultValue={0}
+								value={selectedPreviewZone.skewXDeg}
+								min={-180}
+								max={180}
+								step={0.1}
+								onChange={
+									(deg) => {
+										selectedPreviewZone.skewXDeg = deg;
+										updateZone(selectedPreviewZone);
 									}
-								/>
-							</Form.Group>
-							<Form.Group>
-								<Form.Label>
-									<span>Skew Y ({selectedPreviewZone.skewYDeg}°)</span>
-								</Form.Label>
-								<Form.Range
-									value={selectedPreviewZone.skewYDeg}
-									min={-180}
-									max={180}
-									step={0.1}
-									onChange={
-										(deg) => {
-											selectedPreviewZone.skewYDeg = Number(deg.target.value);
-											updateZone(selectedPreviewZone);
-										}
+								}
+							/>
+							<ResetableRange
+								label={`Skew Y (${selectedPreviewZone.skewYDeg}°)`}
+								defaultValue={0}
+								value={selectedPreviewZone.skewYDeg}
+								min={-180}
+								max={180}
+								step={0.1}
+								onChange={
+									(deg) => {
+										selectedPreviewZone.skewYDeg = deg;
+										updateZone(selectedPreviewZone);
 									}
-								/>
-							</Form.Group>
+								}
+							/>
 							<Form.Group>
 								<Switch
 									id="cylinder-effect"
@@ -322,90 +305,90 @@ export default function PrintPreviewDesigner({
 							</Form.Group>
 							{
 								selectedPreviewZone.useCylinderEffect && <div className="p-2">
-									<Form.Group>
-										<Form.Label>Slices ({selectedPreviewZone.cylinderSlices})</Form.Label>
-										<Form.Range
-											value={selectedPreviewZone.cylinderSlices}
-											min={2}
-											max={100}
-											onChange={
-												(deg) => {
-													selectedPreviewZone.cylinderSlices = Number(deg.target.value);
-													updateZone(selectedPreviewZone);
-												}
+									<ResetableRange
+										label={`Slices (${selectedPreviewZone.cylinderSlices})`}
+										defaultValue={10}
+										value={selectedPreviewZone.cylinderSlices}
+										min={2}
+										max={100}
+										step={1}
+										onChange={
+											(value) => {
+												selectedPreviewZone.cylinderSlices = value;
+												updateZone(selectedPreviewZone);
 											}
-										/>
-									</Form.Group>
-									<Form.Group>
-										<Form.Label>Radius ({selectedPreviewZone.cylinderRadius}px)</Form.Label>
-										<Form.Range
-											value={selectedPreviewZone.cylinderRadius}
-											min={1}
-											max={1000}
-											onChange={
-												(deg) => {
-													selectedPreviewZone.cylinderRadius = Number(deg.target.value);
-													updateZone(selectedPreviewZone);
-												}
+										}
+									/>
+									<ResetableRange
+										label={`Radius (${selectedPreviewZone.cylinderRadius}px)`}
+										defaultValue={60}
+										value={selectedPreviewZone.cylinderRadius}
+										min={1}
+										max={1000}
+										step={1}
+										onChange={
+											(value) => {
+												selectedPreviewZone.cylinderRadius = value;
+												updateZone(selectedPreviewZone);
 											}
-										/>
-									</Form.Group>
-									<Form.Group>
-										<Form.Label>Perspective ({selectedPreviewZone.cylinderPerspective}px)</Form.Label>
-										<Form.Range
-											value={selectedPreviewZone.cylinderPerspective}
-											min={0}
-											max={2000}
-											onChange={
-												(deg) => {
-													selectedPreviewZone.cylinderPerspective = Number(deg.target.value);
-													updateZone(selectedPreviewZone);
-												}
+										}
+									/>
+									<ResetableRange
+										label={`Perspective (${selectedPreviewZone.cylinderPerspective}px)`}
+										defaultValue={1000}
+										value={selectedPreviewZone.cylinderPerspective}
+										min={0}
+										max={2000}
+										step={1}
+										onChange={
+											(value) => {
+												selectedPreviewZone.cylinderPerspective = value;
+												updateZone(selectedPreviewZone);
 											}
-										/>
-									</Form.Group>
-									<Form.Group>
-										<Form.Label>Start ({selectedPreviewZone.cylinderStartAngle}°)</Form.Label>
-										<Form.Range
-											value={selectedPreviewZone.cylinderStartAngle}
-											min={-90}
-											max={90}
-											onChange={
-												(deg) => {
-													selectedPreviewZone.cylinderStartAngle = Number(deg.target.value);
-													updateZone(selectedPreviewZone);
-												}
+										}
+									/>
+									<ResetableRange
+										label={`Start (${selectedPreviewZone.cylinderStartAngle}°)`}
+										defaultValue={-75}
+										value={selectedPreviewZone.cylinderStartAngle}
+										min={-90}
+										max={90}
+										step={1}
+										onChange={
+											(value) => {
+												selectedPreviewZone.cylinderStartAngle = value;
+												updateZone(selectedPreviewZone);
 											}
-										/>
-									</Form.Group>
-									<Form.Group>
-										<Form.Label>End ({selectedPreviewZone.cylinderEndAngle}°)</Form.Label>
-										<Form.Range
-											value={selectedPreviewZone.cylinderEndAngle}
-											min={-90}
-											max={90}
-											onChange={
-												(deg) => {
-													selectedPreviewZone.cylinderEndAngle = Number(deg.target.value);
-													updateZone(selectedPreviewZone);
-												}
+										}
+									/>
+									<ResetableRange
+										label={`End (${selectedPreviewZone.cylinderEndAngle}°)`}
+										defaultValue={75}
+										value={selectedPreviewZone.cylinderEndAngle}
+										min={-90}
+										max={90}
+										step={1}
+										onChange={
+											(value) => {
+												selectedPreviewZone.cylinderEndAngle = value;
+												updateZone(selectedPreviewZone);
 											}
-										/>
-									</Form.Group>
-									<Form.Group>
-										<Form.Label>Vertical ({selectedPreviewZone.cylinderVerticalAngle}°)</Form.Label>
-										<Form.Range
-											value={selectedPreviewZone.cylinderVerticalAngle}
-											min={-90}
-											max={90}
-											onChange={
-												(deg) => {
-													selectedPreviewZone.cylinderVerticalAngle = Number(deg.target.value);
-													updateZone(selectedPreviewZone);
-												}
+										}
+									/>
+									<ResetableRange
+										label={`Vertical (${selectedPreviewZone.cylinderVerticalAngle}°)`}
+										defaultValue={0}
+										value={selectedPreviewZone.cylinderVerticalAngle}
+										min={-90}
+										max={90}
+										step={1}
+										onChange={
+											(value) => {
+												selectedPreviewZone.cylinderVerticalAngle = value;
+												updateZone(selectedPreviewZone);
 											}
-										/>
-									</Form.Group>
+										}
+									/>
 								</div>
 							}
 						</Form>

@@ -27,7 +27,7 @@ export default function DesignerPreview({
 }: DesignerPreviewParams) {
 	const scale = useMemo(
 		() => {
-			return ImageUtil.getMaxScale(
+			return ImageUtil.imageFitScale(
 				preview.printPreview.imageWidthPx,
 				preview.printPreview.imageHeightPx,
 				maxWidth,

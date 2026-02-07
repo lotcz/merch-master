@@ -4,6 +4,7 @@ import {Design} from "./Design";
 
 export type DesignFileBase = EntityBase & {
 	imageName: string;
+	originalImageName: string;
 	originalImageWidthPx: number;
 	originalImageHeightPx: number;
 	positionXMm: number;

@@ -101,7 +101,17 @@ export default function Designer({
 
 	const [selectedFile, setSelectedFile] = useState<DesignFileStub>();
 
-	const [selectePreview, setSelectedPreview] = useState<PrintPreviewPayload>();
+	const updateFile = useCallback(
+		(file: DesignFileStub) => {
+			const newFile = {...file};
+			design.files = design.files.map(f => f === file ? newFile : f);
+			onChange({...design});
+			if (file === selectedFile) setSelectedFile(newFile);
+		},
+		[design, onChange, selectedFile]
+	);
+
+	const [selectedPreview, setSelectedPreview] = useState<PrintPreviewPayload>();
 
 	if (!printType) {
 		return <Spinner/>
@@ -110,13 +120,13 @@ export default function Designer({
 	return (
 		<div className="designer">
 			{
-				selectePreview ? <div className="preview-full card designer-shadow" onClick={() => setSelectedPreview(undefined)}>
+				selectedPreview ? <div className="preview-full card designer-shadow" onClick={() => setSelectedPreview(undefined)}>
 						<div className="d-flex justify-content-end cursor-pointer">
 							<Button variant="link" size="sm" onClick={() => setSelectedPreview(undefined)}>Zavřít náhled</Button>
 						</div>
 						<div ref={fullPreviewAreaRef} className="preview-full-container">
 							<DesignerPreview
-								preview={selectePreview}
+								preview={selectedPreview}
 								design={design}
 								productZones={printType.zones}
 								maxWidth={fullPreviewAreaSize.x}
@@ -132,22 +142,14 @@ export default function Designer({
 								<div className="card designer-shadow p-2">
 									<DesignerMenu
 										productId={printType.printType.productId}
-										colorId={design.design.productColorId}
-										printTypeId={design.design.printTypeId}
+										design={design}
 										readOnly={readOnly}
 										admin={admin}
-										onColorChange={
-											(colorId) => {
-												design.design.productColorId = colorId;
-												onChange({...design});
-											}
-										}
-										onPrintTypeChange={
-											(printTypeId) => {
-												design.design.printTypeId = printTypeId;
-												onChange({...design});
-											}
-										}
+										selectedFile={selectedFile}
+										selectedZone={selectedZone}
+										onChange={onChange}
+										onFileSelected={setSelectedFile}
+										onUpdateFile={updateFile}
 										onError={onError}
 									/>
 									{
@@ -188,6 +190,7 @@ export default function Designer({
 												selectedFile={selectedFile}
 												readOnly={readOnly}
 												onChange={onChange}
+												onUpdateFile={updateFile}
 												onFileSelected={setSelectedFile}
 											/>
 										}

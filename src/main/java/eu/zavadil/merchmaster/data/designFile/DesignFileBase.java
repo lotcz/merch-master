@@ -12,6 +12,8 @@ public class DesignFileBase extends EntityBase {
 
 	private String imageName;
 
+	private String originalImageName;
+
 	private int originalImageWidthPx;
 
 	private int originalImageHeightPx;

@@ -111,6 +111,11 @@ tr.selectable.selected td {
 	box-shadow: 0 0 3px #aaa;
 }
 
+.small-button {
+	padding: 2px;
+	line-height: 0;
+}
+
 /* DESIGNER */
 
 .designer {
@@ -181,7 +186,7 @@ tr.selectable.selected td {
 	justify-content: center;
 }
 
-.designer .form-label {
+.designer form label {
 	font-size: 75%;
 	margin-top: 10px;
 	margin-bottom: 0;
@@ -426,3 +431,5 @@ tr.selectable.selected td {
 	bottom: 0;
 	right: 10px;
 }
+
+

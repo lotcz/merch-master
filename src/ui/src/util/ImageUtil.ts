@@ -4,18 +4,40 @@ export const DESIGNER_MAX_HEIGHT = 350;
 
 export default class ImageUtil {
 
-	static getMaxScale(
+	static imageFitScale(
 		imgWidth: number,
 		imgHeight: number,
 		maxWidth: number,
 		maxHeight: number
-	) {
+	): number {
 		const wScale = Math.min(maxWidth / imgWidth, 1);
 		const hScale = Math.min(maxHeight / imgHeight, 1);
 		return Math.min(wScale, hScale);
 	}
 
-	static snap(size: number) {
+	static imageFillScale(
+		imgWidth: number,
+		imgHeight: number,
+		maxWidth: number,
+		maxHeight: number
+	): number {
+		const wScale = Math.min(maxWidth / imgWidth, 1);
+		const hScale = Math.min(maxHeight / imgHeight, 1);
+		return Math.max(wScale, hScale);
+	}
+
+	static imageGetScale(
+		imgWidth: number,
+		imgHeight: number,
+		maxWidth: number,
+		maxHeight: number
+	): number {
+		const wScale = maxWidth / imgWidth;
+		const hScale = maxHeight / imgHeight;
+		return Math.max(wScale, hScale);
+	}
+
+	static snap(size: number): number {
 		return Math.ceil(size / 100) * 100;
 	}
 }

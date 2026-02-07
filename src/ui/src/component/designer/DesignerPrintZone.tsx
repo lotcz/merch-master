@@ -17,6 +17,7 @@ export type DesignerPrintZoneParams = {
 	selectedFile?: DesignFileStub;
 	readOnly: boolean;
 	onChange: (design: DesignPayload) => any;
+	onUpdateFile: (file: DesignFileStub) => any;
 	onFileSelected: (selectedFile?: DesignFileStub) => any;
 }
 
@@ -27,6 +28,7 @@ export default function DesignerPrintZone({
 	maxHeight,
 	readOnly,
 	selectedFile,
+	onUpdateFile,
 	onChange,
 	onFileSelected
 }: DesignerPrintZoneParams) {
@@ -54,7 +56,7 @@ export default function DesignerPrintZone({
 
 	const scale = useMemo(
 		() => {
-			return ImageUtil.getMaxScale(
+			return ImageUtil.imageFitScale(
 				widthMm * PIXEL_PER_MM,
 				heightMm * PIXEL_PER_MM,
 				maxWidth,
@@ -68,8 +70,8 @@ export default function DesignerPrintZone({
 	const height = useMemo(() => Math.round(heightMm * PIXEL_PER_MM * scale), [heightMm, scale]);
 
 	const uploadImage = useCallback(
-		(imageName: string, health: ImageHealth) => {
-			const imageScale = ImageUtil.getMaxScale(
+		(originalName: string, health: ImageHealth) => {
+			const imageScale = ImageUtil.imageFitScale(
 				health.width / PIXEL_PER_MM,
 				health.height / PIXEL_PER_MM,
 				widthMm,
@@ -80,7 +82,8 @@ export default function DesignerPrintZone({
 			const file: DesignFileStub = {
 				designId: Number(design.design.id),
 				printZoneId: Number(printZone.id),
-				imageName: imageName,
+				imageName: health.name,
+				originalImageName: originalName,
 				originalImageHeightPx: health.height,
 				originalImageWidthPx: health.width,
 				positionXMm: (widthMm - imageWidth) / 2,
@@ -91,19 +94,10 @@ export default function DesignerPrintZone({
 			};
 			design.files = [...design.files, file];
 			onChange({...design});
+			onFileSelected(file);
 			uploadImageDialog.hide();
 		},
-		[uploadImageDialog, design, printZone, onChange, widthMm, heightMm]
-	);
-
-	const updateFile = useCallback(
-		(file: DesignFileStub) => {
-			const newFile = {...file};
-			design.files = design.files.map(f => f === file ? newFile : f);
-			onChange({...design});
-			if (file === selectedFile) onFileSelected(newFile);
-		},
-		[design, onChange, selectedFile, onFileSelected]
+		[uploadImageDialog, design, printZone, onChange, widthMm, heightMm, onFileSelected]
 	);
 
 	const [isResizing, setIsResizing] = useState<boolean>(false);
@@ -117,18 +111,12 @@ export default function DesignerPrintZone({
 			const pos = new Vector2(e.nativeEvent.offsetX, e.nativeEvent.offsetY).multiply(1 / scale).multiply(1 / PIXEL_PER_MM);
 
 			if (isResizing) {
-				const width = pos.x - selectedFile.positionXMm;
-				const height = pos.y - selectedFile.positionYMm;
-				selectedFile.imageWidthMm = Math.min(width, printZone.widthMm);
-				selectedFile.imageHeightMm = Math.min(height, printZone.heightMm);
+				selectedFile.imageWidthMm = pos.x - selectedFile.positionXMm;
+				selectedFile.imageHeightMm = pos.y - selectedFile.positionYMm;
 
 				if (selectedFile.aspectLocked) {
 					const aspect = selectedFile.originalImageWidthPx / selectedFile.originalImageHeightPx;
 					selectedFile.imageHeightMm = selectedFile.imageWidthMm / aspect;
-					if (selectedFile.imageHeightMm > printZone.heightMm) {
-						selectedFile.imageHeightMm = printZone.heightMm;
-						selectedFile.imageWidthMm = printZone.heightMm * aspect;
-					}
 				}
 
 			} else if (moveImagePosition) {
@@ -136,9 +124,9 @@ export default function DesignerPrintZone({
 				selectedFile.positionYMm = pos.y - moveImagePosition.y;
 			}
 
-			updateFile(selectedFile);
+			onUpdateFile(selectedFile);
 		},
-		[isResizing, moveImagePosition, selectedFile, scale, updateFile, printZone]
+		[isResizing, moveImagePosition, selectedFile, scale, onUpdateFile]
 	);
 
 	const files = useMemo(
@@ -189,7 +177,8 @@ export default function DesignerPrintZone({
 							onEndResize={() => setIsResizing(false)}
 							onDeleted={
 								() => {
-									onChange({design: design.design, files: design.files.filter(f => f !== file)})
+									onChange({design: design.design, files: design.files.filter(f => f !== file)});
+									onFileSelected(undefined);
 								}
 							}
 							onLockUnlock={
@@ -199,7 +188,7 @@ export default function DesignerPrintZone({
 										const aspect = file.originalImageWidthPx / file.originalImageHeightPx;
 										file.imageHeightMm = file.imageWidthMm / aspect;
 									}
-									updateFile(file);
+									onUpdateFile(file);
 								}
 							}
 						/>

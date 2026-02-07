@@ -1,31 +1,41 @@
-import {Form, Spinner} from "react-bootstrap";
-import React, {useCallback, useContext, useEffect, useState} from "react";
+import {Button, Form, Spinner, Stack} from "react-bootstrap";
+import React, {useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {PrintTypeStub} from "../../types/PrintType";
 import {DesignerRestClientContext} from "../../client/designer/DesignerRestClient";
 import {Product} from "../../types/Product";
-import {EntityWithNameIdSelect} from "zavadil-react-common";
+import {EntityWithNameIdSelect, IconButton} from "zavadil-react-common";
 import {ProductColorStub} from "../../types/ProductColor";
 import ColorSelectId from "../productColor/ColorSelectId";
+import {DesignFileStub} from "../../types/DesignFile";
+import ResetableRange from "../general/ResetableRange";
+import {PrintZoneStub} from "../../types/PrintZone";
+import ImageUtil, {PIXEL_PER_MM} from "../../util/ImageUtil";
+import {DesignPayload} from "../../types/Design";
+import {BsTrash} from "react-icons/bs";
 
 export type DesignerMenuParams = {
 	productId: number;
-	colorId: number;
-	printTypeId: number;
+	design: DesignPayload;
 	readOnly: boolean;
 	admin: boolean;
-	onColorChange: (colorId: number) => any;
-	onPrintTypeChange: (printTypeId: number) => any;
+	selectedFile?: DesignFileStub;
+	selectedZone?: PrintZoneStub;
+	onChange: (design: DesignPayload) => any;
+	onUpdateFile: (file: DesignFileStub) => any;
+	onFileSelected: (selectedFile?: DesignFileStub) => any;
 	onError: (error: string) => any;
 }
 
 export default function DesignerMenu({
 	productId,
-	colorId,
-	printTypeId,
+	design,
 	readOnly,
 	admin,
-	onPrintTypeChange,
-	onColorChange,
+	selectedFile,
+	selectedZone,
+	onUpdateFile,
+	onChange,
+	onFileSelected,
 	onError
 }: DesignerMenuParams) {
 	const client = useContext(DesignerRestClientContext);
@@ -71,6 +81,40 @@ export default function DesignerMenu({
 
 	useEffect(loadColors, [productId]);
 
+	const scale = useMemo(
+		() => {
+			if (selectedFile === undefined || selectedZone === undefined) return 0;
+			return (selectedFile.imageWidthMm * PIXEL_PER_MM) / selectedFile.originalImageWidthPx;
+		},
+		[selectedFile, selectedZone]
+	);
+
+	const setScale = useCallback(
+		(scale: number) => {
+			if (!selectedFile) return;
+			selectedFile.imageWidthMm = scale * selectedFile.originalImageWidthPx / PIXEL_PER_MM;
+			selectedFile.imageHeightMm = scale * selectedFile.originalImageHeightPx / PIXEL_PER_MM;
+			onUpdateFile(selectedFile);
+		},
+		[selectedFile, onUpdateFile]
+	);
+
+	const onColorChange = useCallback(
+		(colorId: number) => {
+			design.design.productColorId = colorId;
+			onChange({...design});
+		},
+		[design, onChange]
+	);
+
+	const onPrintTypeChange = useCallback(
+		(printTypeId: number) => {
+			design.design.printTypeId = printTypeId;
+			onChange({...design});
+		},
+		[design, onChange]
+	);
+
 	return (
 		<Form>
 			<Form.Group>
@@ -86,7 +130,7 @@ export default function DesignerMenu({
 				<Form.Label title="Barva">Barva</Form.Label>
 				{
 					colors ? <ColorSelectId
-							id={colorId}
+							id={design.design.productColorId}
 							colors={colors}
 							readOnly={readOnly}
 							onSelected={onColorChange}
@@ -98,7 +142,7 @@ export default function DesignerMenu({
 				<Form.Label title="Druh potisku">Druh potisku</Form.Label>
 				{
 					printTypes ? <EntityWithNameIdSelect
-							id={printTypeId}
+							id={design.design.printTypeId}
 							disabled={readOnly}
 							onChange={
 								(printTypeId) => {
@@ -110,6 +154,85 @@ export default function DesignerMenu({
 						: <Spinner/>
 				}
 			</Form.Group>
+			{
+				selectedFile && selectedZone && <Form>
+					<hr/>
+					<div className="d-flex align-items-center justify-content-between">
+						<strong className="text-truncate">{selectedFile.originalImageName}</strong>
+						<IconButton
+							variant="danger"
+							icon={<BsTrash/>}
+							onClick={
+								() => {
+									onChange({design: design.design, files: design.files.filter(f => f !== selectedFile)});
+									onFileSelected(undefined);
+								}
+							}
+						/>
+					</div>
+
+					<ResetableRange
+						label={`Velikost (${Math.round(scale * 100)}%)`}
+						defaultValue={1}
+						value={scale}
+						min={0.01}
+						max={2}
+						step={0.01}
+						onChange={setScale}
+					/>
+
+					<Stack className="mt-2" direction="horizontal" gap={2}>
+						<Button
+							variant="primary"
+							size="sm"
+							onClick={
+								() => {
+									const scale = ImageUtil.imageFillScale(
+										selectedFile.originalImageWidthPx / PIXEL_PER_MM,
+										selectedFile.originalImageHeightPx / PIXEL_PER_MM,
+										selectedZone.widthMm,
+										selectedZone.heightMm
+									);
+									//setScale(scale);
+
+									const width = scale * selectedFile.originalImageWidthPx / PIXEL_PER_MM;
+									const height = scale * selectedFile.originalImageHeightPx / PIXEL_PER_MM;
+									selectedFile.imageWidthMm = width;
+									selectedFile.imageHeightMm = height;
+									selectedFile.positionXMm = (selectedZone.widthMm - width) / 2;
+									selectedFile.positionYMm = (selectedZone.heightMm - height) / 2;
+									onUpdateFile(selectedFile);
+								}
+							}>
+							Vyplnit
+						</Button>
+						<Button
+							variant="primary"
+							size="sm"
+							onClick={
+								() => {
+									const scale = ImageUtil.imageFitScale(
+										selectedFile.originalImageWidthPx / PIXEL_PER_MM,
+										selectedFile.originalImageHeightPx / PIXEL_PER_MM,
+										selectedZone.widthMm,
+										selectedZone.heightMm
+									);
+									//setScale(scale);
+
+									const width = scale * selectedFile.originalImageWidthPx / PIXEL_PER_MM;
+									const height = scale * selectedFile.originalImageHeightPx / PIXEL_PER_MM;
+									selectedFile.imageWidthMm = width;
+									selectedFile.imageHeightMm = height;
+									selectedFile.positionXMm = (selectedZone.widthMm - width) / 2;
+									selectedFile.positionYMm = (selectedZone.heightMm - height) / 2;
+									onUpdateFile(selectedFile);
+								}
+							}>
+							Vycentrovat
+						</Button>
+					</Stack>
+				</Form>
+			}
 		</Form>
 
 	)

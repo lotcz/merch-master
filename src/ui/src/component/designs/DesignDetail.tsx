@@ -1,5 +1,5 @@
 import {Col, Form, Row, Spinner, Stack, Tab, Table, Tabs} from "react-bootstrap";
-import {useNavigate, useParams, useSearchParams} from "react-router";
+import {Link, useNavigate, useParams, useSearchParams} from "react-router";
 import React, {useCallback, useContext, useEffect, useState} from "react";
 import {NumberUtil, StringUtil} from "zavadil-ts-common";
 import {MerchMasterRestClientContext} from "../../client/merchMaster/MerchMasterRestClient";
@@ -146,7 +146,7 @@ export default function DesignDetail() {
 							<Form.Label>UUID:</Form.Label>
 						</Col>
 						<Col md={COL_2_MD} lg={COL_2_LG}>
-							<div>
+							<div className="d-flex align-items-center gap-2">
 								<Form.Control
 									type="text"
 									value={StringUtil.getNonEmpty(data.design.uuid)}
@@ -155,6 +155,7 @@ export default function DesignDetail() {
 										onChanged({...data});
 									}}
 								/>
+								<Link to={`/designer/${data.design.uuid}`}>Designer</Link>
 							</div>
 						</Col>
 					</Row>

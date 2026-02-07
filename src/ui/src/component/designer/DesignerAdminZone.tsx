@@ -48,7 +48,7 @@ export function DesignerAdminZone({design, printType}: DesignerAdminZoneProps) {
 						{
 							sz.files.map(
 								(f) => <tr>
-									<td>{StringUtil.ellipsis(f.imageName, 15)}</td>
+									<td>{StringUtil.ellipsis(f.originalImageName, 25)}</td>
 									<td><ImagezDownloadLink name={f.imageName} label="Stáhnout"/></td>
 								</tr>
 							)

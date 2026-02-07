@@ -2,7 +2,7 @@ import React, {MouseEvent} from "react";
 import {DesignFileStub} from "../../types/DesignFile";
 import {PIXEL_PER_MM} from "../../util/ImageUtil";
 import {ImagezImage} from "../images/ImagezImage";
-import {BsArrowDownRight, BsLock, BsTrash, BsUnlock} from "react-icons/bs";
+import {BsArrowDownRight, BsTrash} from "react-icons/bs";
 import {Vector2} from "zavadil-ts-common";
 
 export type DesignerFileParams = {
@@ -26,8 +26,6 @@ export default function DesignerFile(
 	{
 		file,
 		scale,
-		maxHeight,
-		maxWidth,
 		isSelected,
 		isManipulating,
 		readOnly,
@@ -72,7 +70,8 @@ export default function DesignerFile(
 			}
 
 		>
-			<ImagezImage name={file.imageName} type="Fit" width={maxWidth} height={maxHeight} snap={true}/>
+			<ImagezImage name={file.imageName} type="Fit" width={file.imageWidthMm * PIXEL_PER_MM * scale}
+						 height={file.imageHeightMm * PIXEL_PER_MM * scale} snap={true}/>
 			<div
 				className="action-button delete-button"
 				onMouseDown={
@@ -84,21 +83,6 @@ export default function DesignerFile(
 				}
 			>
 				<BsTrash size={20}/>
-			</div>
-			<div
-				className={`action-button aspect-lock-button ${file.aspectLocked ? 'locked' : 'unlocked'}`}
-				onMouseDown={
-					(e) => {
-						if (readOnly) return;
-						e.stopPropagation();
-						e.preventDefault();
-						onLockUnlock();
-					}
-				}
-			>
-				{
-					file.aspectLocked ? <BsLock size={20}/> : <BsUnlock size={20}/>
-				}
 			</div>
 			<div
 				className="action-button resize-button"

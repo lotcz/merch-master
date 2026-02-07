@@ -27,7 +27,7 @@ export default function DesignerPreviewFlatZone({
 					left: previewZone.startXPx * previewScale,
 					width: previewZone.widthPx * previewScale,
 					height: previewZone.heightPx * previewScale,
-					rotate: `${previewZone.rotateDeg}deg`
+					transform: `rotate(${previewZone.rotateDeg}deg) skewX(${previewZone.skewXDeg}deg) skewY(${previewZone.skewYDeg}deg)`
 				}
 			}
 		>
