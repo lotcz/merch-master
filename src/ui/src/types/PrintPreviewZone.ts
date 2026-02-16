@@ -18,6 +18,11 @@ export type PrintPreviewZoneBase = EntityBase & {
 	cylinderRadius: number;
 	cylinderStartAngle: number;
 	cylinderEndAngle: number;
+	useViewCrop: boolean;
+	viewCropOffsetXMm: number;
+	viewCropOffsetYMm: number;
+	viewCropWidthMm: number;
+	viewCropHeightMm: number;
 }
 
 export type PrintPreviewZone = PrintPreviewZoneBase & {

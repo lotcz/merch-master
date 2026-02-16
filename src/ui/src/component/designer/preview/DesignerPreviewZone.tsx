@@ -1,11 +1,22 @@
-import React, {useMemo} from "react";
+import React, {useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {DesignPayload} from "../../../types/Design";
 import {PrintZoneStub} from "../../../types/PrintZone";
 import {PrintPreviewZoneStub} from "../../../types/PrintPreviewZone";
-import {Vector2} from "zavadil-ts-common";
+import {StringUtil, Vector2} from "zavadil-ts-common";
 import {PIXEL_PER_MM} from "../../../util/ImageUtil";
 import DesignerPreviewCylinderZone from "./cylinder/DesignerPreviewCylinderZone";
 import DesignerPreviewFlatZone from "./flat/DesignerPreviewFlatZone";
+import {ImagezRestClientContext} from "../../../client/imagez/ImagezClient";
+
+type FileImageUrl = {
+	imageName: string;
+	imageUrl: string;
+}
+
+type FileImage = {
+	imageName: string;
+	image: HTMLImageElement;
+}
 
 export type DesignerPreviewZoneParams = {
 	design: DesignPayload;
@@ -26,6 +37,8 @@ export default function DesignerPreviewZone({
 	designerWidth,
 	onError
 }: DesignerPreviewZoneParams) {
+	const imagezClient = useContext(ImagezRestClientContext);
+
 	const files = useMemo(
 		() => design.files.filter((f) => f.printZoneId === previewZone.printZoneId),
 		[design, previewZone]
@@ -47,18 +60,167 @@ export default function DesignerPreviewZone({
 		[zone, previewZone, previewScale]
 	);
 
+	const width = useMemo(
+		() => {
+			if (!zone) return 0;
+			const ratio = previewZone.useViewCrop ? previewZone.viewCropWidthMm / zone.widthMm : 1;
+			return Math.round(ratio * previewZone.widthPx * previewScale);
+		},
+		[previewZone, previewScale, zone]
+	);
+
+	const height = useMemo(
+		() => {
+			if (!zone) return 0;
+			const ratio = previewZone.useViewCrop ? previewZone.viewCropHeightMm / zone.heightMm : 1;
+			return Math.round(ratio * previewZone.heightPx * previewScale);
+		},
+		[previewZone, previewScale, zone]
+	);
+
+	const fileNames = useMemo(
+		() => files
+			.filter(f => StringUtil.notBlank(f.imageName))
+			.map(f => f.imageName)
+			.join(';'),
+		[files]
+	);
+
+	const [fileUrls, setFileUrls] = useState<Map<string, string>>(new Map());
+
+	const loadFileUrls = useCallback(
+		() => {
+			if (StringUtil.isBlank(fileNames)) return;
+			const names = fileNames.split(';');
+			const promises: Array<Promise<FileImageUrl>> = names.map(
+				(n): Promise<FileImageUrl> => imagezClient.getResizedUrl(
+					n,
+					'Fit',
+					designerWidth,
+					designerHeight,
+					undefined,
+					undefined,
+					undefined,
+					true
+				).then(
+					(url): FileImageUrl => {
+						return {
+							imageName: n,
+							imageUrl: url
+						}
+					})
+					.catch((e) => onError(String(e)))
+			);
+			Promise.all(promises).then(
+				(fileImages) => {
+					const urls: Map<string, string> = new Map();
+					fileImages
+						.filter(fi => fi !== undefined)
+						.forEach(
+							(fi) => {
+								urls.set(fi.imageName, fi.imageUrl);
+							}
+						);
+					setFileUrls(urls);
+				});
+		},
+		[fileNames, designerWidth, designerHeight, imagezClient, onError]
+	);
+
+	useEffect(loadFileUrls, [fileNames, designerWidth, designerHeight]);
+
+	const [fileImages, setFileImages] = useState<Map<string, HTMLImageElement>>(new Map());
+
+	const loadFileImages = useCallback(
+		() => {
+			const promises: Array<Promise<FileImage>> = [];
+			fileUrls.forEach(
+				(url, name) => {
+					const promise = new Promise<FileImage>(
+						(resolve) => {
+							const img = document.createElement('img');
+							img.crossOrigin = "anonymous";
+							img.addEventListener('load', () => resolve({imageName: name, image: img}));
+							img.src = url;
+						}
+					);
+					promises.push(promise);
+				}
+			);
+			Promise.all(promises).then(
+				(fileImages) => {
+					const imgs: Map<string, HTMLImageElement> = new Map();
+					fileImages.forEach(
+						(fi) => {
+							imgs.set(fi.imageName, fi.image);
+						}
+					);
+					setFileImages(imgs);
+				});
+		},
+		[fileUrls]
+	);
+
+	useEffect(loadFileImages, [fileUrls]);
+
+	const canvas = useMemo(
+		() => document.createElement('canvas'),
+		[]
+	);
+
+	const context = useMemo(
+		() => canvas.getContext('2d'),
+		[canvas]
+	);
+
+	useEffect(
+		() => {
+			canvas.width = width;
+			canvas.height = height;
+		},
+		[canvas, width, height]
+	);
+
+	const canvasAsUrl = useMemo(
+		() => {
+			if (!context) return;
+			context.clearRect(0, 0, width, height);
+
+			const offsetX = previewZone.useViewCrop ? previewZone.viewCropOffsetXMm : 0;
+			const offsetY = previewZone.useViewCrop ? previewZone.viewCropOffsetYMm : 0;
+
+			files.forEach(
+				(f) => {
+					const img = fileImages.get(f.imageName);
+					if (img) {
+						context.drawImage(
+							img,
+							(offsetX + f.positionXMm) * PIXEL_PER_MM * zoneScale.x,
+							(offsetY + f.positionYMm) * PIXEL_PER_MM * zoneScale.y,
+							f.imageWidthMm * PIXEL_PER_MM * zoneScale.x,
+							f.imageHeightMm * PIXEL_PER_MM * zoneScale.y
+						);
+					}
+				}
+			);
+
+			return canvas.toDataURL();
+
+		},
+		[canvas, context, width, height, zoneScale, files, fileImages, previewZone]
+	);
+
 	return previewZone.useCylinderEffect ? <DesignerPreviewCylinderZone
+		zoneImage={canvasAsUrl}
 		previewZone={previewZone}
-		files={files}
 		previewScale={previewScale}
-		zoneScale={zoneScale}
-		designerWidth={designerWidth}
-		designerHeight={designerHeight}
-		onError={onError}
+		width={width}
+		height={height}
 	/> : <DesignerPreviewFlatZone
+		zoneImage={canvasAsUrl}
 		previewZone={previewZone}
-		files={files}
 		previewScale={previewScale}
-		zoneScale={zoneScale}
+		width={width}
+		height={height}
 	/>
 }

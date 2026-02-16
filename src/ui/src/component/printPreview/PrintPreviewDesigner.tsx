@@ -42,6 +42,14 @@ export default function PrintPreviewDesigner({
 
 	const [selectedPreviewZone, setSelectedPreviewZone] = useState<PrintPreviewZoneStub>();
 
+	const printZone = useMemo(
+		() => {
+			if (!selectedPreviewZone) return undefined;
+			return productZones.find((z) => z.id === selectedPreviewZone.printZoneId);
+		},
+		[selectedPreviewZone, productZones]
+	);
+
 	useEffect(
 		() => {
 			if (!selectedPreviewZone) return;
@@ -62,7 +70,6 @@ export default function PrintPreviewDesigner({
 		},
 		[printPreview, designerAreaSize]
 	);
-
 
 	const addPreviewZone = useCallback(
 		(printZoneId: number) => {
@@ -97,7 +104,12 @@ export default function PrintPreviewDesigner({
 				cylinderPerspective: 1000,
 				cylinderRadius: 60,
 				cylinderStartAngle: -75,
-				cylinderEndAngle: 75
+				cylinderEndAngle: 75,
+				useViewCrop: false,
+				viewCropOffsetXMm: 0,
+				viewCropOffsetYMm: 0,
+				viewCropWidthMm: zone.widthMm,
+				viewCropHeightMm: zone.heightMm
 			};
 			printPreview.zones = [...printPreview.zones, newZone];
 			onChange({...printPreview});
@@ -246,7 +258,7 @@ export default function PrintPreviewDesigner({
 					}
 				</div>
 				{
-					selectedPreviewZone && <div className="print-preview-designer-zone-form">
+					selectedPreviewZone && printZone && <div className="print-preview-designer-zone-form">
 						<Form>
 							<ResetableRange
 								label={`Rotate (${selectedPreviewZone.rotateDeg}°)`}
@@ -385,6 +397,79 @@ export default function PrintPreviewDesigner({
 										onChange={
 											(value) => {
 												selectedPreviewZone.cylinderVerticalAngle = value;
+												updateZone(selectedPreviewZone);
+											}
+										}
+									/>
+								</div>
+							}
+							<Form.Group>
+								<Switch
+									id="view-crop"
+									label="Crop View"
+									checked={selectedPreviewZone.useViewCrop}
+									onChange={
+										(checked) => {
+											selectedPreviewZone.useViewCrop = checked;
+											updateZone(selectedPreviewZone);
+										}
+									}
+								/>
+							</Form.Group>
+							{
+								selectedPreviewZone.useViewCrop && <div className="p-2">
+									<ResetableRange
+										label={`Crop Offset X (${selectedPreviewZone.viewCropOffsetXMm}mm)`}
+										defaultValue={0}
+										value={selectedPreviewZone.viewCropOffsetXMm}
+										min={-printZone.widthMm}
+										max={printZone.widthMm}
+										step={0.1}
+										onChange={
+											(value) => {
+												selectedPreviewZone.viewCropOffsetXMm = value;
+												updateZone(selectedPreviewZone);
+											}
+										}
+									/>
+									<ResetableRange
+										label={`Crop Offset Y (${selectedPreviewZone.viewCropOffsetYMm}mm)`}
+										defaultValue={0}
+										value={selectedPreviewZone.viewCropOffsetYMm}
+										min={-printZone.heightMm}
+										max={printZone.heightMm}
+										step={0.1}
+										onChange={
+											(value) => {
+												selectedPreviewZone.viewCropOffsetYMm = value;
+												updateZone(selectedPreviewZone);
+											}
+										}
+									/>
+									<ResetableRange
+										label={`Crop Width (${selectedPreviewZone.viewCropWidthMm}mm)`}
+										defaultValue={printZone.widthMm}
+										value={selectedPreviewZone.viewCropWidthMm}
+										min={0.1}
+										max={printZone.widthMm}
+										step={0.1}
+										onChange={
+											(value) => {
+												selectedPreviewZone.viewCropWidthMm = value;
+												updateZone(selectedPreviewZone);
+											}
+										}
+									/>
+									<ResetableRange
+										label={`Crop Height (${selectedPreviewZone.viewCropHeightMm}mm)`}
+										defaultValue={printZone.heightMm}
+										value={selectedPreviewZone.viewCropHeightMm}
+										min={0.1}
+										max={printZone.heightMm}
+										step={0.1}
+										onChange={
+											(value) => {
+												selectedPreviewZone.viewCropHeightMm = value;
 												updateZone(selectedPreviewZone);
 											}
 										}

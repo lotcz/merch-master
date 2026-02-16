@@ -1,21 +1,19 @@
 import React from "react";
 import {PrintPreviewZoneStub} from "../../../../types/PrintPreviewZone";
-import DesignerPreviewFlatFile from "./DesignerPreviewFlatFile";
-import {Vector2} from "zavadil-ts-common";
-import {DesignFileStub} from "../../../../types/DesignFile";
+import {Img} from "../../../images/Img";
 
 export type DesignerPreviewFlatZoneParams = {
-	files: Array<DesignFileStub>;
+	zoneImage?: string;
 	previewZone: PrintPreviewZoneStub;
 	previewScale: number;
-	zoneScale: Vector2;
+	width: number;
+	height: number;
 }
 
 export default function DesignerPreviewFlatZone({
-	files,
+	zoneImage,
 	previewZone,
-	previewScale,
-	zoneScale
+	previewScale
 }: DesignerPreviewFlatZoneParams) {
 	return (
 		<div
@@ -31,15 +29,7 @@ export default function DesignerPreviewFlatZone({
 				}
 			}
 		>
-			{
-				files.map(
-					(file, index) => <DesignerPreviewFlatFile
-						key={index}
-						file={file}
-						zoneScale={zoneScale}
-					/>
-				)
-			}
+			<Img url={zoneImage}/>
 		</div>
 	)
 }
