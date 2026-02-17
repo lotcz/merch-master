@@ -350,7 +350,7 @@ export default function PrintPreviewDesigner({
 										defaultValue={1000}
 										value={selectedPreviewZone.cylinderPerspective}
 										min={0}
-										max={2000}
+										max={10000}
 										step={1}
 										onChange={
 											(value) => {
