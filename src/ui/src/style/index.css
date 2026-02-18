@@ -192,6 +192,20 @@ tr.selectable.selected td {
 	margin-bottom: 0;
 }
 
+.form-switch {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.designer .form-switch label {
+	margin-top: 0;
+}
+
+.designer .form-switch {
+	margin-top: 10px;
+}
+
 .designer .print-zone .label {
 	display: flex;
 	align-items: center;
@@ -431,5 +445,3 @@ tr.selectable.selected td {
 	bottom: 0;
 	right: 10px;
 }
-
-

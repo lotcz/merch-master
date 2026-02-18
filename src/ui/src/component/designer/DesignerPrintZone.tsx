@@ -91,7 +91,12 @@ export default function DesignerPrintZone({
 				imageWidthMm: imageWidth,
 				imageHeightMm: imageHeight,
 				aspectLocked: true,
-				rotateDeg: 0
+				rotateDeg: 0,
+				removeBackground: false,
+				removeBackgroundR: 255,
+				removeBackgroundG: 255,
+				removeBackgroundB: 255,
+				removeBackgroundThreshold: 0
 			};
 			design.files = [...design.files, file];
 			onChange({...design});

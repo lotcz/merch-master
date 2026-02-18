@@ -3,7 +3,7 @@ import React, {useCallback, useContext, useEffect, useMemo, useState} from "reac
 import {PrintTypeStub} from "../../types/PrintType";
 import {DesignerRestClientContext} from "../../client/designer/DesignerRestClient";
 import {Product} from "../../types/Product";
-import {EntityWithNameIdSelect, IconButton} from "zavadil-react-common";
+import {EntityWithNameIdSelect, IconButton, Switch} from "zavadil-react-common";
 import {ProductColorStub} from "../../types/ProductColor";
 import ColorSelectId from "../productColor/ColorSelectId";
 import {DesignFileStub} from "../../types/DesignFile";
@@ -116,6 +116,14 @@ export default function DesignerMenu({
 		[design, onChange]
 	);
 
+	const removeColorRgb = useMemo(
+		() => {
+			if (!selectedFile) return 'rgb(0,0,0)';
+			return `rgb(${selectedFile.removeBackgroundR}, ${selectedFile.removeBackgroundG}, ${selectedFile.removeBackgroundB})`;
+		},
+		[selectedFile]
+	)
+
 	return (
 		<Form>
 			<Form.Group>
@@ -156,7 +164,7 @@ export default function DesignerMenu({
 				}
 			</Form.Group>
 			{
-				selectedFile && selectedZone && <Form>
+				selectedFile && selectedZone && <div>
 					<hr/>
 					<div className="d-flex align-items-center justify-content-between">
 						<strong className="text-truncate">{selectedFile.originalImageName}</strong>
@@ -274,7 +282,55 @@ export default function DesignerMenu({
 							}
 						/>
 					</Stack>
-				</Form>
+
+					<Switch
+						id="odebrat-pozadi"
+						label="Odebrat pozadí"
+						checked={selectedFile.removeBackground}
+						onChange={
+							(b) => {
+								selectedFile.removeBackground = b;
+								onUpdateFile(selectedFile);
+							}
+						}
+					/>
+
+					{
+						selectedFile.removeBackground && <div>
+							<ResetableRange
+								label={`Tolerance (${selectedFile.removeBackgroundThreshold})`}
+								defaultValue={10}
+								value={selectedFile.removeBackgroundThreshold}
+								min={0}
+								max={255}
+								step={0.1}
+								onChange={
+									(r) => {
+										selectedFile.removeBackgroundThreshold = r;
+										onUpdateFile(selectedFile);
+									}
+								}
+							/>
+
+							<Stack className="mt-2" direction="horizontal" gap={2}>
+								Barva pozadí: <Form.Control
+								type="color"
+								value={removeColorRgb}
+								onChange={
+									(e) => {
+										const hex = e.target.value;
+										selectedFile.removeBackgroundR = parseInt(hex.slice(1, 3), 16);
+										selectedFile.removeBackgroundG = parseInt(hex.slice(3, 5), 16);
+										selectedFile.removeBackgroundB = parseInt(hex.slice(5, 7), 16);
+										onUpdateFile(selectedFile);
+
+									}
+								}
+							/>
+							</Stack>
+						</div>
+					}
+				</div>
 			}
 		</Form>
 

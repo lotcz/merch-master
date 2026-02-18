@@ -15,6 +15,7 @@ import DesignerPreview from "../designer/preview/DesignerPreview";
 import {PrintZoneStub} from "../../types/PrintZone";
 import {DesignPayload} from "../../types/Design";
 import ProductPreview from "../products/ProductPreview";
+import {DesignFileStub} from "../../types/DesignFile";
 
 const TAB_PARAM_NAME = 'tab';
 const DEFAULT_TAB = 'design';
@@ -154,7 +155,7 @@ export default function PrintPreviewDetail() {
 	);
 
 	const dummyDesign: DesignPayload | undefined = useMemo(
-		() => {
+		(): DesignPayload | undefined => {
 			if (!data) return;
 			if (!productZones) return;
 			return {
@@ -165,7 +166,7 @@ export default function PrintPreviewDetail() {
 					confirmed: false
 				},
 				files: data.zones.map(
-					(z, index) => {
+					(z, index): DesignFileStub => {
 						const productZone = productZones.find((pz) => pz.id === z.printZoneId);
 						return {
 							id: index,
@@ -180,7 +181,12 @@ export default function PrintPreviewDetail() {
 							imageWidthMm: Number(productZone?.widthMm),
 							imageHeightMm: Number(productZone?.heightMm),
 							aspectLocked: false,
-							rotateDeg: 0
+							rotateDeg: 0,
+							removeBackground: false,
+							removeBackgroundR: 255,
+							removeBackgroundG: 255,
+							removeBackgroundB: 255,
+							removeBackgroundThreshold: 0
 						}
 					}
 				)

@@ -199,15 +199,45 @@ export default function DesignerPreviewZone({
 						if (f.rotateDeg !== 0) {
 							const tx = x + (0.5 * w);
 							const ty = y + (0.5 * h);
-
-							// Use save/restore to handle transformations cleanly
 							context.save();
 							context.translate(tx, ty);
 							context.rotate((f.rotateDeg * Math.PI) / 180);
 							context.translate(-tx, -ty);
 						}
 
-						context.drawImage(img, x, y, w, h);
+						if (f.removeBackground) {
+							const cnv = document.createElement('canvas');
+							const ctx = cnv.getContext('2d');
+							cnv.width = img.width;
+							cnv.height = img.height;
+							if (!ctx) {
+								console.log('Failed to create context.')
+								return;
+							}
+							ctx.drawImage(img, 0, 0);
+							const imageData = ctx.getImageData(0, 0, cnv.width, cnv.height);
+							const data = imageData.data;
+
+							for (let i = 0; i < data.length; i += 4) {
+								const rDiff = data[i] - f.removeBackgroundR;
+								const gDiff = data[i + 1] - f.removeBackgroundG;
+								const bDiff = data[i + 2] - f.removeBackgroundB;
+
+								// Euclidean distance for color similarity
+								const distance = Math.sqrt(rDiff * rDiff + gDiff * gDiff + bDiff * bDiff);
+
+								if (distance < f.removeBackgroundThreshold) {
+									data[i + 3] = 0; // Alpha channel to transparent
+								}
+							}
+
+							ctx.clearRect(0, 0, img.width, img.height);
+							ctx.putImageData(imageData, 0, 0);
+
+							context.drawImage(cnv, x, y, w, h);
+						} else {
+							context.drawImage(img, x, y, w, h);
+						}
 
 						if (f.rotateDeg !== 0) {
 							context.restore();
