@@ -1,7 +1,7 @@
 import React from "react";
 import {Form, Stack} from "react-bootstrap";
 import {IconButton} from "zavadil-react-common";
-import {BsArrowClockwise} from "react-icons/bs";
+import {BsX} from "react-icons/bs";
 
 export type ResetableRangeParams = {
 	label?: string;
@@ -40,7 +40,12 @@ export default function ResetableRange({
 					}
 				}
 			/>
-			<IconButton disabled={value === defaultValue} size="sm" onClick={() => onChange(defaultValue)} icon={<BsArrowClockwise/>}/>
+			<IconButton
+				disabled={value === defaultValue}
+				size="sm"
+				onClick={() => onChange(defaultValue)}
+				icon={<BsX/>}
+			/>
 		</Stack>
 	</Form.Group>
 }

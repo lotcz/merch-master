@@ -12,6 +12,7 @@ import {PrintZoneStub} from "../../types/PrintZone";
 import ImageUtil, {PIXEL_PER_MM} from "../../util/ImageUtil";
 import {DesignPayload} from "../../types/Design";
 import {BsTrash} from "react-icons/bs";
+import {BiRotateLeft, BiRotateRight} from "react-icons/bi";
 
 export type DesignerMenuParams = {
 	productId: number;
@@ -230,6 +231,48 @@ export default function DesignerMenu({
 							}>
 							Vycentrovat
 						</Button>
+					</Stack>
+
+					<ResetableRange
+						label={`Rotace (${selectedFile.rotateDeg}°)`}
+						defaultValue={0}
+						value={selectedFile.rotateDeg}
+						min={-180}
+						max={180}
+						step={0.1}
+						onChange={
+							(r) => {
+								selectedFile.rotateDeg = r;
+								onUpdateFile(selectedFile);
+							}
+						}
+					/>
+
+					<Stack className="mt-2" direction="horizontal" gap={2}>
+						<IconButton
+							variant="primary"
+							icon={<BiRotateLeft/>}
+							onClick={
+								() => {
+									let r = selectedFile.rotateDeg - 90;
+									if (r < -180) r += 360;
+									selectedFile.rotateDeg = r;
+									onUpdateFile(selectedFile);
+								}
+							}
+						/>
+						<IconButton
+							variant="primary"
+							icon={<BiRotateRight/>}
+							onClick={
+								() => {
+									let r = selectedFile.rotateDeg + 90;
+									if (r > 180) r -= 360;
+									selectedFile.rotateDeg = r;
+									onUpdateFile(selectedFile);
+								}
+							}
+						/>
 					</Stack>
 				</Form>
 			}

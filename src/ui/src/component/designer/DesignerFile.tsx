@@ -48,7 +48,8 @@ export default function DesignerFile(
 					top: file.positionYMm * PIXEL_PER_MM * scale,
 					left: file.positionXMm * PIXEL_PER_MM * scale,
 					width: file.imageWidthMm * PIXEL_PER_MM * scale,
-					height: file.imageHeightMm * PIXEL_PER_MM * scale
+					height: file.imageHeightMm * PIXEL_PER_MM * scale,
+					rotate: `${file.rotateDeg}deg`
 				}
 			}
 			onMouseDown={

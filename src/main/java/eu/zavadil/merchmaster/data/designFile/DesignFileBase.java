@@ -1,6 +1,7 @@
 package eu.zavadil.merchmaster.data.designFile;
 
 import eu.zavadil.java.spring.common.entity.EntityBase;
+import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,5 +28,8 @@ public class DesignFileBase extends EntityBase {
 	private double imageHeightMm;
 
 	private boolean aspectLocked = true;
+
+	@Column(columnDefinition = "double precision DEFAULT 0", nullable = false)
+	private double rotateDeg = 0;
 
 }

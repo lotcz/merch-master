@@ -90,7 +90,8 @@ export default function DesignerPrintZone({
 				positionYMm: (heightMm - imageHeight) / 2,
 				imageWidthMm: imageWidth,
 				imageHeightMm: imageHeight,
-				aspectLocked: true
+				aspectLocked: true,
+				rotateDeg: 0
 			};
 			design.files = [...design.files, file];
 			onChange({...design});

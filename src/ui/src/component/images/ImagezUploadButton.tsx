@@ -26,7 +26,7 @@ export function ImagezUploadButton({name, onSelected}: ImagezUploadButtonProps) 
 	);
 
 	return <div>
-		<Form.Label for="image_upload_button" className="m-0">
+		<Form.Label htmlFor="image_upload_button" className="m-0">
 			<div className="btn btn-primary btn-sm m-0 d-flex align-items-center gap-2">
 				{
 					uploading && <Spinner size="sm"/>

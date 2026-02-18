@@ -173,17 +173,15 @@ export default function DesignerPreviewZone({
 		[canvas]
 	);
 
+	const [canvasAsUrl, setCanvasAsUrl] = useState('');
+
 	useEffect(
 		() => {
+			if (!context) return;
+
 			canvas.width = width;
 			canvas.height = height;
-		},
-		[canvas, width, height]
-	);
 
-	const canvasAsUrl = useMemo(
-		() => {
-			if (!context) return;
 			context.clearRect(0, 0, width, height);
 
 			const offsetX = previewZone.useViewCrop ? previewZone.viewCropOffsetXMm : 0;
@@ -193,18 +191,32 @@ export default function DesignerPreviewZone({
 				(f) => {
 					const img = fileImages.get(f.imageName);
 					if (img) {
-						context.drawImage(
-							img,
-							(offsetX + f.positionXMm) * PIXEL_PER_MM * zoneScale.x,
-							(offsetY + f.positionYMm) * PIXEL_PER_MM * zoneScale.y,
-							f.imageWidthMm * PIXEL_PER_MM * zoneScale.x,
-							f.imageHeightMm * PIXEL_PER_MM * zoneScale.y
-						);
+						const x = (offsetX + f.positionXMm) * PIXEL_PER_MM * zoneScale.x;
+						const y = (offsetY + f.positionYMm) * PIXEL_PER_MM * zoneScale.y;
+						const w = f.imageWidthMm * PIXEL_PER_MM * zoneScale.x;
+						const h = f.imageHeightMm * PIXEL_PER_MM * zoneScale.y;
+
+						if (f.rotateDeg !== 0) {
+							const tx = x + (0.5 * w);
+							const ty = y + (0.5 * h);
+
+							// Use save/restore to handle transformations cleanly
+							context.save();
+							context.translate(tx, ty);
+							context.rotate((f.rotateDeg * Math.PI) / 180);
+							context.translate(-tx, -ty);
+						}
+
+						context.drawImage(img, x, y, w, h);
+
+						if (f.rotateDeg !== 0) {
+							context.restore();
+						}
 					}
 				}
 			);
 
-			return canvas.toDataURL();
+			setCanvasAsUrl(canvas.toDataURL());
 
 		},
 		[canvas, context, width, height, zoneScale, files, fileImages, previewZone]

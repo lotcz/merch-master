@@ -11,7 +11,7 @@
 
 	<groupId>eu.zavadil.merchmaster</groupId>
 	<artifactId>merch-master</artifactId>
-	<version>1.1.0</version>
+	<version>1.1.1</version>
 	<name>merch-master</name>
 	<description>Merch Master</description>
 

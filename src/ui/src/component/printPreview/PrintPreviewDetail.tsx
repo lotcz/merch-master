@@ -179,7 +179,8 @@ export default function PrintPreviewDetail() {
 							positionYMm: 0,
 							imageWidthMm: Number(productZone?.widthMm),
 							imageHeightMm: Number(productZone?.heightMm),
-							aspectLocked: false
+							aspectLocked: false,
+							rotateDeg: 0
 						}
 					}
 				)
