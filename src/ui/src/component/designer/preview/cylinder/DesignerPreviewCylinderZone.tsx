@@ -10,7 +10,6 @@ export type DesignerPreviewCylinderZoneParams = {
 	height: number;
 }
 
-
 export default function DesignerPreviewCylinderZone({
 	zoneImage,
 	previewZone,

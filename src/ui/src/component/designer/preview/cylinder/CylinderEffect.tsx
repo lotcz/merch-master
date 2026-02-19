@@ -23,17 +23,26 @@ export default function CylinderEffect({
 	startAngle = -75,
 	endAngle = 75
 }: CylinderEffectParams) {
-	const totalAngle = useMemo(
-		() => endAngle - startAngle,
-		[startAngle, endAngle]
-	);
-
+	const totalAngle = useMemo(() => endAngle - startAngle, [startAngle, endAngle]);
+	const sliceAngle = useMemo(() => totalAngle / slices, [slices, totalAngle]);
 	const sliceWidth = useMemo(
 		() => {
-			const totalLength = (2 * Math.PI * radius) * (totalAngle / 360);
-			return Math.ceil(totalLength / slices);
+			const alpha = (sliceAngle / 2) * (Math.PI / 180);
+			const sliceLength = 2 * radius * Math.tan(alpha);
+			return Math.ceil(sliceLength);
 		},
-		[slices, radius, totalAngle]
+		[radius, sliceAngle]
+	);
+	const angles: Array<number> = useMemo(
+		(): Array<number> => {
+			const offset = sliceAngle / 2;
+			const a = [];
+			for (let i = 0, max = slices; i < max; i++) {
+				a.push(startAngle + (i * sliceAngle) + offset);
+			}
+			return a;
+		},
+		[slices, startAngle, sliceAngle]
 	);
 
 	return (
@@ -60,10 +69,9 @@ export default function CylinderEffect({
 					}
 				}
 			>
-				{[...Array(slices)].map((_, i) => {
-					const angle = startAngle + ((i / slices) * totalAngle);
-					return (
-						<div
+				{
+					angles.map(
+						(angle, i) => <div
 							key={i}
 							style={{
 								position: 'absolute',
@@ -76,8 +84,8 @@ export default function CylinderEffect({
 								backfaceVisibility: 'hidden',
 							}}
 						/>
-					);
-				})}
+					)
+				}
 			</div>
 		</div>
 	);

@@ -52,10 +52,11 @@ export default function DesignerPreviewZone({
 	const zoneScale: Vector2 = useMemo(
 		() => {
 			if (!zone) return new Vector2(1, 1);
-			return new Vector2(
+			const scale = new Vector2(
 				previewZone.widthPx / (zone.widthMm * PIXEL_PER_MM),
 				previewZone.heightPx / (zone.heightMm * PIXEL_PER_MM)
-			).multiply(previewScale)
+			).multiply(previewScale);
+			return scale;
 		},
 		[zone, previewZone, previewScale]
 	);
@@ -168,15 +169,11 @@ export default function DesignerPreviewZone({
 		[]
 	);
 
-	const context = useMemo(
-		() => canvas.getContext('2d'),
-		[canvas]
-	);
-
 	const [canvasAsUrl, setCanvasAsUrl] = useState('');
 
 	useEffect(
 		() => {
+			const context = canvas.getContext('2d')
 			if (!context) return;
 
 			canvas.width = width;
@@ -226,7 +223,7 @@ export default function DesignerPreviewZone({
 			setCanvasAsUrl(canvas.toDataURL());
 
 		},
-		[canvas, context, width, height, zoneScale, files, fileImages, previewZone]
+		[canvas, width, height, zoneScale, files, fileImages, previewZone]
 	);
 
 	return previewZone.useCylinderEffect ? <DesignerPreviewCylinderZone
