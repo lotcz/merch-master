@@ -29,7 +29,7 @@ export default function CylinderEffect({
 		() => {
 			const alpha = (sliceAngle / 2) * (Math.PI / 180);
 			const sliceLength = 2 * radius * Math.tan(alpha);
-			return Math.ceil(sliceLength);
+			return sliceLength + 1;
 		},
 		[radius, sliceAngle]
 	);

@@ -55,16 +55,6 @@ export default function DesignerMenuFile({
 
 	return (
 		<div>
-			<hr/>
-			<div className="d-flex align-items-center justify-content-between">
-				<strong className="text-truncate">{selectedFile.originalImageName}</strong>
-				<IconButton
-					variant="danger"
-					icon={<BsTrash/>}
-					onClick={onFileDeleted}
-				/>
-			</div>
-
 			<ResetableRange
 				label={`Velikost (${Math.round(scale * 100)}%)`}
 				defaultValue={1}
@@ -81,16 +71,15 @@ export default function DesignerMenuFile({
 					size="sm"
 					onClick={
 						() => {
-							const scale = ImageUtil.imageFillScale(
+							const scal = ImageUtil.imageFillScale(
 								selectedFile.originalImageWidthPx / PIXEL_PER_MM,
 								selectedFile.originalImageHeightPx / PIXEL_PER_MM,
 								selectedZone.widthMm,
 								selectedZone.heightMm
 							);
-							//setScale(scale);
 
-							const width = scale * selectedFile.originalImageWidthPx / PIXEL_PER_MM;
-							const height = scale * selectedFile.originalImageHeightPx / PIXEL_PER_MM;
+							const width = scal * selectedFile.originalImageWidthPx / PIXEL_PER_MM;
+							const height = scal * selectedFile.originalImageHeightPx / PIXEL_PER_MM;
 							selectedFile.imageWidthMm = width;
 							selectedFile.imageHeightMm = height;
 							selectedFile.positionXMm = (selectedZone.widthMm - width) / 2;
@@ -105,16 +94,15 @@ export default function DesignerMenuFile({
 					size="sm"
 					onClick={
 						() => {
-							const scale = ImageUtil.imageFitScale(
+							const scal = ImageUtil.imageFitScale(
 								selectedFile.originalImageWidthPx / PIXEL_PER_MM,
 								selectedFile.originalImageHeightPx / PIXEL_PER_MM,
 								selectedZone.widthMm,
 								selectedZone.heightMm
 							);
-							//setScale(scale);
-
-							const width = scale * selectedFile.originalImageWidthPx / PIXEL_PER_MM;
-							const height = scale * selectedFile.originalImageHeightPx / PIXEL_PER_MM;
+							
+							const width = scal * selectedFile.originalImageWidthPx / PIXEL_PER_MM;
+							const height = scal * selectedFile.originalImageHeightPx / PIXEL_PER_MM;
 							selectedFile.imageWidthMm = width;
 							selectedFile.imageHeightMm = height;
 							selectedFile.positionXMm = (selectedZone.widthMm - width) / 2;
@@ -215,6 +203,14 @@ export default function DesignerMenuFile({
 					</Stack>
 				</div>
 			}
+			<div className="text-center mt-2">
+				<IconButton
+					variant="danger"
+					size="sm"
+					icon={<BsTrash/>}
+					onClick={onFileDeleted}
+				>Odstranit</IconButton>
+			</div>
 		</div>
 	)
 }

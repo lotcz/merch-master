@@ -138,8 +138,8 @@ export default function Designer({
 					:
 					<Container fluid>
 						<Row>
-							<Col md={3} xl={2}>
-								<div className="card designer-shadow p-2">
+							<Col md={4} lg={3} xl={2}>
+								<div className="card designer-shadow overflow-auto p-2">
 									<DesignerMenu
 										productId={printType.printType.productId}
 										design={design}
@@ -162,7 +162,7 @@ export default function Designer({
 									}
 								</div>
 							</Col>
-							<Col md={6} xl={8} className="mt-2 mt-md-0">
+							<Col md={5} lg={6} xl={8} className="mt-2 mt-md-0">
 								<div className="designer-shadow designer-main">
 									<Tabs
 										activeKey={String(selectedZone?.id)}
@@ -197,7 +197,7 @@ export default function Designer({
 									</div>
 								</div>
 							</Col>
-							<Col md={3} xl={2} className="mt-2 mt-md-0">
+							<Col md={3} lg={3} xl={2} className="mt-2 mt-md-0">
 								<div className="previews-section card designer-shadow p-2">
 									<div ref={previewAreaRef} className="previews">
 										<div className="preview-container">

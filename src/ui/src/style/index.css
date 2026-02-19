@@ -148,6 +148,11 @@ tr.selectable.selected td {
 	height: 100%;
 }
 
+.designer .accordion-header button {
+	font-size: 85%;
+	padding: 5px 10px;
+}
+
 .designer .designer-main {
 	height: 100%;
 	display: flex;

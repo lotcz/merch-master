@@ -1,4 +1,4 @@
-import {Form, Spinner} from "react-bootstrap";
+import {Accordion, Form, Spinner} from "react-bootstrap";
 import React, {useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {PrintTypeStub} from "../../../types/PrintType";
 import {DesignerRestClientContext} from "../../../client/designer/DesignerRestClient";
@@ -8,7 +8,6 @@ import {ProductColorStub} from "../../../types/ProductColor";
 import ColorSelectId from "../../productColor/ColorSelectId";
 import {DesignFileStub} from "../../../types/DesignFile";
 import {PrintZoneStub} from "../../../types/PrintZone";
-import {PIXEL_PER_MM} from "../../../util/ImageUtil";
 import {DesignPayload} from "../../../types/Design";
 import DesignerMenuFile from "./DesignerMenuFile";
 
@@ -80,24 +79,6 @@ export default function DesignerMenu({
 
 	useEffect(loadColors, [productId]);
 
-	const scale = useMemo(
-		() => {
-			if (selectedFile === undefined || selectedZone === undefined) return 0;
-			return (selectedFile.imageWidthMm * PIXEL_PER_MM) / selectedFile.originalImageWidthPx;
-		},
-		[selectedFile, selectedZone]
-	);
-
-	const setScale = useCallback(
-		(scale: number) => {
-			if (!selectedFile) return;
-			selectedFile.imageWidthMm = scale * selectedFile.originalImageWidthPx / PIXEL_PER_MM;
-			selectedFile.imageHeightMm = scale * selectedFile.originalImageHeightPx / PIXEL_PER_MM;
-			onUpdateFile(selectedFile);
-		},
-		[selectedFile, onUpdateFile]
-	);
-
 	const onColorChange = useCallback(
 		(colorId: number) => {
 			design.design.productColorId = colorId;
@@ -112,6 +93,14 @@ export default function DesignerMenu({
 			onChange({...design});
 		},
 		[design, onChange]
+	);
+
+	const files = useMemo(
+		() => {
+			if (!selectedZone?.id) return;
+			return design.files.filter((f) => f.printZoneId === selectedZone.id)
+		},
+		[design, selectedZone]
 	);
 
 	return (
@@ -129,12 +118,11 @@ export default function DesignerMenu({
 				<Form.Label title="Barva">Barva</Form.Label>
 				{
 					colors ? <ColorSelectId
-							id={design.design.productColorId}
-							colors={colors}
-							readOnly={readOnly}
-							onSelected={onColorChange}
-						/>
-						: <Spinner/>
+						id={design.design.productColorId}
+						colors={colors}
+						readOnly={readOnly}
+						onSelected={onColorChange}
+					/> : <Spinner/>
 				}
 			</Form.Group>
 			<Form.Group>
@@ -153,23 +141,43 @@ export default function DesignerMenu({
 						: <Spinner/>
 				}
 			</Form.Group>
+			<Form.Label>Obrázky</Form.Label>
 			{
-				product && selectedFile && selectedZone && <DesignerMenuFile
-					product={product}
-					design={design}
-					readOnly={readOnly}
-					admin={admin}
-					selectedFile={selectedFile}
-					selectedZone={selectedZone}
-					onUpdateFile={onUpdateFile}
-					onFileDeleted={
-						() => {
-							onChange({design: design.design, files: design.files.filter(f => f !== selectedFile)});
-							onFileSelected(undefined);
-						}
+				product && selectedZone && files && <Accordion activeKey={String(selectedFile?.id)} alwaysOpen={false}>
+					{
+						files.map(
+							(file) => <Accordion.Item
+								eventKey={String(file.id)}
+								onSelect={() => onFileSelected(file)}
+							>
+								<Accordion.Header className="text-small p-0" onClick={() => onFileSelected(file)}>
+									<strong className="text-truncate">{file.originalImageName}</strong>
+								</Accordion.Header>
+								<Accordion.Body className="p-2 pt-0">
+									{
+										selectedFile === file &&
+										<DesignerMenuFile
+											product={product}
+											design={design}
+											readOnly={readOnly}
+											admin={admin}
+											selectedFile={file}
+											selectedZone={selectedZone}
+											onUpdateFile={onUpdateFile}
+											onFileDeleted={
+												() => {
+													onChange({design: design.design, files: design.files.filter(f => f !== selectedFile)});
+													onFileSelected(undefined);
+												}
+											}
+											onError={onError}
+										/>
+									}
+								</Accordion.Body>
+							</Accordion.Item>
+						)
 					}
-					onError={onError}
-				/>
+				</Accordion>
 			}
 		</Form>
 
