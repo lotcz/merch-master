@@ -3,7 +3,7 @@ import {DesignPayload} from "../../../types/Design";
 import {PrintZoneStub} from "../../../types/PrintZone";
 import {PrintPreviewZoneStub} from "../../../types/PrintPreviewZone";
 import {StringUtil, Vector2} from "zavadil-ts-common";
-import {PIXEL_PER_MM} from "../../../util/ImageUtil";
+import ImageUtil, {PIXEL_PER_MM} from "../../../util/ImageUtil";
 import DesignerPreviewCylinderZone from "./cylinder/DesignerPreviewCylinderZone";
 import DesignerPreviewFlatZone from "./flat/DesignerPreviewFlatZone";
 import {ImagezRestClientContext} from "../../../client/imagez/ImagezClient";
@@ -205,36 +205,13 @@ export default function DesignerPreviewZone({
 							context.translate(-tx, -ty);
 						}
 
-						if (f.removeBackground) {
-							const cnv = document.createElement('canvas');
-							const ctx = cnv.getContext('2d');
-							cnv.width = img.width;
-							cnv.height = img.height;
-							if (!ctx) {
-								console.log('Failed to create context.')
-								return;
+						const color = ImageUtil.hexToColor(f.removeBackgroundColor);
+						if (color) {
+							const cnv = ImageUtil.removeBackground(img, color, f.removeBackgroundThreshold);
+							if (cnv) {
+								context.drawImage(cnv, x, y, w, h);
+								cnv.remove();
 							}
-							ctx.drawImage(img, 0, 0);
-							const imageData = ctx.getImageData(0, 0, cnv.width, cnv.height);
-							const data = imageData.data;
-
-							for (let i = 0; i < data.length; i += 4) {
-								const rDiff = data[i] - f.removeBackgroundR;
-								const gDiff = data[i + 1] - f.removeBackgroundG;
-								const bDiff = data[i + 2] - f.removeBackgroundB;
-
-								// Euclidean distance for color similarity
-								const distance = Math.sqrt(rDiff * rDiff + gDiff * gDiff + bDiff * bDiff);
-
-								if (distance < f.removeBackgroundThreshold) {
-									data[i + 3] = 0; // Alpha channel to transparent
-								}
-							}
-
-							ctx.clearRect(0, 0, img.width, img.height);
-							ctx.putImageData(imageData, 0, 0);
-
-							context.drawImage(cnv, x, y, w, h);
 						} else {
 							context.drawImage(img, x, y, w, h);
 						}

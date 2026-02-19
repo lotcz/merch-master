@@ -221,8 +221,10 @@ tr.selectable.selected td {
 .designer .print-zone .boundary,
 .print-preview-designer .boundary {
 	position: relative;
-	border: dashed 3px #ffa5a5;
+	border: solid 1px #ffa5a5;
 	overflow: hidden;
+	background-image: url('../img/designer-bg.png');
+	background-repeat: repeat;
 }
 
 .designer .print-zone .boundary.resizing,

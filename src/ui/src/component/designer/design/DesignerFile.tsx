@@ -1,9 +1,10 @@
-import React, {MouseEvent} from "react";
-import {DesignFileStub} from "../../types/DesignFile";
-import {PIXEL_PER_MM} from "../../util/ImageUtil";
-import {ImagezImage} from "../images/ImagezImage";
+import React, {MouseEvent, useMemo} from "react";
+import {DesignFileStub} from "../../../types/DesignFile";
+import ImageUtil, {PIXEL_PER_MM} from "../../../util/ImageUtil";
+import {ImagezImage} from "../../images/ImagezImage";
 import {BsArrowDownRight, BsTrash} from "react-icons/bs";
 import {Vector2} from "zavadil-ts-common";
+import {ImagezImageRemoveBg} from "../../images/ImagezImageRemoveBg";
 
 export type DesignerFileParams = {
 	file: DesignFileStub;
@@ -38,6 +39,10 @@ export default function DesignerFile(
 		onLockUnlock
 	}: DesignerFileParams
 ) {
+	const removeBgColor = useMemo(() => ImageUtil.hexToColor(file.removeBackgroundColor), [file]);
+
+	const width = useMemo(() => Math.round(file.imageWidthMm * PIXEL_PER_MM * scale), [file, scale]);
+	const height = useMemo(() => Math.round(file.imageHeightMm * PIXEL_PER_MM * scale), [file, scale]);
 
 	return (
 		<div
@@ -47,8 +52,8 @@ export default function DesignerFile(
 				{
 					top: file.positionYMm * PIXEL_PER_MM * scale,
 					left: file.positionXMm * PIXEL_PER_MM * scale,
-					width: file.imageWidthMm * PIXEL_PER_MM * scale,
-					height: file.imageHeightMm * PIXEL_PER_MM * scale,
+					width: width,
+					height: height,
 					rotate: `${file.rotateDeg}deg`
 				}
 			}
@@ -71,8 +76,23 @@ export default function DesignerFile(
 			}
 
 		>
-			<ImagezImage name={file.imageName} type="Fit" width={file.imageWidthMm * PIXEL_PER_MM * scale}
-						 height={file.imageHeightMm * PIXEL_PER_MM * scale} snap={true}/>
+			{
+				removeBgColor ?
+					<ImagezImageRemoveBg
+						name={file.imageName}
+						removeColor={removeBgColor}
+						threshold={file.removeBackgroundThreshold}
+						width={width}
+						height={height}
+					/> :
+					<ImagezImage
+						name={file.imageName}
+						type="Fit"
+						width={width}
+						height={height}
+						snap={true}
+					/>
+			}
 			<div
 				className="action-button delete-button"
 				onMouseDown={

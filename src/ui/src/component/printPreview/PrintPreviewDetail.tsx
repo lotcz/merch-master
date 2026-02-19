@@ -182,10 +182,6 @@ export default function PrintPreviewDetail() {
 							imageHeightMm: Number(productZone?.heightMm),
 							aspectLocked: false,
 							rotateDeg: 0,
-							removeBackground: false,
-							removeBackgroundR: 255,
-							removeBackgroundG: 255,
-							removeBackgroundB: 255,
 							removeBackgroundThreshold: 0
 						}
 					}

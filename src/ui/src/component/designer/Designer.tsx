@@ -3,16 +3,16 @@ import React, {useCallback, useContext, useEffect, useRef, useState} from "react
 import {DesignPayload} from "../../types/Design";
 import {PrintTypePayload} from "../../types/PrintType";
 import {DesignerRestClientContext} from "../../client/designer/DesignerRestClient";
-import DesignerPrintZone from "./DesignerPrintZone";
+import DesignerPrintZone from "./design/DesignerPrintZone";
 import {DesignFileStub} from "../../types/DesignFile";
-import DesignerMenu from "./DesignerMenu";
+import DesignerMenu from "./menu/DesignerMenu";
 import {Vector2} from "zavadil-ts-common";
 import DesignerPreview from "./preview/DesignerPreview";
 import {DESIGNER_MAX_HEIGHT, DESIGNER_MAX_WIDTH} from "../../util/ImageUtil";
 import {PrintZoneStub} from "../../types/PrintZone";
 import {PrintPreviewPayload} from "../../types/PrintPreview";
 import {LoadingButton} from "zavadil-react-common";
-import {DesignerAdminZone} from "./DesignerAdminZone";
+import {DesignerAdminZone} from "./admin/DesignerAdminZone";
 
 export type DesignerParams = {
 	design: DesignPayload;

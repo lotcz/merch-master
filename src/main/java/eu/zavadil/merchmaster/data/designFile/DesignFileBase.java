@@ -32,17 +32,8 @@ public class DesignFileBase extends EntityBase {
 	@Column(columnDefinition = "double precision DEFAULT 0", nullable = false)
 	private double rotateDeg = 0;
 
-	@Column(columnDefinition = "boolean DEFAULT false", nullable = false)
-	private boolean removeBackground = false;
-
-	@Column(columnDefinition = "int DEFAULT 0", nullable = false)
-	private int removeBackgroundR = 0;
-
-	@Column(columnDefinition = "int DEFAULT 0", nullable = false)
-	private int removeBackgroundG = 0;
-
-	@Column(columnDefinition = "int DEFAULT 0", nullable = false)
-	private int removeBackgroundB = 0;
+	@Column(columnDefinition = "CHAR(7)")
+	private String removeBackgroundColor;
 
 	@Column(columnDefinition = "double precision DEFAULT 0", nullable = false)
 	private int removeBackgroundThreshold = 0;

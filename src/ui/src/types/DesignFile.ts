@@ -13,10 +13,7 @@ export type DesignFileBase = EntityBase & {
 	imageHeightMm: number;
 	aspectLocked: boolean;
 	rotateDeg: number;
-	removeBackground: boolean;
-	removeBackgroundR: number;
-	removeBackgroundG: number;
-	removeBackgroundB: number;
+	removeBackgroundColor?: string | null;
 	removeBackgroundThreshold: number;
 }
 

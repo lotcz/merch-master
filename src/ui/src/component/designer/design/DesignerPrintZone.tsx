@@ -1,13 +1,13 @@
 import React, {MouseEvent, MouseEventHandler, useCallback, useContext, useMemo, useState} from "react";
-import {PrintZoneStub} from "../../types/PrintZone";
-import {DesignPayload} from "../../types/Design";
+import {PrintZoneStub} from "../../../types/PrintZone";
+import {DesignPayload} from "../../../types/Design";
 import {NumberUtil, Vector2} from "zavadil-ts-common";
 import DesignerFile from "./DesignerFile";
-import {UploadImageDialogContext} from "../../util/UploadImageDialogContext";
-import {DesignFileStub} from "../../types/DesignFile";
-import ImageUtil, {PIXEL_PER_MM} from "../../util/ImageUtil";
-import {ImageHealth} from "../../types/Image";
-import {ImagezUploadButton} from "../images/ImagezUploadButton";
+import {UploadImageDialogContext} from "../../../util/UploadImageDialogContext";
+import {DesignFileStub} from "../../../types/DesignFile";
+import ImageUtil, {PIXEL_PER_MM} from "../../../util/ImageUtil";
+import {ImageHealth} from "../../../types/Image";
+import {ImagezUploadButton} from "../../images/ImagezUploadButton";
 
 export type DesignerPrintZoneParams = {
 	printZone: PrintZoneStub;
@@ -92,11 +92,7 @@ export default function DesignerPrintZone({
 				imageHeightMm: imageHeight,
 				aspectLocked: true,
 				rotateDeg: 0,
-				removeBackground: false,
-				removeBackgroundR: 255,
-				removeBackgroundG: 255,
-				removeBackgroundB: 255,
-				removeBackgroundThreshold: 0
+				removeBackgroundThreshold: 10
 			};
 			design.files = [...design.files, file];
 			onChange({...design});

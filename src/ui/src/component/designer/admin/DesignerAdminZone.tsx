@@ -1,10 +1,10 @@
-import {DesignPayload} from "../../types/Design";
-import {PrintTypePayload} from "../../types/PrintType";
-import {PrintZoneStub} from "../../types/PrintZone";
-import {DesignFileStub} from "../../types/DesignFile";
+import {DesignPayload} from "../../../types/Design";
+import {PrintTypePayload} from "../../../types/PrintType";
+import {PrintZoneStub} from "../../../types/PrintZone";
+import {DesignFileStub} from "../../../types/DesignFile";
 import {useMemo} from "react";
 import {Form, Table} from "react-bootstrap";
-import {ImagezDownloadLink} from "../images/ImagezDownloadLink";
+import {ImagezDownloadLink} from "../../images/ImagezDownloadLink";
 import {StringUtil} from "zavadil-ts-common";
 
 export type DesignerAdminZoneProps = {
