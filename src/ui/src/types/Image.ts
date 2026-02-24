@@ -1,5 +1,3 @@
-import {EntityBase} from "zavadil-ts-common";
-
 export type ImageHealth = {
 	name: string;
 	size: number;
@@ -11,4 +9,8 @@ export type ImageHealth = {
 export type ImagezSettingsPayload = {
 	baseUrl: string;
 	secretToken: string;
+}
+
+export type ImagezColorPayload = {
+	hex: string;
 }

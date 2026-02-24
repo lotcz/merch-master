@@ -1,5 +1,5 @@
-import {Button, Form, Stack} from "react-bootstrap";
-import React, {useCallback, useMemo} from "react";
+import {Button, Form, Spinner, Stack} from "react-bootstrap";
+import React, {useCallback, useContext, useMemo, useState} from "react";
 import {Product} from "../../../types/Product";
 import {IconButton, Switch} from "zavadil-react-common";
 import {DesignFileStub} from "../../../types/DesignFile";
@@ -10,6 +10,8 @@ import {DesignPayload} from "../../../types/Design";
 import {BsTrash} from "react-icons/bs";
 import {BiRotateLeft, BiRotateRight} from "react-icons/bi";
 import {StringUtil} from "zavadil-ts-common";
+import {ImagezRestClientContext} from "../../../client/imagez/ImagezClient";
+import {ImagezColorPayload} from "../../../types/Image";
 
 export type DesignerMenuFileParams = {
 	product: Product;
@@ -34,6 +36,7 @@ export default function DesignerMenuFile({
 	onFileDeleted,
 	onError
 }: DesignerMenuFileParams) {
+	const imagezClient = useContext(ImagezRestClientContext);
 
 	const scale = useMemo(
 		() => {
@@ -51,6 +54,21 @@ export default function DesignerMenuFile({
 			onUpdateFile(selectedFile);
 		},
 		[selectedFile, onUpdateFile]
+	);
+
+	const [guessing, setGuessing] = useState<boolean>(false);
+
+	const guessBackground: () => Promise<ImagezColorPayload | null> = useCallback(
+		(): Promise<ImagezColorPayload | null> => {
+			setGuessing(true);
+			return imagezClient.guessBackgroundColor(selectedFile.imageName).then(
+				(c) => {
+					setGuessing(false);
+					return c;
+				}
+			);
+		},
+		[imagezClient, selectedFile]
 	);
 
 	return (
@@ -100,7 +118,7 @@ export default function DesignerMenuFile({
 								selectedZone.widthMm,
 								selectedZone.heightMm
 							);
-							
+
 							const width = scal * selectedFile.originalImageWidthPx / PIXEL_PER_MM;
 							const height = scal * selectedFile.originalImageHeightPx / PIXEL_PER_MM;
 							selectedFile.imageWidthMm = width;
@@ -164,10 +182,19 @@ export default function DesignerMenuFile({
 					(b) => {
 						if (b && StringUtil.isBlank(selectedFile.removeBackgroundColor)) {
 							selectedFile.removeBackgroundColor = '#ffffff';
+							guessBackground().then(
+								(c) => {
+									if (c) {
+										selectedFile.removeBackgroundColor = c.hex;
+										selectedFile.removeBackgroundThreshold = 30;
+										onUpdateFile(selectedFile);
+									}
+								}
+							);
 						} else {
 							selectedFile.removeBackgroundColor = null;
+							onUpdateFile(selectedFile);
 						}
-						onUpdateFile(selectedFile);
 					}
 				}
 			/>
@@ -190,16 +217,20 @@ export default function DesignerMenuFile({
 					/>
 
 					<Stack className="mt-2" direction="horizontal" gap={2}>
-						Barva pozadí: <Form.Control
-						type="color"
-						value={StringUtil.getNonEmpty(selectedFile.removeBackgroundColor)}
-						onChange={
-							(e) => {
-								selectedFile.removeBackgroundColor = StringUtil.blankToNull(e.target.value);
-								onUpdateFile(selectedFile);
-							}
+						Barva pozadí:
+						{
+							guessing ? <Spinner size="sm"/>
+								: <Form.Control
+									type="color"
+									value={StringUtil.getNonEmpty(selectedFile.removeBackgroundColor)}
+									onChange={
+										(e) => {
+											selectedFile.removeBackgroundColor = StringUtil.blankToNull(e.target.value);
+											onUpdateFile(selectedFile);
+										}
+									}
+								/>
 						}
-					/>
 					</Stack>
 				</div>
 			}

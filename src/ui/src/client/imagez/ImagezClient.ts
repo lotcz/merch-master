@@ -1,5 +1,5 @@
-import {RestClient, StringUtil} from "zavadil-ts-common";
-import {ImageHealth} from "../../types/Image";
+import {NumberUtil, RestClient, StringUtil} from "zavadil-ts-common";
+import {ImageHealth, ImagezColorPayload} from "../../types/Image";
 import {createContext} from "react";
 import conf from "../../config/conf.json";
 import ImageUtil from "../../util/ImageUtil";
@@ -51,6 +51,15 @@ export class ImagezClient {
 		let formData = new FormData();
 		formData.append("image", f);
 		return this.client.postFormJson('imagez/upload', formData);
+	}
+
+	getRemoveBackgroundUrl(name: string, hex: string | null, threshold: number | null): string {
+		threshold = threshold ? NumberUtil.round(threshold) : null;
+		return this.client.getUrl(`imagez/colors/remove-background/${name}`, {hex, threshold}).toString();
+	}
+
+	guessBackgroundColor(name: string): Promise<ImagezColorPayload | null> {
+		return this.client.getJson(`imagez/colors/guess-background/${name}`);
 	}
 
 }

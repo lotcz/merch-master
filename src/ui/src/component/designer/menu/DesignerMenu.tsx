@@ -146,7 +146,8 @@ export default function DesignerMenu({
 				product && selectedZone && files && <Accordion activeKey={String(selectedFile?.id)} alwaysOpen={false}>
 					{
 						files.map(
-							(file) => <Accordion.Item
+							(file, index) => <Accordion.Item
+								key={index}
 								eventKey={String(file.id)}
 								onSelect={() => onFileSelected(file)}
 							>

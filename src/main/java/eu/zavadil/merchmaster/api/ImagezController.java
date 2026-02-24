@@ -8,6 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.view.RedirectView;
+
+import java.net.URL;
 
 @RestController
 @RequestMapping("${api.base-url}/imagez")
@@ -55,4 +58,27 @@ public class ImagezController {
 		}
 	}
 
+	@GetMapping("url/colors/remove-background/{name}")
+	public String getUrlRemoveBackground(
+		@PathVariable String name,
+		@RequestParam String hex,
+		@RequestParam int threshold
+	) {
+		return this.imagez.getRemovedBackgroundUrl(name, hex, threshold).toString();
+	}
+
+	@GetMapping("colors/remove-background/{name}")
+	public RedirectView getRemoveBackground(
+		@PathVariable String name,
+		@RequestParam(required = false) String hex,
+		@RequestParam(required = false) Integer threshold
+	) {
+		URL url = this.imagez.getRemovedBackgroundUrl(name, hex, threshold);
+		return new RedirectView(url.toString());
+	}
+
+	@GetMapping("colors/guess-background/{name}")
+	public ColorHexPayload guessBackground(@PathVariable String name) {
+		return this.imagez.guessBackgroundColor(name);
+	}
 }

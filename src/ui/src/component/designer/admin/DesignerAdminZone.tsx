@@ -3,9 +3,10 @@ import {PrintTypePayload} from "../../../types/PrintType";
 import {PrintZoneStub} from "../../../types/PrintZone";
 import {DesignFileStub} from "../../../types/DesignFile";
 import {useMemo} from "react";
-import {Form, Table} from "react-bootstrap";
+import {Card, Form, Stack} from "react-bootstrap";
 import {ImagezDownloadLink} from "../../images/ImagezDownloadLink";
 import {StringUtil} from "zavadil-ts-common";
+import {ImagezRemovedBackgroundDownload} from "../../images/ImagezRemovedBackgroundDownload";
 
 export type DesignerAdminZoneProps = {
 	design: DesignPayload;
@@ -38,22 +39,37 @@ export function DesignerAdminZone({design, printType}: DesignerAdminZoneProps) {
 		[design, printType]
 	);
 
-	return <div>
+	return <div className="admin-zone">
 		<Form.Label>Soubory</Form.Label>
 		{
 			sorted.map(
 				(sz) => <div>
 					<strong>{sz.zone.name}</strong>
-					<Table>
+					<Stack direction="vertical" gap={2}>
 						{
 							sz.files.map(
-								(f) => <tr>
-									<td>{StringUtil.ellipsis(f.originalImageName, 25)}</td>
-									<td><ImagezDownloadLink name={f.imageName} label="Stáhnout"/></td>
-								</tr>
+								(f) => <Card>
+									<Card.Header>
+										{StringUtil.ellipsis(f.originalImageName, 25)}
+									</Card.Header>
+									<Card.Body>
+										<Stack direction="horizontal" className="justify-content-between">
+											<ImagezDownloadLink name={f.imageName} label="Stáhnout"/>
+											{
+												f.removeBackgroundColor && <ImagezRemovedBackgroundDownload
+													name={f.imageName}
+													hex={f.removeBackgroundColor}
+													threshold={f.removeBackgroundThreshold}
+													label="Stáhnout bez pozadí"
+												/>
+											}
+										</Stack>
+									</Card.Body>
+								</Card>
 							)
 						}
-					</Table>
+					</Stack>
+
 				</div>
 			)
 		}

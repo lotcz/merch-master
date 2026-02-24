@@ -36,5 +36,5 @@ public class DesignFileBase extends EntityBase {
 	private String removeBackgroundColor;
 
 	@Column(columnDefinition = "double precision DEFAULT 0", nullable = false)
-	private int removeBackgroundThreshold = 0;
+	private double removeBackgroundThreshold = 0;
 }
