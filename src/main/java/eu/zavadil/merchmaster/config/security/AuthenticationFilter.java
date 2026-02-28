@@ -2,6 +2,7 @@ package eu.zavadil.merchmaster.config.security;
 
 import eu.zavadil.java.oauth.common.JwtEncoder;
 import eu.zavadil.java.oauth.common.token.JwtAccessToken;
+import eu.zavadil.java.oauth.common.token.PermissionLevel;
 import eu.zavadil.java.util.StringUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -50,7 +51,7 @@ public class AuthenticationFilter extends GenericFilterBean {
 				log.trace("Issuer mismatch! Required: {}, Provided: {}", this.oAuthUrl, token.getIssuer());
 				throw new RuntimeException("Invalid issuer!");
 			}
-			if (!token.getScopes().contains("admin:*")) {
+			if (!token.hasPermission("*", PermissionLevel.admin)) {
 				throw new RuntimeException("Token does not contain required privilege!");
 			}
 			return new OAuthAccessTokenAuthentication(token);

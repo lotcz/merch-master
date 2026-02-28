@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
+
 :root {
 	--primary: #C02E2E; /* Červená z loga */
 	--primary-dark: #A02626;
@@ -16,7 +18,7 @@
 }
 
 body {
-	font-family: 'Inter', sans-serif;
+	font-family: "Varela Round", "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;
 	color: var(--text);
 	line-height: 1.6;
 	background-color: var(--white);
