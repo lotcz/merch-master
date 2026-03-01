@@ -19,22 +19,24 @@ strong, .strong, h1, h2, h3, h4 {
 	font-weight: 800;
 }
 
-.brand-logo h1 {
-	color: var(--brand-color) !important;
-	font-weight: normal;
-	font-size: 4rem;
-	line-height: 4rem;
-	margin: 0;
-	padding: 0;
-	text-transform: uppercase;
-}
+.brand-logo {
 
-.brand-logo h1 .strong {
+	&.size-sm h1 {
+		font-size: 2rem;
+		line-height: 2rem;
+	}
 
-	font-size: 110%;
-}
+	h1 {
+		color: var(--brand-color) !important;
+		font-weight: normal;
+		font-size: 4rem;
+		line-height: 4rem;
+		margin: 0;
+		padding: 0;
+		text-transform: uppercase;
 
-.brand-logo.size-sm h1 {
-	font-size: 2rem;
-	line-height: 2rem;
+		.strong {
+			font-size: 110%;
+		}
+	}
 }
