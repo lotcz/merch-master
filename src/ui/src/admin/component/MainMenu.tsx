@@ -1,0 +1,59 @@
+import React, {useCallback, useContext} from 'react';
+import {NavLink, useNavigate} from "react-router";
+import {UserAlertsContext} from '../../shared/util/UserAlerts';
+import {Localize} from "zavadil-react-common";
+import {MerchMasterRestClientContext} from "../../shared/client/merchMaster/MerchMasterRestClient";
+
+function MainMenu() {
+	const navigate = useNavigate();
+	const restClient = useContext(MerchMasterRestClientContext);
+	const userAlerts = useContext(UserAlertsContext);
+
+	const logOut = useCallback(
+		() => {
+			restClient
+				.logout()
+				.then(
+					() => {
+						userAlerts.info("Logged out");
+						navigate("/");
+					}
+				);
+		},
+		[navigate, restClient, userAlerts]
+	);
+
+	return (
+		<div className="main-menu p-3">
+			<h4 className="mt-2">Manage</h4>
+			<div className="ps-3">
+				<div>
+					<NavLink to="/admin/products">Products</NavLink>
+				</div>
+				<div>
+					<NavLink to="/admin/designs">Designs</NavLink>
+				</div>
+			</div>
+			<h4 className="mt-2"><Localize text="System"/></h4>
+			<div className="ps-3">
+				<div className="text-nowrap">
+					<NavLink to="/"><Localize text="System State"/></NavLink>
+				</div>
+				<div>
+					<a
+						href="/"
+						onClick={
+							(e) => {
+								e.stopPropagation();
+								e.preventDefault();
+								logOut();
+							}
+						}
+					><Localize text="Log out"/></a>
+				</div>
+			</div>
+		</div>
+	);
+}
+
+export default MainMenu;

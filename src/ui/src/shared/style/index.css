@@ -1,0 +1,442 @@
+html, body {
+	padding: 0;
+	margin: 0;
+}
+
+html {
+	height: 100%;
+}
+
+body, #root, .min-h-100 {
+	min-height: 100vh;
+}
+
+body {
+
+}
+
+a, a:visited, a:active {
+	text-decoration: none;
+}
+
+a.active {
+	font-weight: bold;
+}
+
+.main-menu a.active {
+	padding-left: 0.5rem;
+}
+
+pre {
+	margin: 0;
+}
+
+.text-small {
+	font-size: 85%;
+}
+
+.cursor-pointer {
+	cursor: pointer;
+}
+
+.cursor-crosshair {
+	cursor: crosshair;
+}
+
+.cursor-move {
+	cursor: move;
+}
+
+.cursor-default {
+	cursor: default;
+}
+
+.cursor-resize {
+	cursor: se-resize;
+}
+
+.btn-unsaved {
+	font-weight: bold;
+}
+
+.btn-unsaved::after {
+	content: '*';
+}
+
+.doc-preview {
+	display: block;
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+}
+
+.doc-preview.left {
+	left: 0;
+	right: auto;
+}
+
+tr.selectable.selected td {
+	background-color: var(--bs-primary-bg-subtle);
+}
+
+.main-menu {
+	font-size: 14pt;
+}
+
+.prevent-text-selection,
+.form-switch {
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+}
+
+.color-preview {
+	width: 25px;
+	height: 25px;
+	border-radius: 12px;
+	box-shadow: 0 0 3px #aaa;
+}
+
+.small-button {
+	padding: 2px;
+	line-height: 0;
+}
+
+/* DESIGNER */
+
+.designer {
+	width: 100%;
+	overflow: visible;
+	display: flex;
+	flex-direction: row;
+	justify-content: stretch;
+	align-items: stretch;
+}
+
+.designer .container-fluid .row {
+	align-items: stretch;
+	height: 100%;
+}
+
+.designer .container-fluid,
+.designer .container-fluid .row,
+.designer .container-fluid .row > div,
+.designer .designer-tab {
+	max-height: 100%;
+	overflow: visible;
+}
+
+.designer .card {
+	border-color: #dee2e6;
+}
+
+.designer .row .card {
+	height: 100%;
+}
+
+.designer .accordion-header button {
+	font-size: 85%;
+	padding: 5px 10px;
+}
+
+.designer .designer-main {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: stretch;
+	overflow: hidden;
+	border-bottom-left-radius: 0.375rem;
+	border-bottom-right-radius: 0.375rem;
+}
+
+.designer-shadow {
+	box-shadow: 10px 10px 5px #dee2e6;
+}
+
+.designer .designer-tab {
+	padding: 10px;
+	overflow: hidden;
+	flex-grow: 1;
+	border-width: 1px;
+	border-style: solid;
+	border-top-style: none;
+	border-right-style: none;
+	border-color: #dee2e6;
+	border-bottom-left-radius: 0.375rem;
+	border-bottom-right-radius: 0.375rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.designer .print-zone {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.designer form label {
+	font-size: 75%;
+	margin-top: 10px;
+	margin-bottom: 0;
+}
+
+.form-switch {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.designer .form-switch label {
+	margin-top: 0;
+}
+
+.designer .form-switch {
+	margin-top: 10px;
+}
+
+.designer .print-zone .label {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.designer .print-zone .label h3 {
+	font-size: 100%;
+	font-weight: bold;
+	margin: 0;
+}
+
+.designer .print-zone .boundary,
+.print-preview-designer .boundary {
+	position: relative;
+	border: solid 1px #ffa5a5;
+	overflow: hidden;
+	background-image: url('../../../public/img/designer-bg.png');
+	background-repeat: repeat;
+}
+
+.designer .print-zone .boundary.resizing,
+.print-preview-designer .boundary.resizing {
+	cursor: se-resize;
+}
+
+.designer .print-zone .boundary.moving,
+.print-preview-designer .boundary.moving {
+	cursor: move;
+}
+
+.designer .print-zone .design-file,
+.print-preview-designer .print-preview-designer-zone {
+	position: absolute;
+	border: solid 2px transparent;
+	cursor: move;
+}
+
+.designer .print-zone .design-file.read-only {
+	cursor: default;
+	border: none;
+}
+
+.designer .print-zone .design-file.manipulating,
+.print-preview-designer .print-preview-designer-zone.manipulating {
+	pointer-events: none;
+}
+
+.designer .print-zone .design-file.selected,
+.print-preview-designer .print-preview-designer-zone.selected {
+	border: solid 2px #ff0000;
+}
+
+.designer .print-zone .design-file img {
+	width: 100%;
+	height: 100%;
+	user-select: none;
+}
+
+.designer .design-file .action-button,
+.print-preview-designer .print-preview-designer-zone .action-button {
+	display: none;
+	position: absolute;
+	color: #fff;
+	background-color: #ff0000;
+	justify-content: center;
+	align-items: center;
+	width: 30px;
+	height: 30px;
+	border-radius: 3px;
+}
+
+.designer .print-zone .design-file:hover .action-button,
+.designer .print-zone .design-file.selected .action-button,
+.print-preview-designer .print-preview-designer-zone:hover .action-button,
+.print-preview-designer .print-preview-designer-zone.selected .action-button {
+	display: flex;
+}
+
+.designer .print-zone .design-file.read-only:hover .action-button {
+	display: none;
+}
+
+.designer .print-zone .design-file .delete-button,
+.print-preview-designer .print-preview-designer-zone .delete-button {
+	cursor: pointer;
+	right: -10px;
+	top: -10px;
+}
+
+.designer .print-zone .design-file .aspect-lock-button,
+.print-preview-designer .print-preview-designer-zone .aspect-lock-button {
+	cursor: pointer;
+	left: 50%;
+	margin-left: -10px;
+	bottom: -15px;
+}
+
+.designer .print-zone .design-file .aspect-lock-button.unlocked,
+.print-preview-designer .print-preview-designer-zone .aspect-lock-button.unlocked {
+	background-color: white;
+	color: #ff0000;
+	border: solid 1px #ff0000;
+}
+
+.designer .print-zone .design-file .resize-button,
+.print-preview-designer .print-preview-designer-zone .resize-button {
+	cursor: se-resize;
+	right: -10px;
+	bottom: -10px;
+	width: 20px;
+	height: 20px;
+}
+
+/* PREVIEW */
+
+.designer .previews-section {
+	display: flex;
+	flex-direction: column;
+	justify-content: stretch;
+	gap: 10px;
+}
+
+.designer .previews-section .alert {
+	padding: 5px;
+	border: solid 1px orange;
+	margin: 0;
+}
+
+.designer .previews-section .previews {
+	flex-grow: 1;
+	overflow: scroll;
+	border: solid 1px #dee2e6;
+	border-radius: 5px;
+}
+
+.designer .designer-preview-wrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.designer-preview {
+	position: relative;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+}
+
+.designer-preview .foreground {
+	position: absolute;
+	top: 0;
+}
+
+.designer-preview .designer-preview-zone,
+.designer-preview .designer-preview-zone .designer-preview-file {
+	position: absolute;
+	overflow: hidden;
+}
+
+.designer-preview .designer-preview-zone-cylinder {
+	position: absolute;
+}
+
+.designer-preview .designer-preview-zone .designer-preview-file img {
+	width: 100%;
+	height: 100%;
+	user-select: none;
+}
+
+/* PREVIEW DESIGNER */
+
+.print-preview-designer {
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+}
+
+.print-preview-designer .print-preview-designer-zone {
+	background-image: url('../../../public/img/designer-bg.png');
+	background-repeat: repeat;
+}
+
+.print-preview-designer .print-preview-designer-zone .label {
+	color: red;
+	background-color: white;
+	font-size: 75%;
+	position: absolute;
+	top: -20px;
+	text-wrap: nowrap;
+}
+
+.designer .preview-full {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.designer .preview-full-container {
+	flex-grow: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	max-height: 100%;
+	max-width: 100%;
+}
+
+.designer .preview-action {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+}
+
+.designer .preview-action button > div {
+	justify-content: center;
+}
+
+/* DESIGNER WRAPPER */
+
+.designer-wrapper {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	display: flex;
+	flex-direction: row;
+	align-items: stretch;
+	justify-content: stretch;
+}
+
+.designer-wrapper .error {
+	position: absolute;
+	bottom: 0;
+	right: 10px;
+}

@@ -1,4 +1,4 @@
-src/config/conf.json
+src/shared/config/conf.json
 
 # dependencies
 /node_modules
