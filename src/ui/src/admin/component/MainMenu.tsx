@@ -1,27 +1,20 @@
-import React, {useCallback, useContext} from 'react';
-import {NavLink, useNavigate} from "react-router";
-import {UserAlertsContext} from '../../shared/util/UserAlerts';
-import {Localize} from "zavadil-react-common";
-import {MerchMasterRestClientContext} from "../../shared/client/merchMaster/MerchMasterRestClient";
+import React, { useCallback, useContext } from "react";
+import { Link, NavLink, useNavigate } from "react-router";
+import { UserAlertsContext } from "../../shared/util/UserAlerts";
+import { Localize } from "zavadil-react-common";
+import { AdminRestClientContext } from "../client/AdminRestClient";
 
 function MainMenu() {
 	const navigate = useNavigate();
-	const restClient = useContext(MerchMasterRestClientContext);
+	const restClient = useContext(AdminRestClientContext);
 	const userAlerts = useContext(UserAlertsContext);
 
-	const logOut = useCallback(
-		() => {
-			restClient
-				.logout()
-				.then(
-					() => {
-						userAlerts.info("Logged out");
-						navigate("/");
-					}
-				);
-		},
-		[navigate, restClient, userAlerts]
-	);
+	const logOut = useCallback(() => {
+		restClient.logout().then(() => {
+			userAlerts.info("Logged out");
+			navigate("/");
+		});
+	}, [navigate, restClient, userAlerts]);
 
 	return (
 		<div className="main-menu p-3">
@@ -34,22 +27,36 @@ function MainMenu() {
 					<NavLink to="/admin/designs">Designs</NavLink>
 				</div>
 			</div>
-			<h4 className="mt-2"><Localize text="System"/></h4>
+			<h4 className="mt-2">
+				<Localize text="System" />
+			</h4>
 			<div className="ps-3">
 				<div className="text-nowrap">
-					<NavLink to="/"><Localize text="System State"/></NavLink>
+					<NavLink to="/">
+						<Localize text="System State" />
+					</NavLink>
+				</div>
+				<div>
+					<NavLink to="/creator">
+						<Localize text="Creator" />
+					</NavLink>
+				</div>
+				<div>
+					<NavLink to="/">
+						<Localize text="Website" />
+					</NavLink>
 				</div>
 				<div>
 					<a
 						href="/"
-						onClick={
-							(e) => {
-								e.stopPropagation();
-								e.preventDefault();
-								logOut();
-							}
-						}
-					><Localize text="Log out"/></a>
+						onClick={(e) => {
+							e.stopPropagation();
+							e.preventDefault();
+							logOut();
+						}}
+					>
+						<Localize text="Log out" />
+					</a>
 				</div>
 			</div>
 		</div>

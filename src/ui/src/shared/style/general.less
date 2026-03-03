@@ -2,29 +2,76 @@
 	Styles common for the whole Merch Master project.
 */
 
-@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;800&display=swap');
 
 :root {
-	--brand-color: #912421;
+	--brand-color: #811411;
+	--brand-color-contrast: #fff;
+	--brand-color-secondary: darkorange;
+	--brand-color-secondary-contrast: #fff;
+
 
 	--font-family: "M PLUS Rounded 1c";
+	--weight-light: 400;
+	--weight-medium: 500;
+	--weight-bold: 800;
 }
 
 body {
 	font-family: var(--font-family), "Arial Rounded MT Bold", Arial, sans-serif;
-	font-weight: 300;
+	font-weight: var(--weight-medium);
 }
 
 strong, .strong, h1, h2, h3, h4 {
-	font-weight: 800;
+	font-weight: var(--weight-bold);
 }
 
-.brand-logo {
+.light, small {
+	font-weight: var(--weight-light);
+}
 
-	&.size-sm h1 {
-		font-size: 2rem;
-		line-height: 2rem;
-	}
+.brand-color, h1, h2, h3, h4 {
+	color: var(--brand-color);
+}
+
+a {
+	font-weight: var(--weight-medium);
+	color: var(--brand-color);
+}
+
+a:hover {
+	text-decoration: none;
+	color: var(--brand-color-secondary);
+}
+
+.btn-brand {
+	border-radius: 20px;
+	padding-left: 15px;
+	padding-right: 15px;
+	background-color: var(--brand-color);
+	border: none;
+	color: var(--brand-color-contrast);
+	text-transform: uppercase;
+	font-weight: var(--weight-medium);
+}
+
+.btn-brand:hover,
+.btn-brand:active,
+.btn-brand:focus,
+.btn-brand:focus-visible,
+.btn-brand:active,
+.btn-brand:visited {
+	background-color: var(--brand-color) !important;
+	color: var(--brand-color-contrast) !important;
+}
+
+.btn-brand:hover {
+	text-decoration: none !important;
+	background-color: var(--brand-color-secondary) !important;
+	color: var(--brand-color-secondary-contrast) !important;
+}
+
+.brand-text {
 
 	h1 {
 		color: var(--brand-color) !important;
@@ -39,12 +86,24 @@ strong, .strong, h1, h2, h3, h4 {
 			font-size: 110%;
 		}
 	}
+
+	&.size-sm h1 {
+		font-size: 2rem;
+		line-height: 2rem;
+	}
+
+	&.size-lg h1,
+	&.size-xl h1 {
+		font-size: 8rem;
+		line-height: 8rem;
+	}
 }
 
 /* DARK */
+
 html[data-bs-theme=dark] {
 
-	.brand-logo h1 {
+	h1, h2, h3, h4 {
 		color: var(--bs-body-color) !important;
 	}
 }

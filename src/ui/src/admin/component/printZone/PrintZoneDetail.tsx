@@ -1,13 +1,13 @@
-import {Col, Form, Row, Spinner, Stack} from "react-bootstrap";
-import {useNavigate, useParams} from "react-router";
-import React, {useCallback, useContext, useEffect, useState} from "react";
-import {NumberUtil} from "zavadil-ts-common";
-import {MerchMasterRestClientContext} from "../../../shared/client/merchMaster/MerchMasterRestClient";
-import {UserAlertsContext} from "../../../shared/util/UserAlerts";
+import { Col, Form, Row, Spinner, Stack } from "react-bootstrap";
+import { useNavigate, useParams } from "react-router";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import { NumberUtil } from "zavadil-ts-common";
+import { AdminRestClientContext } from "../../client/AdminRestClient";
+import { UserAlertsContext } from "../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../shared/component/general/RefreshIconButton";
-import {ConfirmDialogContext, DeleteButton, SaveButton} from "zavadil-react-common";
+import { ConfirmDialogContext, DeleteButton, SaveButton } from "zavadil-react-common";
 import BackIconLink from "../../../shared/component/general/BackIconLink";
-import {PrintZoneStub} from "../../../shared/types/PrintZone";
+import { PrintZoneStub } from "../../../shared/types/PrintZone";
 import ProductPreview from "../products/ProductPreview";
 
 const COL_1_MD = 3;
@@ -16,9 +16,9 @@ const COL_1_LG = 2;
 const COL_2_LG = 6;
 
 export default function PrintZoneDetail() {
-	const {id, productId} = useParams();
+	const { id, productId } = useParams();
 	const navigate = useNavigate();
-	const restClient = useContext(MerchMasterRestClientContext);
+	const restClient = useContext(AdminRestClientContext);
 	const userAlerts = useContext(UserAlertsContext);
 	const confirmDialog = useContext(ConfirmDialogContext);
 	const [data, setData] = useState<PrintZoneStub>();
@@ -26,96 +26,79 @@ export default function PrintZoneDetail() {
 	const [deleting, setDeleting] = useState<boolean>(false);
 	const [saving, setSaving] = useState<boolean>(false);
 
-	const onChanged = useCallback(
-		() => {
-			if (!data) return;
-			setData({...data});
-			setChanged(true);
-		},
-		[data]
-	);
+	const onChanged = useCallback(() => {
+		if (!data) return;
+		setData({ ...data });
+		setChanged(true);
+	}, [data]);
 
-	const reload = useCallback(
-		() => {
-			if (id) {
-				restClient.printZones.loadById(Number(id))
-					.then(setData)
-					.catch((e: Error) => userAlerts.err(e));
-			} else {
-				setData(
-					{
-						name: '',
-						productId: Number(productId),
-						widthMm: 80,
-						heightMm: 80
-					}
-				);
-			}
-			setChanged(false);
-		},
-		[id, productId, restClient, userAlerts]
-	);
+	const reload = useCallback(() => {
+		if (id) {
+			restClient.printZones
+				.loadById(Number(id))
+				.then(setData)
+				.catch((e: Error) => userAlerts.err(e));
+		} else {
+			setData({
+				name: "",
+				productId: Number(productId),
+				widthMm: 80,
+				heightMm: 80,
+			});
+		}
+		setChanged(false);
+	}, [id, productId, restClient, userAlerts]);
 
 	useEffect(reload, [id]);
 
-	const saveData = useCallback(
-		() => {
-			if (!data) return;
-			const inserting = NumberUtil.isEmpty(data.id);
-			setSaving(true);
-			restClient
-				.printZones
-				.save(data)
-				.then(
-					(f) => {
-						if (inserting) {
-							navigate(`/products/print-zones/detail/${f.id}`, {replace: true});
-						} else {
-							setData(f);
-						}
-						setChanged(false);
-					})
-				.catch((e: Error) => userAlerts.err(e))
-				.finally(() => setSaving(false));
-		},
-		[restClient, data, userAlerts, navigate]
-	);
-
-	const deletePrintZone = useCallback(
-		() => {
-			if (!data?.id) return;
-			confirmDialog.confirm(
-				'Confirm',
-				'Really delete this print zone?',
-				() => {
-					setDeleting(true);
-					restClient
-						.printZones
-						.delete(Number(data.id))
-						.then(
-							(f) => {
-								navigate(`/products/${data.productId}`);
-							})
-						.catch((e: Error) => userAlerts.err(e))
-						.finally(() => setDeleting(false))
+	const saveData = useCallback(() => {
+		if (!data) return;
+		const inserting = NumberUtil.isEmpty(data.id);
+		setSaving(true);
+		restClient.printZones
+			.save(data)
+			.then((f) => {
+				if (inserting) {
+					navigate(`/products/print-zones/detail/${f.id}`, { replace: true });
+				} else {
+					setData(f);
 				}
-			);
-		},
-		[restClient, data, userAlerts, navigate, confirmDialog]
-	);
+				setChanged(false);
+			})
+			.catch((e: Error) => userAlerts.err(e))
+			.finally(() => setSaving(false));
+	}, [restClient, data, userAlerts, navigate]);
+
+	const deletePrintZone = useCallback(() => {
+		if (!data?.id) return;
+		confirmDialog.confirm("Confirm", "Really delete this print zone?", () => {
+			setDeleting(true);
+			restClient.printZones
+				.delete(Number(data.id))
+				.then((f) => {
+					navigate(`/products/${data.productId}`);
+				})
+				.catch((e: Error) => userAlerts.err(e))
+				.finally(() => setDeleting(false));
+		});
+	}, [restClient, data, userAlerts, navigate, confirmDialog]);
 
 	if (!data) {
-		return <Spinner/>
+		return <Spinner />;
 	}
 
 	return (
 		<div>
 			<div className="p-2">
 				<Stack direction="horizontal" gap={2}>
-					<BackIconLink changed={changed}/>
-					<RefreshIconButton onClick={reload}/>
-					<SaveButton loading={saving} disabled={!changed} onClick={saveData}>Save</SaveButton>
-					<DeleteButton loading={deleting} disabled={!data.id} onClick={deletePrintZone}>Delete</DeleteButton>
+					<BackIconLink changed={changed} />
+					<RefreshIconButton onClick={reload} />
+					<SaveButton loading={saving} disabled={!changed} onClick={saveData}>
+						Save
+					</SaveButton>
+					<DeleteButton loading={deleting} disabled={!data.id} onClick={deletePrintZone}>
+						Delete
+					</DeleteButton>
 				</Stack>
 			</div>
 
@@ -127,7 +110,7 @@ export default function PrintZoneDetail() {
 						</Col>
 						<Col md={COL_2_MD} lg={COL_2_LG}>
 							<div>
-								<ProductPreview productId={data.productId}/>
+								<ProductPreview productId={data.productId} />
 							</div>
 						</Col>
 					</Row>
@@ -187,5 +170,5 @@ export default function PrintZoneDetail() {
 				</Stack>
 			</Form>
 		</div>
-	)
+	);
 }

@@ -1,14 +1,14 @@
-import {Col, Form, Row, Spinner, Stack} from "react-bootstrap";
-import {useNavigate, useParams, useSearchParams} from "react-router";
-import React, {useCallback, useContext, useEffect, useState} from "react";
-import {NumberUtil} from "zavadil-ts-common";
-import {MerchMasterRestClientContext} from "../../../shared/client/merchMaster/MerchMasterRestClient";
-import {UserAlertsContext} from "../../../shared/util/UserAlerts";
+import { Col, Form, Row, Spinner, Stack } from "react-bootstrap";
+import { useNavigate, useParams, useSearchParams } from "react-router";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import { NumberUtil } from "zavadil-ts-common";
+import { AdminRestClientContext } from "../../client/AdminRestClient";
+import { UserAlertsContext } from "../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../shared/component/general/RefreshIconButton";
-import {ConfirmDialogContext, DeleteButton, SaveButton} from "zavadil-react-common";
+import { ConfirmDialogContext, DeleteButton, SaveButton } from "zavadil-react-common";
 import BackIconLink from "../../../shared/component/general/BackIconLink";
 import ProductPreview from "../products/ProductPreview";
-import {ProductColorStub} from "../../../shared/types/ProductColor";
+import { ProductColorStub } from "../../../shared/types/ProductColor";
 
 const COL_1_MD = 3;
 const COL_2_MD = 5;
@@ -16,10 +16,10 @@ const COL_1_LG = 2;
 const COL_2_LG = 6;
 
 export default function ProductColorDetail() {
-	const {id, productId} = useParams();
+	const { id, productId } = useParams();
 	const navigate = useNavigate();
 	const [searchParams, setSearchParams] = useSearchParams();
-	const restClient = useContext(MerchMasterRestClientContext);
+	const restClient = useContext(AdminRestClientContext);
 	const userAlerts = useContext(UserAlertsContext);
 	const confirmDialog = useContext(ConfirmDialogContext);
 	const [data, setData] = useState<ProductColorStub>();
@@ -27,97 +27,80 @@ export default function ProductColorDetail() {
 	const [deleting, setDeleting] = useState<boolean>(false);
 	const [saving, setSaving] = useState<boolean>(false);
 
-	const onChanged = useCallback(
-		() => {
-			if (!data) return;
-			setData({...data});
-			setChanged(true);
-		},
-		[data]
-	);
+	const onChanged = useCallback(() => {
+		if (!data) return;
+		setData({ ...data });
+		setChanged(true);
+	}, [data]);
 
-	const reload = useCallback(
-		() => {
-			if (!id) {
-				setData({
-					color: '',
-					name: '',
-					productId: NumberUtil.parseNumber(productId) || 0
-				});
-				return;
-			}
-			setData(undefined);
-			restClient.productColors.loadSingle(Number(id))
-				.then(
-					(pt) => {
-						setData(pt);
-					}
-				)
-				.catch((e: Error) => userAlerts.err(e))
-		},
-		[id, productId, restClient, userAlerts]
-	);
+	const reload = useCallback(() => {
+		if (!id) {
+			setData({
+				color: "",
+				name: "",
+				productId: NumberUtil.parseNumber(productId) || 0,
+			});
+			return;
+		}
+		setData(undefined);
+		restClient.productColors
+			.loadSingle(Number(id))
+			.then((pt) => {
+				setData(pt);
+			})
+			.catch((e: Error) => userAlerts.err(e));
+	}, [id, productId, restClient, userAlerts]);
 
 	useEffect(reload, [id]);
 
-	const saveData = useCallback(
-		() => {
-			if (!data) return;
-			const inserting = NumberUtil.isEmpty(data.id);
-			setSaving(true);
-			restClient
-				.productColors
-				.save(data)
-				.then(
-					(f) => {
-						if (inserting) {
-							navigate(`/products/product-colors/detail/${f.id}`, {replace: true});
-						} else {
-							setData(f);
-						}
-						setChanged(false);
-					})
-				.catch((e: Error) => userAlerts.err(e))
-				.finally(() => setSaving(false))
-		},
-		[restClient, data, userAlerts, navigate]
-	);
-
-	const deleteColor = useCallback(
-		() => {
-			if (!data?.id) return;
-			confirmDialog.confirm(
-				'Confirm',
-				'Really delete this product color?',
-				() => {
-					setDeleting(true);
-					restClient
-						.productColors
-						.delete(Number(data.id))
-						.then(
-							(f) => {
-								navigate(`/products/${data.productId}`);
-							})
-						.catch((e: Error) => userAlerts.err(e))
-						.finally(() => setDeleting(false))
+	const saveData = useCallback(() => {
+		if (!data) return;
+		const inserting = NumberUtil.isEmpty(data.id);
+		setSaving(true);
+		restClient.productColors
+			.save(data)
+			.then((f) => {
+				if (inserting) {
+					navigate(`/products/product-colors/detail/${f.id}`, { replace: true });
+				} else {
+					setData(f);
 				}
-			);
-		},
-		[restClient, data, userAlerts, navigate, confirmDialog]
-	);
+				setChanged(false);
+			})
+			.catch((e: Error) => userAlerts.err(e))
+			.finally(() => setSaving(false));
+	}, [restClient, data, userAlerts, navigate]);
+
+	const deleteColor = useCallback(() => {
+		if (!data?.id) return;
+		confirmDialog.confirm("Confirm", "Really delete this product color?", () => {
+			setDeleting(true);
+			restClient.productColors
+				.delete(Number(data.id))
+				.then((f) => {
+					navigate(`/products/${data.productId}`);
+				})
+				.catch((e: Error) => userAlerts.err(e))
+				.finally(() => setDeleting(false));
+		});
+	}, [restClient, data, userAlerts, navigate, confirmDialog]);
 
 	if (!data) {
-		return <Spinner/>
+		return <Spinner />;
 	}
 
 	return (
 		<div>
 			<div className="p-2">
 				<Stack direction="horizontal" gap={2}>
-					<BackIconLink changed={changed}/>
-					<RefreshIconButton onClick={reload}/>
-					<SaveButton loading={saving} disabled={!changed} onClick={saveData}>Save</SaveButton>
-					<DeleteButton loading={deleting} disabled={!data.id} onClick={deleteColor}>Delete</DeleteButton>
+					<BackIconLink changed={changed} />
+					<RefreshIconButton onClick={reload} />
+					<SaveButton loading={saving} disabled={!changed} onClick={saveData}>
+						Save
+					</SaveButton>
+					<DeleteButton loading={deleting} disabled={!data.id} onClick={deleteColor}>
+						Delete
+					</DeleteButton>
 				</Stack>
 			</div>
 
@@ -129,7 +112,7 @@ export default function ProductColorDetail() {
 						</Col>
 						<Col md={COL_2_MD} lg={COL_2_LG}>
 							<div>
-								<ProductPreview productId={data.productId}/>
+								<ProductPreview productId={data.productId} />
 							</div>
 						</Col>
 					</Row>
@@ -170,5 +153,5 @@ export default function ProductColorDetail() {
 				</Stack>
 			</Form>
 		</div>
-	)
+	);
 }

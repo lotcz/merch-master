@@ -20,9 +20,10 @@ public class HomeController {
 	 */
 	@GetMapping(
 		value = {
+			"public/**",
 			"designer/**",
-			"admin/**",
-			"creator/**"
+			"creator/**",
+			"admin/**"
 		}
 	)
 	public @ResponseBody ResponseEntity<InputStreamResource> fallback() {

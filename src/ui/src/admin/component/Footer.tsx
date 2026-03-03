@@ -1,8 +1,8 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {MerchMasterRestClientContext} from "../../shared/client/merchMaster/MerchMasterRestClient";
+import React, { useContext, useEffect, useState } from "react";
+import { AdminRestClientContext } from "../client/AdminRestClient";
 
 function Footer() {
-	const restClient = useContext(MerchMasterRestClientContext);
+	const restClient = useContext(AdminRestClientContext);
 	const [status, setStatus] = useState<string | null>(null);
 
 	useEffect(() => {
@@ -12,11 +12,7 @@ function Footer() {
 			.catch((e) => setStatus(String(e)));
 	}, []);
 
-	return (
-		<footer className="flex-fill p-3 small bg-body-secondary">
-			{status}
-		</footer>
-	);
+	return <footer className="flex-fill p-3 small bg-body-secondary">{status}</footer>;
 }
 
 export default Footer;

@@ -1,14 +1,14 @@
 import React from "react";
-import {Route, Routes} from "react-router";
+import { Route, Routes } from "react-router";
 import DesignerWrapper from "./DesignerWrapper";
-import NotFound from "../../shared/component/NotFound";
+import NotFound from "../../shared/component/NotFoundPage";
 
 export default function DesignerApp() {
 	return (
 		<Routes>
-			<Route path=":uuid" element={<DesignerWrapper/>}/>
-			<Route path="add/:productId" element={<DesignerWrapper/>}/>
-			<Route path="*" element={<NotFound/>}/>
+			<Route path=":uuid" element={<DesignerWrapper />} />
+			<Route path="add/:productId" element={<DesignerWrapper />} />
+			<Route path="*" element={<NotFound />} />
 		</Routes>
-	)
+	);
 }
