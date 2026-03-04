@@ -9,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,8 +17,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
-
-import java.io.IOException;
 
 @Component
 @Slf4j
@@ -51,9 +50,6 @@ public class AuthenticationFilter extends GenericFilterBean {
 				log.trace("Issuer mismatch! Required: {}, Provided: {}", this.oAuthUrl, token.getIssuer());
 				throw new RuntimeException("Invalid issuer!");
 			}
-			if (!token.hasPermission("*", PermissionLevel.admin)) {
-				throw new RuntimeException("Token does not contain required privilege!");
-			}
 			return new OAuthAccessTokenAuthentication(token);
 		} catch (Exception e) {
 			log.warn("Authentication failed", e);
@@ -64,7 +60,6 @@ public class AuthenticationFilter extends GenericFilterBean {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
 		throws IOException, ServletException {
-
 		Authentication authentication = this.getAuthentication((HttpServletRequest) request);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 

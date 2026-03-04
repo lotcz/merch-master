@@ -1,8 +1,9 @@
-import {useContext, useEffect, useMemo, useState} from "react";
-import {Img} from "./Img";
-import {ImagezRestClientContext} from "../../client/imagez/ImagezClient";
-import {Spinner} from "react-bootstrap";
+import { useContext, useEffect, useMemo, useState } from "react";
+import { Img } from "./Img";
+import { ImagezRestClientContext } from "../../client/ImagezClient";
+import { Spinner } from "react-bootstrap";
 import ImageUtil from "../../util/ImageUtil";
+import { StringUtil } from "zavadil-ts-common";
 
 export type ImagezImageProps = {
 	name?: string | null;
@@ -15,50 +16,38 @@ export type ImagezImageProps = {
 	snap?: boolean;
 };
 
-export function ImagezImage({name, type, width, height, ext, snap = false, verticalAlign, horizontalAlign}: ImagezImageProps) {
+export function ImagezImage({ name, type, width, height, ext, snap = false, verticalAlign, horizontalAlign }: ImagezImageProps) {
 	const restClient = useContext(ImagezRestClientContext);
 	const [url, setUrl] = useState<string | null>();
+	const [error, setError] = useState<string | null>();
 
-	const actualWidth = useMemo(() => snap ? ImageUtil.snap(width) : width, [width, snap]);
-	const actualHeight = useMemo(() => snap ? ImageUtil.snap(height) : height, [height, snap]);
+	const actualWidth = useMemo(() => (snap ? ImageUtil.snap(width) : width), [width, snap]);
+	const actualHeight = useMemo(() => (snap ? ImageUtil.snap(height) : height), [height, snap]);
 
-	useEffect(
-		() => {
-			if (name) {
-				restClient
-					.getResizedUrl(name, type, actualWidth, actualHeight, ext, verticalAlign, horizontalAlign)
-					.then(setUrl);
-			} else {
-				setUrl(null);
-			}
-		},
-		[restClient, name, type, actualWidth, actualHeight, ext, verticalAlign, horizontalAlign]
-	);
+	useEffect(() => {
+		if (name) {
+			restClient
+				.getResizedUrl(name, type, actualWidth, actualHeight, ext, verticalAlign, horizontalAlign)
+				.then(setUrl)
+				.catch((e) => setError(StringUtil.toString(e)));
+		} else {
+			setUrl(null);
+		}
+	}, [restClient, name, type, actualWidth, actualHeight, ext, verticalAlign, horizontalAlign]);
 
-	if (!url) return <Spinner size="sm"/>
+	if (!url) return <Spinner size="sm" />;
 
-	return <Img url={url} maxWidth={width} maxHeight={height}/>
+	return <Img url={url} maxWidth={width} maxHeight={height} alt={error || name} />;
 }
 
 export type ImagezImageResizedProps = {
 	name?: string | null;
 };
 
-export function ImagezImageThumb({name}: ImagezImageResizedProps) {
-	return <ImagezImage
-		name={name}
-		type="Fit"
-		width={75}
-		height={50}
-
-	/>
+export function ImagezImageThumb({ name }: ImagezImageResizedProps) {
+	return <ImagezImage name={name} type="Fit" width={75} height={50} />;
 }
 
-export function ImagezImagePreview({name}: ImagezImageResizedProps) {
-	return <ImagezImage
-		name={name}
-		type="Fit"
-		width={600}
-		height={200}
-	/>
+export function ImagezImagePreview({ name }: ImagezImageResizedProps) {
+	return <ImagezImage name={name} type="Fit" width={600} height={200} />;
 }

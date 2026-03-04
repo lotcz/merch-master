@@ -1,4 +1,4 @@
-package eu.zavadil.merchmaster.api;
+package eu.zavadil.merchmaster.api.admin;
 
 import eu.zavadil.java.spring.common.paging.JsonPage;
 import eu.zavadil.java.spring.common.paging.JsonPageImpl;
@@ -59,5 +59,4 @@ public class DesignController {
 	public void delete(@PathVariable int id) {
 		this.stubRepository.deleteById(id);
 	}
-
 }

@@ -1,6 +1,6 @@
-import {useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
-import {ImagezRestClientContext} from "../../client/imagez/ImagezClient";
-import ImageUtil, {Color} from "../../util/ImageUtil";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { ImagezRestClientContext } from "../../client/ImagezClient";
+import ImageUtil, { Color } from "../../util/ImageUtil";
 
 export type ImagezImageRemoveBgProps = {
 	name?: string | null;
@@ -10,7 +10,7 @@ export type ImagezImageRemoveBgProps = {
 	threshold: number;
 };
 
-export function ImagezImageRemoveBg({name, width, height, removeColor, threshold}: ImagezImageRemoveBgProps) {
+export function ImagezImageRemoveBg({ name, width, height, removeColor, threshold }: ImagezImageRemoveBgProps) {
 	const restClient = useContext(ImagezRestClientContext);
 
 	const actualWidth = useMemo(() => ImageUtil.snap(width), [width]);
@@ -18,57 +18,45 @@ export function ImagezImageRemoveBg({name, width, height, removeColor, threshold
 
 	const [url, setUrl] = useState<string | null>();
 
-	useEffect(
-		() => {
-			if (name) {
-				restClient
-					.getResizedUrl(name, 'Fit', actualWidth, actualHeight, undefined, undefined, undefined, true)
-					.then(setUrl);
-			} else {
-				setUrl(null);
-			}
-		},
-		[restClient, name, actualWidth, actualHeight]
-	);
+	useEffect(() => {
+		if (name) {
+			restClient.getResizedUrl(name, "Fit", actualWidth, actualHeight, undefined, undefined, undefined, true).then(setUrl);
+		} else {
+			setUrl(null);
+		}
+	}, [restClient, name, actualWidth, actualHeight]);
 
 	const canvas = useRef<HTMLCanvasElement>(null);
 	const [img, setImg] = useState<HTMLImageElement | null>();
 
-	useEffect(
-		() => {
-			if (url) {
-				const im = document.createElement('img');
-				im.crossOrigin = "anonymous";
-				im.addEventListener('load', () => setImg(im));
-				im.src = url;
-			} else {
-				setImg(null);
-			}
-		},
-		[url]
-	);
+	useEffect(() => {
+		if (url) {
+			const im = document.createElement("img");
+			im.crossOrigin = "anonymous";
+			im.addEventListener("load", () => setImg(im));
+			im.src = url;
+		} else {
+			setImg(null);
+		}
+	}, [url]);
 
-	const writeImage = useCallback(
-		() => {
-			if (!img) return;
-			if (!canvas.current) return;
+	const writeImage = useCallback(() => {
+		if (!img) return;
+		if (!canvas.current) return;
 
-			const context = canvas.current.getContext('2d');
-			if (!context) return;
+		const context = canvas.current.getContext("2d");
+		if (!context) return;
 
-			canvas.current.width = width;
-			canvas.current.height = height;
-			const cnv = ImageUtil.removeBackground(img, removeColor, threshold);
-			if (cnv) {
-				context.drawImage(cnv, 0, 0, width, height);
-				cnv.remove();
-			}
-		},
-		[img, canvas, removeColor, threshold, width, height]
-	);
+		canvas.current.width = width;
+		canvas.current.height = height;
+		const cnv = ImageUtil.removeBackground(img, removeColor, threshold);
+		if (cnv) {
+			context.drawImage(cnv, 0, 0, width, height);
+			cnv.remove();
+		}
+	}, [img, canvas, removeColor, threshold, width, height]);
 
 	useEffect(writeImage, [writeImage]);
 
-	return <canvas ref={canvas}/>
+	return <canvas ref={canvas} />;
 }
-

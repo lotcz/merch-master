@@ -48,33 +48,34 @@ public class SecurityConfig {
 	}
 
 	/**
-	 * Protect everything except /api/status/** and /api/designer/**
+	 * Protect everything starting with /api except /api/status/**, /api/imagez/** and /api/designer/**
 	 */
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
-			.cors(c -> {
-			})
+			.cors(c -> {})
 			.csrf(c -> {
 				c.disable();
 			})
-			.securityMatcher(
-				String.format("%s/**", this.apiBaseUrl)
-			)
+			.securityMatcher(String.format("%s/**", this.apiBaseUrl))
 			.addFilterBefore(this.authenticationFilter, AuthorizationFilter.class)
-			.authorizeHttpRequests(
-				(auth) ->
-					auth
-						.requestMatchers(
-							String.format("%s/status/**", this.apiBaseUrl),
-							String.format("%s/imagez/**", this.apiBaseUrl),
-							String.format("%s/designer/**", this.apiBaseUrl)
-						)
-						.permitAll()
-						.anyRequest()
-						.authenticated()
+			.authorizeHttpRequests(auth ->
+				auth
+					.requestMatchers(
+						String.format("%s/status/**", this.apiBaseUrl),
+						String.format("%s/imagez/**", this.apiBaseUrl),
+						String.format("%s/designer/**", this.apiBaseUrl)
+					)
+					.permitAll()
+					// ── Admin-only endpoint
+					.requestMatchers(String.format("%s/admin/**", this.apiBaseUrl))
+					.hasRole("ADMIN")
+					// Creator endpoints (ownership enforced at method level)
+					.requestMatchers(String.format("%s/creator/**", this.apiBaseUrl))
+					.hasAnyRole("CREATOR", "ADMIN")
+					.anyRequest()
+					.authenticated()
 			);
 		return http.build();
 	}
-
 }

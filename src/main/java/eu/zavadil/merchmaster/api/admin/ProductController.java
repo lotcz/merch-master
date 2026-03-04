@@ -1,4 +1,4 @@
-package eu.zavadil.merchmaster.api;
+package eu.zavadil.merchmaster.api.admin;
 
 import eu.zavadil.java.spring.common.paging.JsonPage;
 import eu.zavadil.java.spring.common.paging.JsonPageImpl;
@@ -50,5 +50,4 @@ public class ProductController {
 	public void delete(@PathVariable int id) {
 		this.productRepository.deleteById(id);
 	}
-
 }

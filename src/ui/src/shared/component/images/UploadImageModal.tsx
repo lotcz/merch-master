@@ -1,49 +1,42 @@
-import React, {useCallback, useContext, useEffect, useState} from 'react';
-import {Form, Modal} from 'react-bootstrap';
-import {UserAlertsContext} from "../../util/UserAlerts";
-import {Img} from "./Img";
-import {SaveButton} from "zavadil-react-common";
-import {ImageHealth} from "../../types/Image";
-import {ImagezRestClientContext} from "../../client/imagez/ImagezClient";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import { Form, Modal } from "react-bootstrap";
+import { UserAlertsContext } from "../../util/UserAlerts";
+import { Img } from "./Img";
+import { SaveButton } from "zavadil-react-common";
+import { ImageHealth } from "../../types/Image";
+import { ImagezRestClientContext } from "../../client/ImagezClient";
 
 export type UploadImageModalProps = {
 	onClose: () => any;
 	onSelected: (imageName: string, imageHealth: ImageHealth) => any;
-}
+};
 
-export function UploadImageModal({onClose, onSelected}: UploadImageModalProps) {
+export function UploadImageModal({ onClose, onSelected }: UploadImageModalProps) {
 	const restClient = useContext(ImagezRestClientContext);
 	const alerts = useContext(UserAlertsContext);
 	const [uploading, setUploading] = useState<boolean>(false);
 	const [file, setFile] = useState<File>();
 	const [preview, setPreview] = useState<string>();
 
-	useEffect(
-		() => {
-			if (file && file.type.startsWith("image/")) {
-				setPreview(URL.createObjectURL(file));
-			} else {
-				setPreview(undefined);
-			}
-		},
-		[file]
-	);
+	useEffect(() => {
+		if (file && file.type.startsWith("image/")) {
+			setPreview(URL.createObjectURL(file));
+		} else {
+			setPreview(undefined);
+		}
+	}, [file]);
 
-	const upload = useCallback(
-		() => {
-			if (!file) return;
-			setUploading(true);
-			restClient
-				.uploadFile(file)
-				.then((ih) => onSelected(ih.name, ih))
-				.catch(
-					(e) => {
-						setUploading(false);
-						alerts.err(e);
-					});
-		},
-		[restClient, alerts, onSelected, file]
-	);
+	const upload = useCallback(() => {
+		if (!file) return;
+		setUploading(true);
+		restClient
+			.uploadFile(file)
+			.then((ih) => onSelected(ih.name, ih))
+			.catch((e) => {
+				setUploading(false);
+				alerts.err(e);
+			});
+	}, [restClient, alerts, onSelected, file]);
 
 	return (
 		<Modal show={true} onHide={onClose} size="xl">
@@ -55,11 +48,7 @@ export function UploadImageModal({onClose, onSelected}: UploadImageModalProps) {
 			<Modal.Body className="p-0">
 				<div>
 					<div className="p-4">
-						<div className="p-2 text-center">
-							{
-								preview && <Img url={preview} maxHeight={400} maxWidth={600}/>
-							}
-						</div>
+						<div className="p-2 text-center">{preview && <Img url={preview} maxHeight={400} maxWidth={600} />}</div>
 						<Form>
 							<Form.Control
 								type="file"
@@ -82,16 +71,12 @@ export function UploadImageModal({onClose, onSelected}: UploadImageModalProps) {
 						</Form>
 					</div>
 					<div className="text-center m-2">
-						<SaveButton
-							size="lg"
-							loading={uploading}
-							onClick={upload}
-							disabled={file === undefined}
-						>Nahrát</SaveButton>
+						<SaveButton size="lg" loading={uploading} onClick={upload} disabled={file === undefined}>
+							Nahrát
+						</SaveButton>
 					</div>
 				</div>
 			</Modal.Body>
 		</Modal>
 	);
 }
-

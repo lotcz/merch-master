@@ -1,4 +1,4 @@
-package eu.zavadil.merchmaster.api;
+package eu.zavadil.merchmaster.api.pub;
 
 import eu.zavadil.java.oauth.common.payload.ServerOAuthInfoPayload;
 import eu.zavadil.merchmaster.stats.MerchMasterStats;
@@ -47,5 +47,4 @@ public class StatusController {
 	public ServerOAuthInfoPayload info() {
 		return new ServerOAuthInfoPayload(this.oauthUrl, this.appName, this.version);
 	}
-
 }

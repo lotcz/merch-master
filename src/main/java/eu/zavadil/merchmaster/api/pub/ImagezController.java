@@ -1,16 +1,15 @@
-package eu.zavadil.merchmaster.api;
+package eu.zavadil.merchmaster.api.pub;
 
 import eu.zavadil.java.imagez.client.*;
 import eu.zavadil.java.spring.common.exceptions.ServerErrorException;
 import eu.zavadil.java.util.FileNameUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.net.URL;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
-
-import java.net.URL;
 
 @RestController
 @RequestMapping("${api.base-url}/imagez")

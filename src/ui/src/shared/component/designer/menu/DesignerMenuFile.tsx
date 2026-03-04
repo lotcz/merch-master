@@ -10,7 +10,7 @@ import { DesignPayload } from "../../../types/Design";
 import { BsTrash } from "react-icons/bs";
 import { BiRotateLeft, BiRotateRight } from "react-icons/bi";
 import { StringUtil } from "zavadil-ts-common";
-import { ImagezRestClientContext } from "../../../client/imagez/ImagezClient";
+import { ImagezRestClientContext } from "../../../client/ImagezClient";
 import { ImagezColorPayload } from "../../../types/Image";
 
 export type DesignerMenuFileParams = {

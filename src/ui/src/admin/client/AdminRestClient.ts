@@ -1,6 +1,4 @@
 import { createContext } from "react";
-import conf from "../../shared/config/conf.json";
-import { RefreshTokenPayload, RestClientWithOAuth } from "zavadil-ts-common";
 import { MerchMasterStats } from "../../shared/types/Stats";
 import { ProductsClient } from "./ProductsClient";
 import { PrintTypesClient } from "./PrintTypesClient";
@@ -8,20 +6,9 @@ import { DesignsClient } from "./DesignsClient";
 import { ProductColorsClient } from "./ProductColorsClient";
 import { PrintZonesClient } from "./PrintZonesClient";
 import { PrintPreviewsClient } from "./PrintPreviewsClient";
-import { OAuthRefreshTokenProvider } from "zavadil-ts-common/dist/oauth/tokenprovider/OAuthRefreshTokenProvider";
+import { MmRestClient } from "../../shared/client/MmRestClient";
 
-class NoOauthToken implements OAuthRefreshTokenProvider {
-	getRefreshToken(): Promise<RefreshTokenPayload> {
-		throw new Error("This client does not support OAuth!");
-		return Promise.reject("This client does not support OAuth!");
-	}
-
-	reset(): Promise<any> {
-		return Promise.resolve();
-	}
-}
-
-export class AdminRestClient extends RestClientWithOAuth {
+export class AdminRestClient extends MmRestClient {
 	public products: ProductsClient;
 
 	public printTypes: PrintTypesClient;
@@ -35,7 +22,7 @@ export class AdminRestClient extends RestClientWithOAuth {
 	public productColors: ProductColorsClient;
 
 	constructor(useOauth: boolean) {
-		super(conf.API_URL, useOauth ? undefined : new NoOauthToken());
+		super(useOauth);
 
 		this.products = new ProductsClient(this);
 		this.printTypes = new PrintTypesClient(this);

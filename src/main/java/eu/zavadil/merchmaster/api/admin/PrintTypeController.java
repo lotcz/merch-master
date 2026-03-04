@@ -1,4 +1,4 @@
-package eu.zavadil.merchmaster.api;
+package eu.zavadil.merchmaster.api.admin;
 
 import eu.zavadil.merchmaster.api.payload.PrintTypeAdminPayload;
 import eu.zavadil.merchmaster.data.printType.PrintTypeStub;
@@ -9,11 +9,10 @@ import eu.zavadil.merchmaster.data.printType.printTypeZone.PrintTypeZone;
 import eu.zavadil.merchmaster.data.printType.printTypeZone.PrintTypeZoneRepository;
 import eu.zavadil.merchmaster.service.PrintTypesService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("${api.base-url}/print-types")
@@ -50,35 +49,29 @@ public class PrintTypeController {
 
 		/* zones */
 
-		payload.getZones().forEach(
-			zoneId -> {
+		payload
+			.getZones()
+			.forEach(zoneId -> {
 				PrintTypeZone ptz = new PrintTypeZone();
 				ptz.setPrintTypeId(printTypeId);
 				ptz.setPrintZoneId(zoneId);
 				this.printTypeZoneRepository.save(ptz);
-			}
-		);
+			});
 
-		this.printTypeZoneRepository.deleteAllByPrintTypeIdAndIdNotIn(
-			printTypeId,
-			payload.getZones()
-		);
+		this.printTypeZoneRepository.deleteAllByPrintTypeIdAndIdNotIn(printTypeId, payload.getZones());
 
 		/* previews */
 
-		payload.getPreviews().forEach(
-			previewId -> {
+		payload
+			.getPreviews()
+			.forEach(previewId -> {
 				PrintTypePreview ptp = new PrintTypePreview();
 				ptp.setPrintTypeId(printTypeId);
 				ptp.setPrintPreviewId(previewId);
 				this.printTypePreviewRepository.save(ptp);
-			}
-		);
+			});
 
-		this.printTypePreviewRepository.deleteAllByPrintTypeIdAndIdNotIn(
-			printTypeId,
-			payload.getPreviews()
-		);
+		this.printTypePreviewRepository.deleteAllByPrintTypeIdAndIdNotIn(printTypeId, payload.getPreviews());
 
 		return this.load(printTypeId);
 	}
@@ -99,5 +92,4 @@ public class PrintTypeController {
 	public void delete(@PathVariable int id) {
 		this.stubRepository.deleteById(id);
 	}
-
 }

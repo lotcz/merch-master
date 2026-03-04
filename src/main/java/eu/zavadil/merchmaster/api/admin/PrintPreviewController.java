@@ -1,4 +1,4 @@
-package eu.zavadil.merchmaster.api;
+package eu.zavadil.merchmaster.api.admin;
 
 import eu.zavadil.merchmaster.api.payload.PrintPreviewPayload;
 import eu.zavadil.merchmaster.data.printPreview.PrintPreviewStub;
@@ -7,11 +7,10 @@ import eu.zavadil.merchmaster.data.printPreviewZone.PrintPreviewZoneStub;
 import eu.zavadil.merchmaster.data.printPreviewZone.PrintPreviewZoneStubRepository;
 import eu.zavadil.merchmaster.service.PrintPreviewsService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("${api.base-url}/print-previews")
@@ -43,12 +42,14 @@ public class PrintPreviewController {
 		stub = this.stubRepository.save(stub);
 
 		int previewId = stub.getId();
-		List<PrintPreviewZoneStub> zones = payload.getZones().stream().map(
-			preview -> {
+		List<PrintPreviewZoneStub> zones = payload
+			.getZones()
+			.stream()
+			.map(preview -> {
 				preview.setPrintPreviewId(previewId);
 				return this.previewZoneRepository.save(preview);
-			}
-		).toList();
+			})
+			.toList();
 
 		this.previewZoneRepository.cleanOtherPreviews(
 			previewId,
@@ -77,5 +78,4 @@ public class PrintPreviewController {
 	public void delete(@PathVariable int id) {
 		this.stubRepository.deleteById(id);
 	}
-
 }

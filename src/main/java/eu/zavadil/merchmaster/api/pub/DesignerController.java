@@ -1,4 +1,4 @@
-package eu.zavadil.merchmaster.api;
+package eu.zavadil.merchmaster.api.pub;
 
 import eu.zavadil.merchmaster.api.payload.DesignPayload;
 import eu.zavadil.merchmaster.api.payload.PrintPreviewPayload;
@@ -15,12 +15,11 @@ import eu.zavadil.merchmaster.service.DesignsService;
 import eu.zavadil.merchmaster.service.PrintPreviewsService;
 import eu.zavadil.merchmaster.service.PrintTypesService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("${api.base-url}/designer")
@@ -81,7 +80,7 @@ public class DesignerController {
 		return this.designsService.loadPayload(uuid);
 	}
 
-	@RequestMapping(path = "designs", method = {RequestMethod.POST, RequestMethod.PUT})
+	@RequestMapping(path = "designs", method = { RequestMethod.POST, RequestMethod.PUT })
 	public DesignPayload saveDesign(@RequestBody DesignPayload document) {
 		return this.designsService.savePayload(document);
 	}
@@ -102,7 +101,9 @@ public class DesignerController {
 	@GetMapping("previews/by-product/{productId}")
 	public List<PrintPreviewPayload> loadPreviews(@PathVariable int productId) {
 		List<PrintPreviewStub> stubs = this.previewStubRepository.findAllByProductId(productId);
-		return stubs.stream().map(s -> this.previewsService.load(s)).toList();
+		return stubs
+			.stream()
+			.map(s -> this.previewsService.load(s))
+			.toList();
 	}
-
 }
