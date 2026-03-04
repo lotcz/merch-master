@@ -1,7 +1,7 @@
 import { Col, Form, Row, Spinner, Stack, Tab, Table, Tabs } from "react-bootstrap";
 import { useNavigate, useParams, useSearchParams } from "react-router";
 import conf from "../../../shared/config/conf.json";
-import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { NumberUtil, StringUtil } from "zavadil-ts-common";
 import { AdminRestClientContext } from "../../client/AdminRestClient";
 import { UserAlertsContext } from "../../../shared/util/UserAlerts";

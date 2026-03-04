@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { DateTime, TablePlaceholder } from "zavadil-react-common";
 import { AdminRestClientContext } from "../../client/AdminRestClient";

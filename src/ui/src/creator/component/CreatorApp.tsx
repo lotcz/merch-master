@@ -1,34 +1,76 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { NavLink } from "react-router";
-import { Localize } from "zavadil-react-common";
+import "../style/creator.less";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { OAuthRefreshTokenProvider, RefreshTokenPayload } from "zavadil-ts-common";
+import { LoadingPage } from "../../shared/component/LoadingPage";
 import { CreatorRestClient, CreatorRestClientContext } from "../client/CreatorRestClient";
+import CreatorMain from "./CreatorMain";
+import LoginPage, { RefreshTokenSetter } from "./LoginPage";
+
+type RefreshTokenPromise = Promise<RefreshTokenPayload>;
+type RefreshTokenGetter = () => RefreshTokenPromise;
+
+class LoginFormTokenProvider implements OAuthRefreshTokenProvider {
+	private getToken: RefreshTokenGetter;
+
+	constructor(getToken: RefreshTokenGetter) {
+		this.getToken = getToken;
+	}
+
+	getRefreshToken(): Promise<RefreshTokenPayload> {
+		return this.getToken();
+	}
+
+	reset(): Promise<any> {
+		return Promise.resolve();
+	}
+}
 
 export default function CreatorApp() {
-	const restClient = useMemo(() => new CreatorRestClient(), []);
-	const [logged, setLogged] = useState<boolean>(false);
+	const [logged, setLogged] = useState<boolean | undefined>();
 
-	useEffect(() => {
+	const tokenResolverRef = useRef<RefreshTokenSetter>((t) => {
+		console.log("original");
+		setLogged(true);
+	});
+
+	const onTokenObtained = useCallback((t: RefreshTokenPayload) => {
+		console.log("logged", t);
+		tokenResolverRef.current?.(t);
+		setLogged(true);
+	}, []);
+
+	const refreshTokenProvider: OAuthRefreshTokenProvider = useMemo(() => {
+		const getToken: RefreshTokenGetter = () => {
+			console.log("getting");
+			setLogged(false);
+			const promise = new Promise<RefreshTokenPayload>((resolve) => {
+				tokenResolverRef.current = resolve;
+			});
+			return promise;
+		};
+		return new LoginFormTokenProvider(getToken);
+	}, []);
+
+	const restClient = useMemo(() => new CreatorRestClient(refreshTokenProvider), [refreshTokenProvider]);
+
+	const restInitialize = useCallback(() => {
+		setLogged(undefined);
 		restClient
-			.test()
-			.then((r) => setLogged(true))
-			.catch((r) => setLogged(false));
+			.initialize()
+			.then(() => setLogged(true))
+			.catch((e) => {
+				setLogged(false);
+			});
 	}, [restClient]);
+
+	useEffect(() => restInitialize, []);
 
 	return (
 		<CreatorRestClientContext.Provider value={restClient}>
 			<div>
-				<h1>Creator</h1>
-				<div>{logged ? "Logged" : "Anonym"}</div>
-				<div>
-					<NavLink to="/admin">
-						<Localize text="Admin" />
-					</NavLink>
-				</div>
-				<div>
-					<NavLink to="/">
-						<Localize text="Website" />
-					</NavLink>
-				</div>
+				{logged === undefined && <LoadingPage />}
+				{logged === false && <LoginPage onRefreshTokenObtained={onTokenObtained} />}
+				{logged === true && <CreatorMain />}
 			</div>
 		</CreatorRestClientContext.Provider>
 	);

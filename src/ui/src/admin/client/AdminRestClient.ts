@@ -6,7 +6,8 @@ import { DesignsClient } from "./DesignsClient";
 import { ProductColorsClient } from "./ProductColorsClient";
 import { PrintZonesClient } from "./PrintZonesClient";
 import { PrintPreviewsClient } from "./PrintPreviewsClient";
-import { MmRestClient } from "../../shared/client/MmRestClient";
+import { MmRestClient, NoOauthToken } from "../../shared/client/MmRestClient";
+import { OAuthRefreshTokenProvider } from "zavadil-ts-common";
 
 export class AdminRestClient extends MmRestClient {
 	public products: ProductsClient;
@@ -21,8 +22,8 @@ export class AdminRestClient extends MmRestClient {
 
 	public productColors: ProductColorsClient;
 
-	constructor(useOauth: boolean) {
-		super(useOauth);
+	constructor(useOAuth: boolean) {
+		super(useOAuth ? undefined : new NoOauthToken());
 
 		this.products = new ProductsClient(this);
 		this.printTypes = new PrintTypesClient(this);

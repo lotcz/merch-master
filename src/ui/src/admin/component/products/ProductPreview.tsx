@@ -1,6 +1,6 @@
 import { Spinner } from "react-bootstrap";
 import { Link } from "react-router";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { AdminRestClientContext } from "../../client/AdminRestClient";
 import { UserAlertsContext } from "../../../shared/util/UserAlerts";
 import { Product } from "../../../shared/types/Product";

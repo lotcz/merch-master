@@ -2,7 +2,7 @@ import conf from "../config/conf.json";
 import { RestClientWithOAuth, OAuthRefreshTokenProvider, RefreshTokenPayload } from "zavadil-ts-common";
 import {} from "zavadil-ts-common";
 
-class NoOauthToken implements OAuthRefreshTokenProvider {
+export class NoOauthToken implements OAuthRefreshTokenProvider {
 	getRefreshToken(): Promise<RefreshTokenPayload> {
 		throw new Error("This client does not support OAuth!");
 	}
@@ -13,14 +13,14 @@ class NoOauthToken implements OAuthRefreshTokenProvider {
 }
 
 export class MmRestClient extends RestClientWithOAuth {
-	private prefix?: string;
+	private prefixedUrl: URL;
 
-	constructor(useOauth: boolean, pathPrefix?: string, scope?: string) {
-		super(conf.API_URL, useOauth ? undefined : new NoOauthToken(), scope);
-		this.prefix = pathPrefix;
+	constructor(refreshTokenProvider?: OAuthRefreshTokenProvider, pathPrefix?: string, scope?: string) {
+		super(conf.API_URL, refreshTokenProvider, scope);
+		this.prefixedUrl = pathPrefix ? new URL(`${super.getBaseUrl()}${pathPrefix}/`) : super.getBaseUrl();
 	}
 
 	getBaseUrl(): URL {
-		return this.prefix ? new URL(`${super.getBaseUrl()}${this.prefix}/`) : super.getBaseUrl();
+		return this.prefixedUrl;
 	}
 }

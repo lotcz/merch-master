@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { BsCashCoin, BsRocket, BsSliders2 } from "react-icons/bs";
 import { Link } from "react-router";

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from "react";
+import { useCallback, useContext } from "react";
 import { NavLink, useNavigate } from "react-router";
 import { UserAlertsContext } from "../../shared/util/UserAlerts";
 import { Localize } from "zavadil-react-common";

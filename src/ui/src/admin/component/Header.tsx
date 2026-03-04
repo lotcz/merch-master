@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { Stack } from "react-bootstrap";
 import { BsMoonFill, BsSunFill } from "react-icons/bs";
 import { UserSessionContext, UserSessionUpdateContext } from "../../shared/util/UserSession";

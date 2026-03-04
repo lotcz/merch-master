@@ -18,12 +18,14 @@
 }
 
 body {
-	font-family: var(--font-family), "Arial Rounded MT Bold", Arial, sans-serif;
+	font-family: Arial, sans-serif;
 	font-weight: var(--weight-medium);
+	font-size: 12pt;
 }
 
 strong, .strong, h1, h2, h3, h4 {
 	font-weight: var(--weight-bold);
+	font-family: var(--font-family), "Arial Rounded MT Bold", Arial, sans-serif;
 }
 
 .light, small {
@@ -43,6 +45,12 @@ a:hover {
 	text-decoration: none;
 	color: var(--brand-color-secondary);
 }
+
+.error {
+	color: red;
+}
+
+/* BRAND */
 
 .btn-brand {
 	border-radius: 20px;
@@ -71,6 +79,11 @@ a:hover {
 	color: var(--brand-color-secondary-contrast) !important;
 }
 
+.brand-logo, .brand-logo img,
+.brand-text {
+	user-select: none;
+}
+
 .brand-text {
 
 	h1 {
@@ -97,6 +110,12 @@ a:hover {
 		font-size: 8rem;
 		line-height: 8rem;
 	}
+}
+
+/* FORMS */
+
+form label {
+	font-weight: var(--weight-light);
 }
 
 /* DARK */

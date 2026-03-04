@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AdminRestClientContext } from "../client/AdminRestClient";
 
 function Footer() {
