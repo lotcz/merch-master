@@ -1,5 +1,5 @@
 import { Button, Form, Spinner, Stack } from "react-bootstrap";
-import React, { useCallback, useContext, useMemo, useState } from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import { Product } from "../../../types/Product";
 import { IconButton, Switch } from "zavadil-react-common";
 import { DesignFileStub } from "../../../types/DesignFile";

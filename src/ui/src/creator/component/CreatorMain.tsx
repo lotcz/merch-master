@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "react-bootstrap";
 import { NavLink } from "react-router";
 import { Localize } from "zavadil-react-common";
-import { CreatorRestClient, CreatorRestClientContext, useCreatorRestClient } from "../client/CreatorRestClient";
+import { useCreatorRestClient } from "../client/CreatorRestClient";
 
 export default function CreatorMain() {
 	const restClient = useCreatorRestClient();

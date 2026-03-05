@@ -1,7 +1,6 @@
-import React from "react";
-import {Form, Stack} from "react-bootstrap";
-import {IconButton} from "zavadil-react-common";
-import {BsX} from "react-icons/bs";
+import { Form, Stack } from "react-bootstrap";
+import { IconButton } from "zavadil-react-common";
+import { BsX } from "react-icons/bs";
 
 export type ResetableRangeParams = {
 	label?: string;
@@ -9,43 +8,26 @@ export type ResetableRangeParams = {
 	value: number;
 	min: number;
 	max: number;
-	step?: number
+	step?: number;
 	onChange: (value: number) => any;
-}
+};
 
-export default function ResetableRange({
-	label,
-	value,
-	min,
-	max,
-	step = 1,
-	defaultValue = 0,
-	onChange
-}: ResetableRangeParams) {
-	return <Form.Group>
-		{
-			label && <Form.Label className="text-small">
-				{label}
-			</Form.Label>
-		}
-		<Stack direction="horizontal" gap={2}>
-			<Form.Range
-				value={value}
-				min={min}
-				max={max}
-				step={step}
-				onChange={
-					(deg) => {
+export default function ResetableRange({ label, value, min, max, step = 1, defaultValue = 0, onChange }: ResetableRangeParams) {
+	return (
+		<Form.Group>
+			{label && <Form.Label className="text-small">{label}</Form.Label>}
+			<Stack direction="horizontal" gap={2}>
+				<Form.Range
+					value={value}
+					min={min}
+					max={max}
+					step={step}
+					onChange={(deg) => {
 						onChange(Number(deg.target.value));
-					}
-				}
-			/>
-			<IconButton
-				disabled={value === defaultValue}
-				size="sm"
-				onClick={() => onChange(defaultValue)}
-				icon={<BsX/>}
-			/>
-		</Stack>
-	</Form.Group>
+					}}
+				/>
+				<IconButton disabled={value === defaultValue} size="sm" onClick={() => onChange(defaultValue)} icon={<BsX />} />
+			</Stack>
+		</Form.Group>
+	);
 }

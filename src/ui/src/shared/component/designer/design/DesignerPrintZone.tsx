@@ -1,4 +1,4 @@
-import React, { MouseEvent, MouseEventHandler, useCallback, useContext, useMemo, useState } from "react";
+import { MouseEvent, MouseEventHandler, useCallback, useContext, useMemo, useState } from "react";
 import { PrintZoneStub } from "../../../types/PrintZone";
 import { DesignPayload } from "../../../types/Design";
 import { NumberUtil, Vector2 } from "zavadil-ts-common";

@@ -1,5 +1,5 @@
 import { Accordion, Form, Spinner } from "react-bootstrap";
-import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { PrintTypeStub } from "../../../types/PrintType";
 import { DesignerRestClientContext } from "../../../../designer/client/DesignerRestClient";
 import { Product } from "../../../types/Product";

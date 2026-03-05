@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { Form, Spinner } from "react-bootstrap";
 import { ImageHealth } from "../../types/Image";
 import { ImagezRestClientContext } from "../../client/ImagezClient";

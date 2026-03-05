@@ -1,10 +1,9 @@
 package eu.zavadil.merchmaster.api.payload;
 
-import eu.zavadil.merchmaster.data.design.DesignStub;
-import eu.zavadil.merchmaster.data.designFile.DesignFileStub;
-import lombok.Data;
-
+import eu.zavadil.merchmaster.data.creator.design.DesignStub;
+import eu.zavadil.merchmaster.data.creator.designFile.DesignFileStub;
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class DesignPayload {
@@ -12,5 +11,4 @@ public class DesignPayload {
 	private DesignStub design;
 
 	private List<DesignFileStub> files;
-
 }

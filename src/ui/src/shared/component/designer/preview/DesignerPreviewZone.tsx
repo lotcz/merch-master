@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { DesignPayload } from "../../../types/Design";
 import { PrintZoneStub } from "../../../types/PrintZone";
 import { PrintPreviewZoneStub } from "../../../types/PrintPreviewZone";

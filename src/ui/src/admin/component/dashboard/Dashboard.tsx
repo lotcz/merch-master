@@ -1,6 +1,5 @@
-import React from 'react';
 import MemoryStatsControl from "./MemoryStatsControl";
-import {Col, Row} from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 
 function Dashboard() {
 	return (
@@ -8,9 +7,8 @@ function Dashboard() {
 			<h1>Dashboard</h1>
 			<Row>
 				<Col>
-					<MemoryStatsControl/>
+					<MemoryStatsControl />
 				</Col>
-
 			</Row>
 		</div>
 	);

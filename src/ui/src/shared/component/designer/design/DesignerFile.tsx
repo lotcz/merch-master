@@ -1,4 +1,4 @@
-import React, { MouseEvent, useMemo } from "react";
+import { MouseEvent, useMemo } from "react";
 import { DesignFileStub } from "../../../types/DesignFile";
 import ImageUtil, { PIXEL_PER_MM } from "../../../util/ImageUtil";
 import { ImagezImage } from "../../images/ImagezImage";

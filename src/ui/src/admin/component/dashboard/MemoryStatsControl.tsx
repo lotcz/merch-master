@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { UserAlertsContext } from "../../../shared/util/UserAlerts";
 import { Card, Placeholder } from "react-bootstrap";
 import { JavaHeapControl } from "zavadil-react-common";

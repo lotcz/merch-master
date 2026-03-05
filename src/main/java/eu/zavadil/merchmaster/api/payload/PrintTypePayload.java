@@ -1,10 +1,9 @@
 package eu.zavadil.merchmaster.api.payload;
 
-import eu.zavadil.merchmaster.data.printType.PrintTypeStub;
-import eu.zavadil.merchmaster.data.printZone.PrintZoneStub;
-import lombok.Data;
-
+import eu.zavadil.merchmaster.data.admin.printType.PrintTypeStub;
+import eu.zavadil.merchmaster.data.admin.printZone.PrintZoneStub;
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class PrintTypePayload {
@@ -14,5 +13,4 @@ public class PrintTypePayload {
 	private List<PrintZoneStub> zones;
 
 	private List<PrintPreviewPayload> previews;
-
 }

@@ -1,5 +1,5 @@
 import { Alert, Button, Col, Container, Row, Spinner, Tab, Tabs } from "react-bootstrap";
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { DesignPayload } from "../../types/Design";
 import { PrintTypePayload } from "../../types/PrintType";
 import { DesignerRestClientContext } from "../../../designer/client/DesignerRestClient";

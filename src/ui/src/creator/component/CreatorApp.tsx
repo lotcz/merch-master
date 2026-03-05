@@ -29,19 +29,16 @@ export default function CreatorApp() {
 	const [logged, setLogged] = useState<boolean | undefined>();
 
 	const tokenResolverRef = useRef<RefreshTokenSetter>((t) => {
-		console.log("original");
 		setLogged(true);
 	});
 
 	const onTokenObtained = useCallback((t: RefreshTokenPayload) => {
-		console.log("logged", t);
 		tokenResolverRef.current?.(t);
 		setLogged(true);
 	}, []);
 
 	const refreshTokenProvider: OAuthRefreshTokenProvider = useMemo(() => {
 		const getToken: RefreshTokenGetter = () => {
-			console.log("getting");
 			setLogged(false);
 			const promise = new Promise<RefreshTokenPayload>((resolve) => {
 				tokenResolverRef.current = resolve;

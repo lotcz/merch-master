@@ -1,4 +1,3 @@
-import React from "react";
 import { Route, Routes } from "react-router";
 import DesignerWrapper from "./DesignerWrapper";
 import NotFound from "../../shared/component/NotFoundPage";

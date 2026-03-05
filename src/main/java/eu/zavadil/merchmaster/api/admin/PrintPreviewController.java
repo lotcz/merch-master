@@ -1,10 +1,10 @@
 package eu.zavadil.merchmaster.api.admin;
 
 import eu.zavadil.merchmaster.api.payload.PrintPreviewPayload;
-import eu.zavadil.merchmaster.data.printPreview.PrintPreviewStub;
-import eu.zavadil.merchmaster.data.printPreview.PrintPreviewStubRepository;
-import eu.zavadil.merchmaster.data.printPreviewZone.PrintPreviewZoneStub;
-import eu.zavadil.merchmaster.data.printPreviewZone.PrintPreviewZoneStubRepository;
+import eu.zavadil.merchmaster.data.admin.printPreview.PrintPreviewStub;
+import eu.zavadil.merchmaster.data.admin.printPreview.PrintPreviewStubRepository;
+import eu.zavadil.merchmaster.data.admin.printPreviewZone.PrintPreviewZoneStub;
+import eu.zavadil.merchmaster.data.admin.printPreviewZone.PrintPreviewZoneStubRepository;
 import eu.zavadil.merchmaster.service.PrintPreviewsService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;

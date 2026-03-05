@@ -1,8 +1,8 @@
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { Link } from "react-router";
-import { Card, Form, Button } from "react-bootstrap";
-import { FormRow, LoadingButton, Localize, UserAlertWidget } from "zavadil-react-common";
-import { RefreshTokenPayload, StringUtil, UserAlertType } from "zavadil-ts-common";
+import { Card, Form } from "react-bootstrap";
+import { FormRow, LoadingButton, Localize } from "zavadil-react-common";
+import { RefreshTokenPayload, StringUtil } from "zavadil-ts-common";
 import BrandLogoText from "../../shared/component/brand/BrandLogoText";
 import { useCreatorRestClient } from "../client/CreatorRestClient";
 import { BsCheck } from "react-icons/bs";
@@ -26,7 +26,6 @@ export default function LoginPage({ onRefreshTokenObtained }: LoginFormProps) {
 
 	const logIn = useCallback(
 		(e: FormEvent) => {
-			console.log("submitting");
 			e.stopPropagation();
 			e.preventDefault();
 			setProcessing(true);
@@ -43,10 +42,10 @@ export default function LoginPage({ onRefreshTokenObtained }: LoginFormProps) {
 	);
 
 	return (
-		<div className="login-page min-h-100 d-flex flex-column align-items-center justify-content-center">
+		<div className="login-page min-h-100 d-flex flex-column align-items-center mt-5">
 			<Card>
 				<Card.Body>
-					<div className="d-flex flex-column align-items-center justify-content-center gap-4">
+					<div className="d-flex flex-column align-items-center gap-4">
 						<BrandLogoText size="sm" />
 						<Form className="login-form" onSubmit={logIn}>
 							<FormRow label="Email">
