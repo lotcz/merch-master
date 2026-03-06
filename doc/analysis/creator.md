@@ -23,10 +23,9 @@
 
 - (temporary/pending/approved/disabled)
 - name
-- slug
 - payment details
 
-## Profile (user detail)
+## User (user detail)
 
 - name
 - email

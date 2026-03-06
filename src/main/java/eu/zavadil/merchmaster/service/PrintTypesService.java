@@ -6,7 +6,6 @@ import eu.zavadil.merchmaster.api.payload.PrintTypePayload;
 import eu.zavadil.merchmaster.data.admin.printPreview.PrintPreviewStub;
 import eu.zavadil.merchmaster.data.admin.printPreview.PrintPreviewStubRepository;
 import eu.zavadil.merchmaster.data.admin.printType.PrintTypeStubRepository;
-import eu.zavadil.merchmaster.data.admin.printType.PrintTypeStubRepository;
 import eu.zavadil.merchmaster.data.admin.printZone.PrintZoneStub;
 import eu.zavadil.merchmaster.data.admin.printZone.PrintZoneStubRepository;
 import java.util.List;

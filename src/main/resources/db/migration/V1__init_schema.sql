@@ -1,0 +1,140 @@
+CREATE TABLE product (
+	id int4 PRIMARY KEY,
+	created_on timestamptz(6) NOT NULL,
+	last_updated_on timestamptz(6) NOT NULL,
+	"name" varchar(255) NOT NULL
+);
+
+CREATE TABLE print_type (
+	id int4 PRIMARY KEY,
+	created_on timestamptz(6) NOT NULL,
+	last_updated_on timestamptz(6) NOT NULL,
+	"name" varchar(255) NOT NULL,
+	product_id int4 NULL,
+	CONSTRAINT fk_print_type_poduct_id FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE
+);
+CREATE INDEX idx_print_type_product_id ON print_type (product_id);
+
+CREATE TABLE print_zone (
+	id int4 PRIMARY KEY,
+	created_on timestamptz(6) NOT NULL,
+	last_updated_on timestamptz(6) NOT NULL,
+	"name" varchar(255) NOT NULL,
+	height_mm int4 NOT NULL,
+	width_mm int4 NOT NULL,
+	product_id int4 NULL,
+	CONSTRAINT fk_print_zone_product_id FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE
+);
+CREATE INDEX idx_print_zone_product_id ON print_zone (product_id);
+
+CREATE TABLE print_type_zone (
+	print_type_id int4 NOT NULL,
+	print_zone_id int4 NOT NULL,
+	CONSTRAINT print_type_zone_pkey PRIMARY KEY (print_type_id, print_zone_id),
+	CONSTRAINT fk_print_type_zone_print_type_id FOREIGN KEY (print_type_id) REFERENCES print_type(id) ON DELETE CASCADE,
+	CONSTRAINT fk_print_type_zone_print_zone_id FOREIGN KEY (print_zone_id) REFERENCES print_zone(id) ON DELETE CASCADE
+);
+CREATE INDEX idx_print_type_zone_print_zone_id ON print_type_zone (print_zone_id);
+
+CREATE TABLE product_color (
+	id int4 PRIMARY KEY,
+	created_on timestamptz(6) NOT NULL,
+	last_updated_on timestamptz(6) NOT NULL,
+	"name" varchar(255) NOT NULL,
+	color varchar(255) NULL,
+	product_id int4 NULL,
+	CONSTRAINT fk_product_color_product_id FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE
+);
+CREATE INDEX idx_product_color_product_id ON product_color (product_id);
+
+CREATE TABLE print_preview (
+	id int4 PRIMARY KEY,
+	created_on timestamptz(6) NOT NULL,
+	last_updated_on timestamptz(6) NOT NULL,
+	"name" varchar(255) NOT NULL,
+	image_name varchar(255) NULL,
+	print_zone_id int4 NULL,
+	product_id int4 NULL,
+	image_height_px int4 NOT NULL,
+	image_width_px int4 NOT NULL,
+	foreground_name varchar(255) NULL,
+	CONSTRAINT fk_print_preview_product_id FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE,
+	CONSTRAINT fk_print_preview_print_zone_id FOREIGN KEY (print_zone_id) REFERENCES print_zone(id) ON DELETE CASCADE
+);
+CREATE INDEX idx_print_preview_print_zone_id ON print_preview (print_zone_id);
+CREATE INDEX idx_print_preview_product_id ON print_preview (product_id);
+
+CREATE TABLE print_type_preview (
+	print_type_id int4 NOT NULL,
+	print_preview_id int4 NOT NULL,
+	CONSTRAINT print_type_preview_pkey PRIMARY KEY (print_preview_id, print_type_id),
+	CONSTRAINT fk_print_type_preview_print_type_id FOREIGN KEY (print_type_id) REFERENCES print_type(id) ON DELETE CASCADE,
+	CONSTRAINT fk_print_type_preview_print_preview_id FOREIGN KEY (print_preview_id) REFERENCES print_preview(id) ON DELETE CASCADE
+);
+CREATE INDEX idx_print_type_preview_print_preview_id ON print_type_preview (print_preview_id);
+
+CREATE TABLE print_preview_zone (
+	id int4 PRIMARY KEY,
+	created_on timestamptz(6) NOT NULL,
+	last_updated_on timestamptz(6) NOT NULL,
+	print_preview_id int4 NULL,
+	print_zone_id int4 NULL,
+	aspect_locked bool NOT NULL,
+	height_px int4 NOT NULL,
+	startxpx int4 NOT NULL,
+	startypx int4 NOT NULL,
+	width_px int4 NOT NULL,
+	rotate_deg float8 DEFAULT 0 NOT NULL,
+	cylinder_end_angle float8 NOT NULL,
+	cylinder_perspective float8 NOT NULL,
+	cylinder_radius int4 NOT NULL,
+	cylinder_slices int4 NOT NULL,
+	cylinder_start_angle float8 NOT NULL,
+	cylinder_vertical_angle float8 NOT NULL,
+	use_cylinder_effect bool NOT NULL,
+	skewxdeg float8 NULL,
+	skewydeg float8 NULL,
+	use_view_crop bool DEFAULT false NOT NULL,
+	view_crop_height_mm float8 DEFAULT 0 NOT NULL,
+	view_crop_offsetxmm float8 DEFAULT 0 NOT NULL,
+	view_crop_offsetymm float8 DEFAULT 0 NOT NULL,
+	view_crop_width_mm float8 DEFAULT 0 NOT NULL,
+	CONSTRAINT fk_print_preview_zone_print_preview_id FOREIGN KEY (print_preview_id) REFERENCES print_preview(id),
+	CONSTRAINT fk_print_preview_zone_print_zone_id FOREIGN KEY (print_zone_id) REFERENCES print_zone(id)
+);
+CREATE INDEX idx_print_preview_zone_print_preview_id ON print_preview_zone (print_preview_id);
+
+CREATE TABLE design (
+	id int4 PRIMARY KEY,
+	created_on timestamptz(6) NOT NULL,
+	last_updated_on timestamptz(6) NOT NULL,
+	confirmed bool NOT NULL,
+	"uuid" uuid DEFAULT gen_random_uuid() NOT NULL,
+	print_type_id int4 NULL,
+	product_color_id int4 NULL,
+	CONSTRAINT fk_design_print_type_id FOREIGN KEY (print_type_id) REFERENCES print_type(id),
+	CONSTRAINT fk_design_product_color_id FOREIGN KEY (product_color_id) REFERENCES product_color(id)
+);
+
+CREATE TABLE design_file (
+	id int4 PRIMARY KEY,
+	created_on timestamptz(6) NOT NULL,
+	last_updated_on timestamptz(6) NOT NULL,
+	aspect_locked bool NOT NULL,
+	image_height_mm float8 NOT NULL,
+	image_name varchar(255) NULL,
+	image_width_mm float8 NOT NULL,
+	original_image_height_px int4 NOT NULL,
+	original_image_width_px int4 NOT NULL,
+	positionxmm float8 NOT NULL,
+	positionymm float8 NOT NULL,
+	design_id int4 NULL,
+	print_zone_id int4 NULL,
+	original_image_name varchar(255) NULL,
+	rotate_deg float8 DEFAULT 0 NOT NULL,
+	remove_background_color bpchar(7) NULL,
+	remove_background_threshold float8 DEFAULT 0 NOT NULL,
+	CONSTRAINT fk_design_file_print_zone_id FOREIGN KEY (print_zone_id) REFERENCES print_zone(id),
+	CONSTRAINT fk_design_file_design_id FOREIGN KEY (design_id) REFERENCES design(id) ON DELETE CASCADE
+);
+CREATE INDEX idx_design_file_design_id ON design_file (design_id);

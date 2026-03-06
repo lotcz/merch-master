@@ -20,4 +20,8 @@ public class OAuthClientConfig {
 		return new OAuthClientHttp(this.oauthUrl);
 	}
 
+	@Bean
+	OAuthAdminClient oAuthAdminClient() {
+		return new OAuthAdminClient(this.oauthUrl);
+	}
 }

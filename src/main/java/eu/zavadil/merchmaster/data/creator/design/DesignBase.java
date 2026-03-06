@@ -14,7 +14,6 @@ import org.hibernate.type.SqlTypes;
 @MappedSuperclass
 public class DesignBase extends EntityBase {
 
-	@Column(columnDefinition = "uuid DEFAULT gen_random_uuid()", updatable = false, nullable = false)
 	@JdbcTypeCode(SqlTypes.UUID)
 	private UUID uuid;
 
