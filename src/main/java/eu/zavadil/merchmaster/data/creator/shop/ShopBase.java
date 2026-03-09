@@ -1,8 +1,10 @@
 package eu.zavadil.merchmaster.data.creator.shop;
 
 import eu.zavadil.java.spring.common.entity.EntityWithNameBase;
+import eu.zavadil.merchmaster.data.SyncState;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.JdbcType;

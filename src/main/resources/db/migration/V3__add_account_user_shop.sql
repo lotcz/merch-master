@@ -42,7 +42,7 @@ CREATE TABLE usr (
 	"name" varchar(255) NULL,
 	oauth_subject varchar(10) NOT NULL,
 	account_id int4 NOT NULL,
-	state tp_user_state NOT NULL DEFAULT 'Pending',
+	state tp_user_state NOT NULL DEFAULT 'Temporary',
 	sync_state tp_sync_state NOT NULL DEFAULT 'Synced',
 	CONSTRAINT fk_usr_account_id FOREIGN KEY (account_id) REFERENCES account(id)
 );

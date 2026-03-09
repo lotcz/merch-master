@@ -1,0 +1,12 @@
+CREATE TABLE image_cache (
+	id int4 PRIMARY KEY,
+	created_on timestamptz(6) NOT NULL,
+	last_updated_on timestamptz(6) NOT NULL,
+	account_id int4 NOT NULL,
+	image_name varchar(255) NULL,
+	original_image_name varchar(255) NULL,
+	original_image_height_px int4 NOT NULL,
+	original_image_width_px int4 NOT NULL,
+	CONSTRAINT fk_image_cache_account_id FOREIGN KEY (account_id) REFERENCES account(id) ON DELETE CASCADE
+);
+CREATE UNIQUE INDEX idx_image_cache_account_id_name ON image_cache (account_id, image_name);

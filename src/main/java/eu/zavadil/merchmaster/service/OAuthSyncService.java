@@ -47,13 +47,12 @@ public class OAuthSyncService {
 			: this.oAuthClient.loadAudienceByName(shop.getSlug());
 
 		audience.setActive(shop.getState().isActive());
-		oauthUser.setName(user.getName());
-		oauthUser.setEmail(user.getEmail());
-		oauthUser = this.oAuthClient.saveUser(oauthUser);
+		audience.setName(shop.getSlug());
+		audience.setTitle(shop.getName());
+		audience = this.oAuthClient.saveAudience(audience);
 
-		user.setOauthSubject(oauthUser.getSubject());
-		user.setSyncState(SyncState.Synced);
-		this.userRepository.save(user);
+		shop.setSyncState(SyncState.Synced);
+		this.shopRepository.save(shop);
 	}
 
 	public void syncShop(int shopId) {
