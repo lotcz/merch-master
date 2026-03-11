@@ -1,13 +1,13 @@
-import { Col, Form, Row, Spinner, Stack } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router";
-import { useCallback, useContext, useEffect, useState } from "react";
-import { NumberUtil } from "zavadil-ts-common";
-import { AdminRestClientContext } from "../../client/AdminRestClient";
-import { UserAlertsContext } from "../../../shared/util/UserAlerts";
+import {Col, Form, Row, Spinner, Stack} from "react-bootstrap";
+import {useNavigate, useParams} from "react-router";
+import {useCallback, useContext, useEffect, useState} from "react";
+import {NumberUtil} from "zavadil-ts-common";
+import {AdminRestClientContext} from "../../client/AdminRestClient";
+import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../shared/component/general/RefreshIconButton";
-import { ConfirmDialogContext, DeleteButton, SaveButton } from "zavadil-react-common";
+import {ConfirmDialogContext, DeleteButton, SaveButton} from "zavadil-react-common";
 import BackIconLink from "../../../shared/component/general/BackIconLink";
-import { PrintZoneStub } from "../../../shared/types/PrintZone";
+import {PrintZoneStub} from "../../../shared/types/PrintZone";
 import ProductPreview from "../products/ProductPreview";
 
 const COL_1_MD = 3;
@@ -16,7 +16,7 @@ const COL_1_LG = 2;
 const COL_2_LG = 6;
 
 export default function PrintZoneDetail() {
-	const { id, productId } = useParams();
+	const {id, productId} = useParams();
 	const navigate = useNavigate();
 	const restClient = useContext(AdminRestClientContext);
 	const userAlerts = useContext(UserAlertsContext);
@@ -28,14 +28,14 @@ export default function PrintZoneDetail() {
 
 	const onChanged = useCallback(() => {
 		if (!data) return;
-		setData({ ...data });
+		setData({...data});
 		setChanged(true);
 	}, [data]);
 
 	const reload = useCallback(() => {
 		if (id) {
 			restClient.printZones
-				.loadById(Number(id))
+				.loadSingle(Number(id))
 				.then(setData)
 				.catch((e: Error) => userAlerts.err(e));
 		} else {
@@ -59,7 +59,7 @@ export default function PrintZoneDetail() {
 			.save(data)
 			.then((f) => {
 				if (inserting) {
-					navigate(`/products/print-zones/detail/${f.id}`, { replace: true });
+					navigate(`/admin/products/print-zones/detail/${f.id}`, {replace: true});
 				} else {
 					setData(f);
 				}
@@ -76,7 +76,7 @@ export default function PrintZoneDetail() {
 			restClient.printZones
 				.delete(Number(data.id))
 				.then((f) => {
-					navigate(`/products/${data.productId}`);
+					navigate(`/admin/products/${data.productId}`);
 				})
 				.catch((e: Error) => userAlerts.err(e))
 				.finally(() => setDeleting(false));
@@ -84,15 +84,15 @@ export default function PrintZoneDetail() {
 	}, [restClient, data, userAlerts, navigate, confirmDialog]);
 
 	if (!data) {
-		return <Spinner />;
+		return <Spinner/>;
 	}
 
 	return (
 		<div>
 			<div className="p-2">
 				<Stack direction="horizontal" gap={2}>
-					<BackIconLink changed={changed} />
-					<RefreshIconButton onClick={reload} />
+					<BackIconLink changed={changed}/>
+					<RefreshIconButton onClick={reload}/>
 					<SaveButton loading={saving} disabled={!changed} onClick={saveData}>
 						Save
 					</SaveButton>
@@ -110,7 +110,7 @@ export default function PrintZoneDetail() {
 						</Col>
 						<Col md={COL_2_MD} lg={COL_2_LG}>
 							<div>
-								<ProductPreview productId={data.productId} />
+								<ProductPreview productId={data.productId}/>
 							</div>
 						</Col>
 					</Row>

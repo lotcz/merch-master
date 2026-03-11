@@ -1,15 +1,24 @@
-import { createContext } from "react";
-import { MerchMasterStats } from "../../shared/types/Stats";
-import { ProductsClient } from "./ProductsClient";
-import { PrintTypesClient } from "./PrintTypesClient";
-import { DesignsClient } from "./DesignsClient";
-import { ProductColorsClient } from "./ProductColorsClient";
-import { PrintZonesClient } from "./PrintZonesClient";
-import { PrintPreviewsClient } from "./PrintPreviewsClient";
-import { MmRestClient, NoOauthToken } from "../../shared/client/MmRestClient";
-import { OAuthRefreshTokenProvider } from "zavadil-ts-common";
+import {createContext} from "react";
+import {MerchMasterStats} from "../../shared/types/Stats";
+import {ProductsClient} from "./ProductsClient";
+import {PrintTypesClient} from "./PrintTypesClient";
+import {DesignsClient} from "./DesignsClient";
+import {ProductColorsClient} from "./ProductColorsClient";
+import {PrintZonesClient} from "./PrintZonesClient";
+import {PrintPreviewsClient} from "./PrintPreviewsClient";
+import {MmRestClient, NoOauthToken} from "../../shared/client/MmRestClient";
+import {AccountsClient} from "./AccountsClient";
+import {ShopsClient} from "./ShopsClient";
+import {UsersClient} from "./UsersClient";
 
 export class AdminRestClient extends MmRestClient {
+
+	public accounts: AccountsClient;
+
+	public shops: ShopsClient;
+
+	public users: UsersClient;
+
 	public products: ProductsClient;
 
 	public printTypes: PrintTypesClient;
@@ -25,6 +34,9 @@ export class AdminRestClient extends MmRestClient {
 	constructor(useOAuth: boolean) {
 		super(useOAuth ? undefined : new NoOauthToken());
 
+		this.accounts = new AccountsClient(this);
+		this.shops = new ShopsClient(this);
+		this.users = new UsersClient(this);
 		this.products = new ProductsClient(this);
 		this.printTypes = new PrintTypesClient(this);
 		this.printZones = new PrintZonesClient(this);

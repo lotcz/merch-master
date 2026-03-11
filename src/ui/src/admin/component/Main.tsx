@@ -1,7 +1,7 @@
-import { Route, Routes } from "react-router";
+import {Route, Routes} from "react-router";
 import Dashboard from "./dashboard/Dashboard";
 import MainMenu from "./MainMenu";
-import { Stack } from "react-bootstrap";
+import {Stack} from "react-bootstrap";
 
 import ProductsList from "./products/ProductsList";
 import ProductDetail from "./products/ProductDetail";
@@ -11,59 +11,92 @@ import DesignsList from "./designs/DesignsList";
 import DesignDetail from "./designs/DesignDetail";
 import PrintZoneDetail from "./printZone/PrintZoneDetail";
 import PrintPreviewDetail from "./printPreview/PrintPreviewDetail";
+import AccountsList from "./account/AccountsList";
+import AccountDetail from "./account/AccountDetail";
+import ShopsList from "./shop/ShopsList";
+import ShopDetail from "./shop/ShopDetail";
+import UsersList from "./user/UsersList";
+import UserDetail from "./user/UserDetail";
 
 export default function Main() {
 	return (
 		<main>
 			<Stack direction="horizontal" className="align-items-stretch">
-				<MainMenu />
+				<MainMenu/>
 				<div className="flex-grow-1 pb-4">
 					<Routes>
-						<Route path="/" element={<Dashboard />} />
+						<Route path="/" element={<Dashboard/>}/>
+
+						<Route path="accounts">
+							<Route path="" element={<AccountsList/>}/>
+							<Route path="detail">
+								<Route path="add" element={<AccountDetail/>}/>
+								<Route path=":id" element={<AccountDetail/>}/>
+							</Route>
+							<Route path=":pagingString" element={<AccountsList/>}/>
+						</Route>
+
+						<Route path="shops">
+							<Route path="" element={<ShopsList/>}/>
+							<Route path="detail">
+								<Route path="add/:accountId" element={<ShopDetail/>}/>
+								<Route path=":id" element={<ShopDetail/>}/>
+							</Route>
+							<Route path=":pagingString" element={<ShopsList/>}/>
+						</Route>
+
+						<Route path="users">
+							<Route path="" element={<UsersList/>}/>
+							<Route path="detail">
+								<Route path="add/:accountId" element={<UserDetail/>}/>
+								<Route path=":id" element={<UserDetail/>}/>
+							</Route>
+							<Route path=":pagingString" element={<UsersList/>}/>
+						</Route>
 
 						<Route path="products">
-							<Route path="" element={<ProductsList />} />
+							<Route path="" element={<ProductsList/>}/>
 							<Route path="detail">
-								<Route path="add" element={<ProductDetail />} />
-								<Route path=":id" element={<ProductDetail />} />
+								<Route path="add" element={<ProductDetail/>}/>
+								<Route path=":id" element={<ProductDetail/>}/>
 							</Route>
 							<Route path="print-types">
 								<Route path="detail">
-									<Route path="add/:productId" element={<PrintTypeDetail />} />
-									<Route path=":id" element={<PrintTypeDetail />} />
+									<Route path="add/:productId" element={<PrintTypeDetail/>}/>
+									<Route path=":id" element={<PrintTypeDetail/>}/>
 								</Route>
 							</Route>
 							<Route path="print-zones">
 								<Route path="detail">
-									<Route path="add/:productId" element={<PrintZoneDetail />} />
-									<Route path=":id" element={<PrintZoneDetail />} />
+									<Route path="add/:productId" element={<PrintZoneDetail/>}/>
+									<Route path=":id" element={<PrintZoneDetail/>}/>
 								</Route>
 							</Route>
 							<Route path="print-previews">
 								<Route path="detail">
-									<Route path="add/:productId" element={<PrintPreviewDetail />} />
-									<Route path=":id" element={<PrintPreviewDetail />} />
+									<Route path="add/:productId" element={<PrintPreviewDetail/>}/>
+									<Route path=":id" element={<PrintPreviewDetail/>}/>
 								</Route>
 							</Route>
 							<Route path="product-colors">
 								<Route path="detail">
-									<Route path="add/:productId" element={<ProductColorDetail />} />
-									<Route path=":id" element={<ProductColorDetail />} />
+									<Route path="add/:productId" element={<ProductColorDetail/>}/>
+									<Route path=":id" element={<ProductColorDetail/>}/>
 								</Route>
 							</Route>
-							<Route path=":pagingString" element={<ProductsList />} />
+							<Route path=":pagingString" element={<ProductsList/>}/>
 						</Route>
 
 						<Route path="designs">
-							<Route path="" element={<DesignsList />} />
+							<Route path="" element={<DesignsList/>}/>
 							<Route path="detail">
-								<Route path="add/:productId" element={<DesignDetail />} />
-								<Route path=":id" element={<DesignDetail />} />
+								<Route path="add/:productId" element={<DesignDetail/>}/>
+								<Route path=":id" element={<DesignDetail/>}/>
 							</Route>
-							<Route path=":pagingString" element={<DesignsList />} />
+							<Route path=":pagingString" element={<DesignsList/>}/>
 						</Route>
 
-						<Route path="*" element={<span>404</span>} />
+						<Route path="*" element={<span>404</span>}/>
 					</Routes>
 				</div>
 			</Stack>

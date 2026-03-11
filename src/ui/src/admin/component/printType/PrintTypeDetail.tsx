@@ -1,16 +1,16 @@
-import { Col, Form, Row, Spinner, Stack, Tab, Tabs } from "react-bootstrap";
-import { useNavigate, useParams, useSearchParams } from "react-router";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { NumberUtil, StringUtil } from "zavadil-ts-common";
-import { AdminRestClientContext } from "../../client/AdminRestClient";
-import { UserAlertsContext } from "../../../shared/util/UserAlerts";
+import {Col, Form, Row, Spinner, Stack, Tab, Tabs} from "react-bootstrap";
+import {useNavigate, useParams, useSearchParams} from "react-router";
+import {useCallback, useContext, useEffect, useMemo, useState} from "react";
+import {NumberUtil, StringUtil} from "zavadil-ts-common";
+import {AdminRestClientContext} from "../../client/AdminRestClient";
+import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../shared/component/general/RefreshIconButton";
-import { ConfirmDialogContext, DeleteButton, SaveButton, Switch } from "zavadil-react-common";
+import {ConfirmDialogContext, DeleteButton, SaveButton, Switch} from "zavadil-react-common";
 import BackIconLink from "../../../shared/component/general/BackIconLink";
-import { PrintTypeAdminPayload } from "../../../shared/types/PrintType";
+import {PrintTypeAdminPayload} from "../../../shared/types/PrintType";
 import ProductPreview from "../products/ProductPreview";
-import { PrintZoneStub } from "../../../shared/types/PrintZone";
-import { PrintPreviewStub } from "../../../shared/types/PrintPreview";
+import {PrintZoneStub} from "../../../shared/types/PrintZone";
+import {PrintPreviewStub} from "../../../shared/types/PrintPreview";
 
 const TAB_PARAM_NAME = "tab";
 const DEFAULT_TAB = "print-zones";
@@ -21,7 +21,7 @@ const COL_1_LG = 2;
 const COL_2_LG = 6;
 
 export default function PrintTypeDetail() {
-	const { id, productId } = useParams();
+	const {id, productId} = useParams();
 	const navigate = useNavigate();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const restClient = useContext(AdminRestClientContext);
@@ -39,13 +39,13 @@ export default function PrintTypeDetail() {
 	useEffect(() => {
 		if (!activeTab) return;
 		searchParams.set(TAB_PARAM_NAME, activeTab);
-		setSearchParams(searchParams, { replace: true });
+		setSearchParams(searchParams, {replace: true});
 	}, [activeTab]);
 
 	const onChanged = useCallback(() => {
 		if (!data) return;
 		data.zones = [...data.zones];
-		setData({ ...data });
+		setData({...data});
 		setChanged(true);
 	}, [data]);
 
@@ -101,7 +101,7 @@ export default function PrintTypeDetail() {
 			.save(data)
 			.then((f) => {
 				if (inserting) {
-					navigate(`/products/print-types/detail/${f.printType.id}`, { replace: true });
+					navigate(`/admin/products/print-types/detail/${f.printType.id}`, {replace: true});
 				} else {
 					setData(f);
 				}
@@ -118,7 +118,7 @@ export default function PrintTypeDetail() {
 			restClient.printTypes
 				.delete(Number(data.printType.id))
 				.then((f) => {
-					navigate(`/products/${data.printType.productId}`);
+					navigate(`/admin/products/${data.printType.productId}`);
 				})
 				.catch((e: Error) => userAlerts.err(e))
 				.finally(() => setDeleting(false));
@@ -126,15 +126,15 @@ export default function PrintTypeDetail() {
 	}, [restClient, data, userAlerts, navigate, confirmDialog]);
 
 	if (!data) {
-		return <Spinner />;
+		return <Spinner/>;
 	}
 
 	return (
 		<div>
 			<div className="p-2">
 				<Stack direction="horizontal" gap={2}>
-					<BackIconLink changed={changed} />
-					<RefreshIconButton onClick={reload} />
+					<BackIconLink changed={changed}/>
+					<RefreshIconButton onClick={reload}/>
 					<SaveButton loading={saving} disabled={!changed} onClick={saveData}>
 						Save
 					</SaveButton>
@@ -152,7 +152,7 @@ export default function PrintTypeDetail() {
 						</Col>
 						<Col md={COL_2_MD} lg={COL_2_LG}>
 							<div>
-								<ProductPreview productId={data.printType.productId} />
+								<ProductPreview productId={data.printType.productId}/>
 							</div>
 						</Col>
 					</Row>

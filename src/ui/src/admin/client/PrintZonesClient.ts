@@ -1,26 +1,13 @@
-import { RestClient } from "zavadil-ts-common";
-import { PrintZoneStub } from "../../shared/types/PrintZone";
+import {EntityClient, RestClient} from "zavadil-ts-common";
+import {PrintZoneStub} from "../../shared/types/PrintZone";
 
-export class PrintZonesClient {
-	private client: RestClient;
-
+export class PrintZonesClient extends EntityClient<PrintZoneStub> {
 	constructor(client: RestClient) {
-		this.client = client;
+		super(client, "admin/print-zones");
 	}
 
 	loadByProduct(productId: number): Promise<Array<PrintZoneStub>> {
-		return this.client.getJson(`print-zones/by-product/${productId}`);
+		return this.client.getJson(`${this.name}/by-product/${productId}`);
 	}
 
-	loadById(id: number): Promise<PrintZoneStub> {
-		return this.client.getJson(`print-zones/${id}`);
-	}
-
-	save(document: PrintZoneStub): Promise<PrintZoneStub> {
-		return document.id ? this.client.putJson(`print-zones/${document.id}`, document) : this.client.postJson("print-zones", document);
-	}
-
-	delete(id: number): Promise<any> {
-		return this.client.del(`print-zones/${id}`);
-	}
 }

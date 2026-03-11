@@ -4,11 +4,12 @@ import eu.zavadil.java.oauth.common.token.JwtAccessToken;
 import eu.zavadil.java.oauth.common.token.PermissionLevel;
 import eu.zavadil.java.oauth.common.util.PermissionUtil;
 import eu.zavadil.java.util.StringUtils;
-import java.util.Collection;
-import java.util.stream.Collectors;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class OAuthAccessTokenAuthentication extends AbstractAuthenticationToken {
 
@@ -18,7 +19,7 @@ public class OAuthAccessTokenAuthentication extends AbstractAuthenticationToken 
 		PermissionLevel level = PermissionUtil.extractPermissionLevel(scope);
 		if (level != PermissionLevel.admin) return null;
 		String privilege = PermissionUtil.extractPrivilege(scope);
-		if (privilege == "admin/*" || privilege == "*") return "ROLE_ADMIN";
+		if (StringUtils.safeEquals(privilege, "*")) return "ROLE_ADMIN";
 		if (StringUtils.safeStartsWith(privilege, "creator/")) return "ROLE_CREATOR";
 		return null;
 	}

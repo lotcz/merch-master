@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${api.base-url}/products")
+@RequestMapping("${api.base-url}/admin/products")
 @Tag(name = "Products")
 @Slf4j
 public class ProductController {

@@ -9,13 +9,14 @@ import eu.zavadil.merchmaster.data.admin.printType.printTypeZone.PrintTypeZone;
 import eu.zavadil.merchmaster.data.admin.printType.printTypeZone.PrintTypeZoneRepository;
 import eu.zavadil.merchmaster.service.PrintTypesService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("${api.base-url}/print-types")
+@RequestMapping("${api.base-url}/admin/print-types")
 @Tag(name = "Print Types")
 @Slf4j
 public class PrintTypeController {

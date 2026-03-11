@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-@Table(name = "account")
+@Table(name = "shop")
 public class Shop extends ShopBase {
 
 	@ManyToOne(optional = false)

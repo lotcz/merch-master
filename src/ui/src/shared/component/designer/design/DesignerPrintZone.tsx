@@ -1,13 +1,12 @@
-import { MouseEvent, MouseEventHandler, useCallback, useContext, useMemo, useState } from "react";
-import { PrintZoneStub } from "../../../types/PrintZone";
-import { DesignPayload } from "../../../types/Design";
-import { NumberUtil, Vector2 } from "zavadil-ts-common";
+import {MouseEvent, MouseEventHandler, useCallback, useMemo, useState} from "react";
+import {PrintZoneStub} from "../../../types/PrintZone";
+import {DesignPayload} from "../../../types/Design";
+import {NumberUtil, Vector2} from "zavadil-ts-common";
 import DesignerFile from "./DesignerFile";
-import { UploadImageDialogContext } from "../../../util/UploadImageDialogContext";
-import { DesignFileStub } from "../../../types/DesignFile";
-import ImageUtil, { PIXEL_PER_MM } from "../../../util/ImageUtil";
-import { ImageHealth } from "../../../types/Image";
-import { ImagezUploadButton } from "../../images/ImagezUploadButton";
+import {DesignFileStub} from "../../../types/DesignFile";
+import ImageUtil, {PIXEL_PER_MM} from "../../../util/ImageUtil";
+import {ImageHealth} from "../../../types/Image";
+import {ImagezUploadButton} from "../../images/ImagezUploadButton";
 
 export type DesignerPrintZoneParams = {
 	printZone: PrintZoneStub;
@@ -32,8 +31,6 @@ export default function DesignerPrintZone({
 	onChange,
 	onFileSelected,
 }: DesignerPrintZoneParams) {
-	const uploadImageDialog = useContext(UploadImageDialogContext);
-
 	const widthMm = useMemo(() => printZone.widthMm, [printZone]);
 
 	const heightMm = useMemo(() => printZone.heightMm, [printZone]);
@@ -70,11 +67,10 @@ export default function DesignerPrintZone({
 				removeBackgroundThreshold: 10,
 			};
 			design.files = [...design.files, file];
-			onChange({ ...design });
+			onChange({...design});
 			onFileSelected(file);
-			uploadImageDialog.hide();
 		},
-		[uploadImageDialog, design, printZone, onChange, widthMm, heightMm, onFileSelected],
+		[design, printZone, onChange, widthMm, heightMm, onFileSelected],
 	);
 
 	const [isResizing, setIsResizing] = useState<boolean>(false);
@@ -113,11 +109,11 @@ export default function DesignerPrintZone({
 				<div>
 					Rozměry: {widthCm} x {heightCm} cm
 				</div>
-				{!readOnly && <ImagezUploadButton name="Nahrát..." onSelected={uploadImage} />}
+				{!readOnly && <ImagezUploadButton name="Nahrát..." onSelected={uploadImage}/>}
 			</div>
 			<div
 				className={`boundary ${isResizing ? "resizing" : ""} ${moveImagePosition ? "moving" : ""}`}
-				style={{ width: width, height: height }}
+				style={{width: width, height: height}}
 				onMouseMove={onMouseMove}
 				onMouseUp={(e: MouseEvent<HTMLDivElement>) => {
 					setIsResizing(false);
@@ -144,7 +140,7 @@ export default function DesignerPrintZone({
 						onStartResize={() => setIsResizing(true)}
 						onEndResize={() => setIsResizing(false)}
 						onDeleted={() => {
-							onChange({ design: design.design, files: design.files.filter((f) => f !== file) });
+							onChange({design: design.design, files: design.files.filter((f) => f !== file)});
 							onFileSelected(undefined);
 						}}
 						onLockUnlock={() => {

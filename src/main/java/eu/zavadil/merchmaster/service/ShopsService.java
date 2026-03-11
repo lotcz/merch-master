@@ -1,0 +1,58 @@
+package eu.zavadil.merchmaster.service;
+
+import eu.zavadil.java.spring.common.paging.PagingUtils;
+import eu.zavadil.merchmaster.data.creator.shop.Shop;
+import eu.zavadil.merchmaster.data.creator.shop.ShopRepository;
+import eu.zavadil.merchmaster.data.creator.shop.ShopStub;
+import eu.zavadil.merchmaster.data.creator.shop.ShopStubRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class ShopsService {
+
+	@Autowired
+	ShopStubRepository stubRepository;
+
+	@Autowired
+	ShopRepository repository;
+
+	public Page<Shop> search(int page, int size, String search, String sorting) {
+		return this.repository.search(search, PagingUtils.of(page, size, sorting));
+	}
+
+	public Shop loadById(int id) {
+		return this.repository.findById(id).orElse(null);
+	}
+
+	public ShopStub loadStubById(int id) {
+		return this.stubRepository.findById(id).orElse(null);
+	}
+
+	public Shop save(Shop shop) {
+		return this.repository.save(shop);
+	}
+
+	public ShopStub saveStub(ShopStub shopStub) {
+		return this.stubRepository.save(shopStub);
+	}
+
+	public void delete(int id) {
+		this.stubRepository.deleteById(id);
+	}
+
+	public void delete(ShopStub shopStub) {
+		if (shopStub.getId() != null) this.delete(shopStub.getId());
+	}
+
+	public void delete(Shop shop) {
+		if (shop.getId() != null) this.delete(shop.getId());
+	}
+
+	public List<Shop> loadAllByAccountId(int accountId) {
+		return this.repository.findAllByAccountId(accountId);
+	}
+}

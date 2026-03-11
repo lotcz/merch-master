@@ -1,8 +1,8 @@
-import { useCallback, useContext } from "react";
-import { NavLink, useNavigate } from "react-router";
-import { UserAlertsContext } from "../../shared/util/UserAlerts";
-import { Localize } from "zavadil-react-common";
-import { AdminRestClientContext } from "../client/AdminRestClient";
+import {useCallback, useContext} from "react";
+import {NavLink, useNavigate} from "react-router";
+import {UserAlertsContext} from "../../shared/util/UserAlerts";
+import {Localize} from "zavadil-react-common";
+import {AdminRestClientContext} from "../client/AdminRestClient";
 
 function MainMenu() {
 	const navigate = useNavigate();
@@ -21,6 +21,15 @@ function MainMenu() {
 			<h4 className="mt-2">Manage</h4>
 			<div className="ps-3">
 				<div>
+					<NavLink to="/admin/accounts">Accounts</NavLink>
+				</div>
+				<div>
+					<NavLink to="/admin/shops">Shops</NavLink>
+				</div>
+				<div>
+					<NavLink to="/admin/users">Users</NavLink>
+				</div>
+				<div>
 					<NavLink to="/admin/products">Products</NavLink>
 				</div>
 				<div>
@@ -28,22 +37,22 @@ function MainMenu() {
 				</div>
 			</div>
 			<h4 className="mt-2">
-				<Localize text="System" />
+				<Localize text="System"/>
 			</h4>
 			<div className="ps-3">
 				<div className="text-nowrap">
 					<NavLink to="/">
-						<Localize text="System State" />
+						<Localize text="System State"/>
 					</NavLink>
 				</div>
 				<div>
 					<NavLink to="/creator">
-						<Localize text="Creator" />
+						<Localize text="Creator"/>
 					</NavLink>
 				</div>
 				<div>
 					<NavLink to="/">
-						<Localize text="Website" />
+						<Localize text="Website"/>
 					</NavLink>
 				</div>
 				<div>
@@ -55,7 +64,7 @@ function MainMenu() {
 							logOut();
 						}}
 					>
-						<Localize text="Log out" />
+						<Localize text="Log out"/>
 					</a>
 				</div>
 			</div>
