@@ -13,3 +13,6 @@ ideas:
 - get link
 - get embedding code
 - custom e-shop
+
+openmerch.cz
+openmerch.eu
