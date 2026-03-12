@@ -21,16 +21,16 @@ function MainMenu() {
 			<h4 className="mt-2">Manage</h4>
 			<div className="ps-3">
 				<div>
-					<NavLink to="/admin/accounts">Accounts</NavLink>
+					<NavLink to="/admin/products">Products</NavLink>
 				</div>
 				<div>
-					<NavLink to="/admin/shops">Shops</NavLink>
+					<NavLink to="/admin/accounts">Accounts</NavLink>
 				</div>
 				<div>
 					<NavLink to="/admin/users">Users</NavLink>
 				</div>
 				<div>
-					<NavLink to="/admin/products">Products</NavLink>
+					<NavLink to="/admin/shops">Shops</NavLink>
 				</div>
 				<div>
 					<NavLink to="/admin/designs">Designs</NavLink>

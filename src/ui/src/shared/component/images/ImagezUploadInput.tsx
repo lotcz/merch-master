@@ -1,18 +1,15 @@
-import {useContext} from "react";
 import {ImagezImageThumb} from "./ImagezImage";
-import {Button, Form} from "react-bootstrap";
+import {Form} from "react-bootstrap";
 import {StringUtil} from "zavadil-ts-common";
-import {UploadImageDialogContext} from "../../util/UploadImageDialogContext";
 import {ImageHealth} from "../../types/Image";
+import {ImagezUploadButton} from "./ImagezUploadButton";
 
 export type ImagezUploadInputProps = {
 	name?: string | null;
-	onSelected: (imageName: string, imageHealth: ImageHealth) => any;
+	onSelected: (originalImageName: string, imageHealth: ImageHealth) => any;
 };
 
 export function ImagezUploadInput({name, onSelected}: ImagezUploadInputProps) {
-	const uploadImage = useContext(UploadImageDialogContext);
-
 	return <div>
 		<div className="d-flex gap-2 align-items-center">
 			{
@@ -23,23 +20,10 @@ export function ImagezUploadInput({name, onSelected}: ImagezUploadInputProps) {
 				disabled={true}
 				value={StringUtil.getNonEmpty(name)}
 			/>
-			<Button
-				onClick={
-					() => {
-						uploadImage.show(
-							{
-								onSelected: (name, health) => {
-									onSelected(name, health);
-									uploadImage.hide();
-								},
-								onClose: () => {
-									uploadImage.hide();
-								}
-							}
-						);
-					}
-				}
-			>...</Button>
+			<ImagezUploadButton
+				name="..."
+				onSelected={onSelected}
+			/>
 		</div>
 	</div>
 }

@@ -11,6 +11,7 @@ import {Account} from "../../../shared/types/Account";
 import AccountShopsList from "./AccountShopsList";
 import AccountUsersList from "./AccountUsersList";
 import AccountStateSelect from "./AccountStateSelect";
+import AccountImageCacheList from "./AccountImageCacheList";
 
 const TAB_PARAM_NAME = "tab";
 const DEFAULT_TAB = "shops";
@@ -149,10 +150,12 @@ export default function AccountDetail() {
 					<Tabs activeKey={activeTab} onSelect={(key) => setActiveTab(StringUtil.getNonEmpty(key, DEFAULT_TAB))}>
 						<Tab title="Shops" eventKey="shops"/>
 						<Tab title="Users" eventKey="users"/>
+						<Tab title="Image Cache" eventKey="image-cache"/>
 					</Tabs>
 					<div className="px-3 py-1">
 						{activeTab === "shops" && <AccountShopsList accountId={data.id}/>}
 						{activeTab === "users" && <AccountUsersList accountId={data.id}/>}
+						{activeTab === "image-cache" && <AccountImageCacheList accountId={data.id}/>}
 					</div>
 				</div>
 			)}

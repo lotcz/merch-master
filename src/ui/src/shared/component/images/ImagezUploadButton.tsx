@@ -1,14 +1,14 @@
-import { useCallback, useContext, useState } from "react";
-import { Form, Spinner } from "react-bootstrap";
-import { ImageHealth } from "../../types/Image";
-import { ImagezRestClientContext } from "../../client/ImagezClient";
+import {useCallback, useContext, useState} from "react";
+import {Form, Spinner} from "react-bootstrap";
+import {ImageHealth} from "../../types/Image";
+import {ImagezRestClientContext} from "../../client/ImagezClient";
 
 export type ImagezUploadButtonProps = {
 	name?: string | null;
-	onSelected: (imageName: string, imageHealth: ImageHealth) => any;
+	onSelected: (originalImageName: string, imageHealth: ImageHealth) => any;
 };
 
-export function ImagezUploadButton({ name, onSelected }: ImagezUploadButtonProps) {
+export function ImagezUploadButton({name, onSelected}: ImagezUploadButtonProps) {
 	const restClient = useContext(ImagezRestClientContext);
 	const [uploading, setUploading] = useState<boolean>(false);
 
@@ -29,7 +29,7 @@ export function ImagezUploadButton({ name, onSelected }: ImagezUploadButtonProps
 		<div>
 			<Form.Label htmlFor="image_upload_button" className="m-0">
 				<div className="btn btn-primary btn-sm m-0 d-flex align-items-center gap-2">
-					{uploading && <Spinner size="sm" />}
+					{uploading && <Spinner size="sm"/>}
 					{name}
 				</div>
 			</Form.Label>

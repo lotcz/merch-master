@@ -17,6 +17,7 @@ import ShopsList from "./shop/ShopsList";
 import ShopDetail from "./shop/ShopDetail";
 import UsersList from "./user/UsersList";
 import UserDetail from "./user/UserDetail";
+import ImageCacheDetail from "./imageCache/ImageCacheDetail";
 
 export default function Main() {
 	return (
@@ -32,6 +33,12 @@ export default function Main() {
 							<Route path="detail">
 								<Route path="add" element={<AccountDetail/>}/>
 								<Route path=":id" element={<AccountDetail/>}/>
+							</Route>
+							<Route path="image-cache">
+								<Route path="detail">
+									<Route path="add/:accountId" element={<ImageCacheDetail/>}/>
+									<Route path=":id" element={<ImageCacheDetail/>}/>
+								</Route>
 							</Route>
 							<Route path=":pagingString" element={<AccountsList/>}/>
 						</Route>

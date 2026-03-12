@@ -10,8 +10,11 @@ import {MmRestClient, NoOauthToken} from "../../shared/client/MmRestClient";
 import {AccountsClient} from "./AccountsClient";
 import {ShopsClient} from "./ShopsClient";
 import {UsersClient} from "./UsersClient";
+import {ImageCacheClient} from "./ImageCacheClient";
 
 export class AdminRestClient extends MmRestClient {
+
+	public products: ProductsClient;
 
 	public accounts: AccountsClient;
 
@@ -19,7 +22,7 @@ export class AdminRestClient extends MmRestClient {
 
 	public users: UsersClient;
 
-	public products: ProductsClient;
+	public imageCache: ImageCacheClient;
 
 	public printTypes: PrintTypesClient;
 
@@ -34,10 +37,11 @@ export class AdminRestClient extends MmRestClient {
 	constructor(useOAuth: boolean) {
 		super(useOAuth ? undefined : new NoOauthToken());
 
+		this.products = new ProductsClient(this);
 		this.accounts = new AccountsClient(this);
 		this.shops = new ShopsClient(this);
 		this.users = new UsersClient(this);
-		this.products = new ProductsClient(this);
+		this.imageCache = new ImageCacheClient(this);
 		this.printTypes = new PrintTypesClient(this);
 		this.printZones = new PrintZonesClient(this);
 		this.printPreviews = new PrintPreviewsClient(this);

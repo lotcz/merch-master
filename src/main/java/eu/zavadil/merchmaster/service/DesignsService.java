@@ -11,10 +11,11 @@ import eu.zavadil.merchmaster.data.creator.design.DesignStub;
 import eu.zavadil.merchmaster.data.creator.design.DesignStubRepository;
 import eu.zavadil.merchmaster.data.creator.designFile.DesignFileStub;
 import eu.zavadil.merchmaster.data.creator.designFile.DesignFileStubRepository;
-import java.util.List;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class DesignsService {
@@ -31,13 +32,16 @@ public class DesignsService {
 	@Autowired
 	ProductColorStubRepository productColorStubRepository;
 
+	@Autowired
+	ImageCacheService imageCacheService;
+
 	public DesignStub saveDesign(DesignStub stub) {
 		if (stub.getUuid() == null) {
 			stub.setUuid(UUID.randomUUID());
 		}
 
-		PrintTypeStub printType = printTypeStubRepository.findById(stub.getPrintTypeId()).orElseThrow();
-		ProductColorStub color = productColorStubRepository.findById(stub.getProductColorId()).orElseThrow();
+		PrintTypeStub printType = this.printTypeStubRepository.findById(stub.getPrintTypeId()).orElseThrow();
+		ProductColorStub color = this.productColorStubRepository.findById(stub.getProductColorId()).orElseThrow();
 
 		if (printType.getProductId() != color.getProductId()) {
 			throw new BadRequestException("Print type and color must have the same product ID!");
@@ -54,6 +58,9 @@ public class DesignsService {
 			.getFiles()
 			.stream()
 			.map(file -> {
+				//todo: save image cache when we know account
+				//this.imageCacheService.saveIfNotExistsAsync(payload.)
+
 				file.setDesignId(designId);
 				return this.designFileStubRepository.save(file);
 			})
