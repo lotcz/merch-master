@@ -1,7 +1,7 @@
 package eu.zavadil.merchmaster.api.payload;
 
-import eu.zavadil.merchmaster.data.admin.printPreview.PrintPreviewStub;
-import eu.zavadil.merchmaster.data.admin.printPreviewZone.PrintPreviewZoneStub;
+import eu.zavadil.merchmaster.data.printPreview.PrintPreviewStub;
+import eu.zavadil.merchmaster.data.printPreviewZone.PrintPreviewZoneStub;
 import lombok.Data;
 
 import java.util.List;

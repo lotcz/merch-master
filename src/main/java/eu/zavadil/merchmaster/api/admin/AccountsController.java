@@ -2,7 +2,7 @@ package eu.zavadil.merchmaster.api.admin;
 
 import eu.zavadil.java.spring.common.paging.JsonPage;
 import eu.zavadil.java.spring.common.paging.JsonPageImpl;
-import eu.zavadil.merchmaster.data.creator.account.Account;
+import eu.zavadil.merchmaster.data.account.Account;
 import eu.zavadil.merchmaster.service.AccountsService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;

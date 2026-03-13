@@ -1,8 +1,9 @@
 package eu.zavadil.merchmaster.api.payload;
 
-import eu.zavadil.merchmaster.data.admin.printType.PrintTypeStub;
-import java.util.List;
+import eu.zavadil.merchmaster.data.printType.PrintTypeStub;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class PrintTypeAdminPayload {

@@ -2,8 +2,8 @@ package eu.zavadil.merchmaster.api.admin;
 
 import eu.zavadil.java.spring.common.paging.JsonPage;
 import eu.zavadil.java.spring.common.paging.JsonPageImpl;
-import eu.zavadil.merchmaster.data.creator.imageCache.ImageCache;
-import eu.zavadil.merchmaster.data.creator.imageCache.ImageCacheStub;
+import eu.zavadil.merchmaster.data.imageCache.ImageCache;
+import eu.zavadil.merchmaster.data.imageCache.ImageCacheStub;
 import eu.zavadil.merchmaster.service.ImageCacheService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;

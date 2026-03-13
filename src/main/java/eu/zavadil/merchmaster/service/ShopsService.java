@@ -1,10 +1,10 @@
 package eu.zavadil.merchmaster.service;
 
 import eu.zavadil.java.spring.common.paging.PagingUtils;
-import eu.zavadil.merchmaster.data.creator.shop.Shop;
-import eu.zavadil.merchmaster.data.creator.shop.ShopRepository;
-import eu.zavadil.merchmaster.data.creator.shop.ShopStub;
-import eu.zavadil.merchmaster.data.creator.shop.ShopStubRepository;
+import eu.zavadil.merchmaster.data.shop.Shop;
+import eu.zavadil.merchmaster.data.shop.ShopRepository;
+import eu.zavadil.merchmaster.data.shop.ShopStub;
+import eu.zavadil.merchmaster.data.shop.ShopStubRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;

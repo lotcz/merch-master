@@ -1,12 +1,12 @@
 package eu.zavadil.merchmaster.api.admin;
 
 import eu.zavadil.merchmaster.api.payload.PrintTypeAdminPayload;
-import eu.zavadil.merchmaster.data.admin.printType.PrintTypeStub;
-import eu.zavadil.merchmaster.data.admin.printType.PrintTypeStubRepository;
-import eu.zavadil.merchmaster.data.admin.printType.printTypePreview.PrintTypePreview;
-import eu.zavadil.merchmaster.data.admin.printType.printTypePreview.PrintTypePreviewRepository;
-import eu.zavadil.merchmaster.data.admin.printType.printTypeZone.PrintTypeZone;
-import eu.zavadil.merchmaster.data.admin.printType.printTypeZone.PrintTypeZoneRepository;
+import eu.zavadil.merchmaster.data.printType.PrintTypeStub;
+import eu.zavadil.merchmaster.data.printType.PrintTypeStubRepository;
+import eu.zavadil.merchmaster.data.printType.printTypePreview.PrintTypePreview;
+import eu.zavadil.merchmaster.data.printType.printTypePreview.PrintTypePreviewRepository;
+import eu.zavadil.merchmaster.data.printType.printTypeZone.PrintTypeZone;
+import eu.zavadil.merchmaster.data.printType.printTypeZone.PrintTypeZoneRepository;
 import eu.zavadil.merchmaster.service.PrintTypesService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;

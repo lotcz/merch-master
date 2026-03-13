@@ -2,15 +2,12 @@ package eu.zavadil.merchmaster.api.admin;
 
 import eu.zavadil.java.spring.common.paging.JsonPage;
 import eu.zavadil.java.spring.common.paging.JsonPageImpl;
-import eu.zavadil.merchmaster.data.creator.user.User;
-import eu.zavadil.merchmaster.data.creator.user.UserStub;
+import eu.zavadil.merchmaster.data.user.User;
 import eu.zavadil.merchmaster.service.UsersService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("${api.base-url}/admin/users")
@@ -32,20 +29,20 @@ public class UsersController {
 	}
 
 	@GetMapping("{id}")
-	public UserStub load(@PathVariable int id) {
-		return this.usersService.loadStubById(id);
+	public User load(@PathVariable int id) {
+		return this.usersService.loadById(id);
 	}
 
 	@PostMapping("")
-	public UserStub insert(@RequestBody UserStub document) {
+	public User insert(@RequestBody User document) {
 		document.setId(null);
-		return this.usersService.saveStub(document);
+		return this.usersService.save(document);
 	}
 
 	@PutMapping("{id}")
-	public UserStub update(@PathVariable int id, @RequestBody UserStub document) {
+	public User update(@PathVariable int id, @RequestBody User document) {
 		document.setId(id);
-		return this.usersService.saveStub(document);
+		return this.usersService.save(document);
 	}
 
 	@DeleteMapping("{id}")
@@ -53,8 +50,4 @@ public class UsersController {
 		this.usersService.delete(id);
 	}
 
-	@GetMapping("by-account/{accountId}")
-	public List<User> loadAllByAccount(@PathVariable int accountId) {
-		return this.usersService.loadAllByAccountId(accountId);
-	}
 }

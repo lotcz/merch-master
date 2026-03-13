@@ -3,12 +3,14 @@ package eu.zavadil.merchmaster.service;
 import eu.zavadil.java.oauth.client.admin.OAuthAdminClient;
 import eu.zavadil.java.util.StringUtils;
 import eu.zavadil.merchmaster.data.SyncState;
-import eu.zavadil.merchmaster.data.creator.shop.Shop;
-import eu.zavadil.merchmaster.data.creator.shop.ShopRepository;
-import eu.zavadil.merchmaster.data.creator.user.User;
-import eu.zavadil.merchmaster.data.creator.user.UserRepository;
+import eu.zavadil.merchmaster.data.creator.Creator;
+import eu.zavadil.merchmaster.data.shop.Shop;
+import eu.zavadil.merchmaster.data.shopCustomer.Customer;
+import eu.zavadil.merchmaster.data.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class OAuthSyncService {
@@ -17,28 +19,42 @@ public class OAuthSyncService {
 	OAuthAdminClient oAuthClient;
 
 	@Autowired
-	UserRepository userRepository;
+	UsersService usersService;
 
 	@Autowired
-	ShopRepository shopRepository;
+	CreatorsService creatorsService;
+
+	@Autowired
+	CustomersService customersService;
+
+	@Autowired
+	ShopsService shopsService;
 
 	public void syncUser(User user) {
 		eu.zavadil.java.oauth.client.admin.payload.User oauthUser = StringUtils.isBlank(user.getOauthSubject())
 			? new eu.zavadil.java.oauth.client.admin.payload.User()
 			: this.oAuthClient.loadUserBySubject(user.getOauthSubject());
 
-		oauthUser.setActive(user.getState().isActive());
+		Creator creator = this.creatorsService.loadByUserId(user.getId());
+		List<Customer> customers = this.customersService.loadByUserId(user.getId());
+
+		boolean isCreator = creator != null && creator.getUserState().isActive();
+		boolean isCustomer = customers.stream().anyMatch(c -> c.getUserState().isActive());
+
+		oauthUser.setActive(isCreator || isCustomer);
 		oauthUser.setName(user.getName());
 		oauthUser.setEmail(user.getEmail());
 		oauthUser = this.oAuthClient.saveUser(oauthUser);
 
+		//todo: sync permissions
+
 		user.setOauthSubject(oauthUser.getSubject());
 		user.setSyncState(SyncState.Synced);
-		this.userRepository.save(user);
+		this.usersService.save(user);
 	}
 
 	public void syncUser(int userId) {
-		this.syncUser(this.userRepository.findById(userId).orElseThrow());
+		this.syncUser(this.usersService.loadById(userId));
 	}
 
 	public void syncShop(Shop shop) {
@@ -52,10 +68,10 @@ public class OAuthSyncService {
 		audience = this.oAuthClient.saveAudience(audience);
 
 		shop.setSyncState(SyncState.Synced);
-		this.shopRepository.save(shop);
+		this.shopsService.save(shop);
 	}
 
 	public void syncShop(int shopId) {
-		this.syncShop(this.shopRepository.findById(shopId).orElseThrow());
+		this.syncShop(this.shopsService.loadById(shopId));
 	}
 }

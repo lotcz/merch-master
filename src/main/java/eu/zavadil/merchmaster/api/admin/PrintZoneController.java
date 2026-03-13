@@ -1,7 +1,7 @@
 package eu.zavadil.merchmaster.api.admin;
 
-import eu.zavadil.merchmaster.data.admin.printZone.PrintZoneStub;
-import eu.zavadil.merchmaster.data.admin.printZone.PrintZoneStubRepository;
+import eu.zavadil.merchmaster.data.printZone.PrintZoneStub;
+import eu.zavadil.merchmaster.data.printZone.PrintZoneStubRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

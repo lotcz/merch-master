@@ -83,7 +83,16 @@ CREATE TABLE usr (
 	"name" varchar(255) NULL,
 	email varchar(255) NULL,
 	oauth_subject varchar(10) NULL,
-	sync_state tp_sync_state NOT NULL DEFAULT 'Synced'
+	sync_state tp_sync_state NOT NULL DEFAULT 'Synced',
+	shipping_name varchar(100),
+	shipping_street varchar(100),
+	shipping_city varchar(100),
+	shipping_zip INT,
+	use_shipping_address boolean DEFAULT true,
+	billing_name varchar(100),
+	billing_street varchar(100),
+	billing_city varchar(100),
+	billing_zip INT
 );
 CREATE INDEX idx_usr_sync_state ON usr (sync_state);
 CREATE UNIQUE INDEX idx_usr_oauth_subject ON usr (oauth_subject);
@@ -110,15 +119,6 @@ CREATE TABLE shop_customer (
 	shop_id int4 NOT NULL,
 	user_id int4 NOT NULL,
 	user_state tp_user_state NOT NULL DEFAULT 'Temporary',
-	shipping_name varchar(100),
-	shipping_street varchar(100),
-	shipping_city varchar(100),
-	shipping_zip INT,
-	use_shipping_address boolean DEFAULT true,
-	billing_name varchar(100),
-	billing_street varchar(100),
-	billing_city varchar(100),
-	billing_zip INT,
 	CONSTRAINT fk_customer_shop_id FOREIGN KEY (shop_id) REFERENCES shop(id),
 	CONSTRAINT fk_creator_user_id FOREIGN KEY (user_id) REFERENCES usr(id)
 );

@@ -1,10 +1,9 @@
 package eu.zavadil.merchmaster.service;
 
 import eu.zavadil.merchmaster.api.payload.PrintPreviewPayload;
-import eu.zavadil.merchmaster.data.admin.printPreview.PrintPreviewStub;
-import eu.zavadil.merchmaster.data.admin.printPreview.PrintPreviewStubRepository;
-import eu.zavadil.merchmaster.data.admin.printPreviewZone.PrintPreviewZoneStubRepository;
-
+import eu.zavadil.merchmaster.data.printPreview.PrintPreviewStub;
+import eu.zavadil.merchmaster.data.printPreview.PrintPreviewStubRepository;
+import eu.zavadil.merchmaster.data.printPreviewZone.PrintPreviewZoneStubRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

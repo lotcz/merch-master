@@ -3,6 +3,7 @@ import {Product} from "./Product";
 
 export type ProductColorBase = EntityWithName & {
 	color: string;
+	extraPrice: number;
 }
 
 export type ProductColor = ProductColorBase & {

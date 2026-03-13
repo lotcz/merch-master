@@ -1,7 +1,7 @@
 package eu.zavadil.merchmaster.api.admin;
 
-import eu.zavadil.merchmaster.data.admin.productColor.ProductColorStub;
-import eu.zavadil.merchmaster.data.admin.productColor.ProductColorStubRepository;
+import eu.zavadil.merchmaster.data.productColor.ProductColorStub;
+import eu.zavadil.merchmaster.data.productColor.ProductColorStubRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

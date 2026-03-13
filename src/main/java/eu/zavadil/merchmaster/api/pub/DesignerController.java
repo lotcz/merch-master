@@ -3,23 +3,24 @@ package eu.zavadil.merchmaster.api.pub;
 import eu.zavadil.merchmaster.api.payload.DesignPayload;
 import eu.zavadil.merchmaster.api.payload.PrintPreviewPayload;
 import eu.zavadil.merchmaster.api.payload.PrintTypePayload;
-import eu.zavadil.merchmaster.data.admin.printPreview.PrintPreviewStub;
-import eu.zavadil.merchmaster.data.admin.printPreview.PrintPreviewStubRepository;
-import eu.zavadil.merchmaster.data.admin.printType.PrintTypeStub;
-import eu.zavadil.merchmaster.data.admin.printType.PrintTypeStubRepository;
-import eu.zavadil.merchmaster.data.admin.product.Product;
-import eu.zavadil.merchmaster.data.admin.product.ProductRepository;
-import eu.zavadil.merchmaster.data.admin.productColor.ProductColorStub;
-import eu.zavadil.merchmaster.data.admin.productColor.ProductColorStubRepository;
+import eu.zavadil.merchmaster.data.printPreview.PrintPreviewStub;
+import eu.zavadil.merchmaster.data.printPreview.PrintPreviewStubRepository;
+import eu.zavadil.merchmaster.data.printType.PrintTypeStub;
+import eu.zavadil.merchmaster.data.printType.PrintTypeStubRepository;
+import eu.zavadil.merchmaster.data.product.Product;
+import eu.zavadil.merchmaster.data.product.ProductRepository;
+import eu.zavadil.merchmaster.data.productColor.ProductColorStub;
+import eu.zavadil.merchmaster.data.productColor.ProductColorStubRepository;
 import eu.zavadil.merchmaster.service.DesignsService;
 import eu.zavadil.merchmaster.service.PrintPreviewsService;
 import eu.zavadil.merchmaster.service.PrintTypesService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
-import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("${api.base-url}/designer")
@@ -80,7 +81,7 @@ public class DesignerController {
 		return this.designsService.loadPayload(uuid);
 	}
 
-	@RequestMapping(path = "designs", method = { RequestMethod.POST, RequestMethod.PUT })
+	@RequestMapping(path = "designs", method = {RequestMethod.POST, RequestMethod.PUT})
 	public DesignPayload saveDesign(@RequestBody DesignPayload document) {
 		return this.designsService.savePayload(document);
 	}
