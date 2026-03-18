@@ -1,15 +1,15 @@
-import { Col, Form, Row, Spinner, Stack, Tab, Table, Tabs } from "react-bootstrap";
-import { Link, useNavigate, useParams, useSearchParams } from "react-router";
-import { useCallback, useContext, useEffect, useState } from "react";
-import { NumberUtil, StringUtil } from "zavadil-ts-common";
-import { AdminRestClientContext } from "../../client/AdminRestClient";
-import { UserAlertsContext } from "../../../shared/util/UserAlerts";
+import {Col, Form, Row, Spinner, Stack, Tab, Table, Tabs} from "react-bootstrap";
+import {Link, useNavigate, useParams, useSearchParams} from "react-router";
+import {useCallback, useContext, useEffect, useState} from "react";
+import {NumberUtil, StringUtil} from "zavadil-ts-common";
+import {useAdminRestClient} from "../../client/AdminRestClient";
+import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../shared/component/general/RefreshIconButton";
-import { ConfirmDialogContext, DeleteButton, SaveButton } from "zavadil-react-common";
+import {ConfirmDialogContext, DeleteButton, SaveButton} from "zavadil-react-common";
 import BackIconLink from "../../../shared/component/general/BackIconLink";
-import { DesignPayload } from "../../../shared/types/Design";
+import {DesignPayload} from "../../../shared/types/Design";
 import Designer from "../../../shared/component/designer/Designer";
-import { DesignerRestClientContext } from "../../../designer/client/DesignerRestClient";
+import {DesignerRestClientContext} from "../../../designer/client/DesignerRestClient";
 
 const TAB_PARAM_NAME = "tab";
 const DEFAULT_TAB = "designer";
@@ -20,10 +20,10 @@ const COL_1_LG = 2;
 const COL_2_LG = 6;
 
 export default function DesignDetail() {
-	const { id, productId } = useParams();
+	const {id, productId} = useParams();
 	const navigate = useNavigate();
 	const [searchParams, setSearchParams] = useSearchParams();
-	const restClient = useContext(AdminRestClientContext);
+	const restClient = useAdminRestClient();
 	const designerClient = useContext(DesignerRestClientContext);
 	const userAlerts = useContext(UserAlertsContext);
 	const confirmDialog = useContext(ConfirmDialogContext);
@@ -36,7 +36,7 @@ export default function DesignDetail() {
 	useEffect(() => {
 		if (!activeTab) return;
 		searchParams.set(TAB_PARAM_NAME, activeTab);
-		setSearchParams(searchParams, { replace: true });
+		setSearchParams(searchParams, {replace: true});
 	}, [activeTab]);
 
 	useEffect(() => {
@@ -76,7 +76,7 @@ export default function DesignDetail() {
 			.save(data)
 			.then((f) => {
 				if (inserting) {
-					navigate(`/admin/designs/detail/${f.design.id}`, { replace: true });
+					navigate(`/admin/designs/detail/${f.design.id}`, {replace: true});
 				} else {
 					setData(f);
 				}
@@ -101,15 +101,15 @@ export default function DesignDetail() {
 	}, [restClient, data, userAlerts, navigate, confirmDialog]);
 
 	if (!data) {
-		return <Spinner />;
+		return <Spinner/>;
 	}
 
 	return (
 		<div>
 			<div className="p-2">
 				<Stack direction="horizontal" gap={2}>
-					<BackIconLink changed={changed} />
-					<RefreshIconButton onClick={reload} />
+					<BackIconLink changed={changed}/>
+					<RefreshIconButton onClick={reload}/>
 					<SaveButton loading={saving} disabled={!changed} onClick={saveData}>
 						Save
 					</SaveButton>
@@ -132,7 +132,7 @@ export default function DesignDetail() {
 									value={StringUtil.getNonEmpty(data.design.uuid)}
 									onChange={(e) => {
 										data.design.uuid = e.target.value;
-										onChanged({ ...data });
+										onChanged({...data});
 									}}
 								/>
 								<Link to={`/designer/${data.design.uuid}`}>Designer</Link>
@@ -143,24 +143,24 @@ export default function DesignDetail() {
 			</Form>
 			<div>
 				<Tabs activeKey={activeTab} onSelect={(key) => setActiveTab(StringUtil.getNonEmpty(key, DEFAULT_TAB))}>
-					<Tab title="Designer" eventKey="designer" />
+					<Tab title="Designer" eventKey="designer"/>
 					<Tab title="Files" eventKey="files">
 						<Table>
 							<thead>
-								<tr>
-									<td>ID</td>
-									<td>Image</td>
-									<td>Zone</td>
-								</tr>
+							<tr>
+								<td>ID</td>
+								<td>Image</td>
+								<td>Zone</td>
+							</tr>
 							</thead>
 							<tbody>
-								{data.files.map((designFile, index) => (
-									<tr key={index}>
-										<td>{designFile.id}</td>
-										<td>{designFile.imageName}</td>
-										<td>{designFile.printZoneId}</td>
-									</tr>
-								))}
+							{data.files.map((designFile, index) => (
+								<tr key={index}>
+									<td>{designFile.id}</td>
+									<td>{designFile.imageName}</td>
+									<td>{designFile.printZoneId}</td>
+								</tr>
+							))}
 							</tbody>
 						</Table>
 					</Tab>

@@ -1,8 +1,8 @@
-import { useContext, useEffect, useState } from "react";
-import { AdminRestClientContext } from "../client/AdminRestClient";
+import {useEffect, useState} from "react";
+import {useAdminRestClient} from "../client/AdminRestClient";
 
 function Footer() {
-	const restClient = useContext(AdminRestClientContext);
+	const restClient = useAdminRestClient();
 	const [status, setStatus] = useState<string | null>(null);
 
 	useEffect(() => {

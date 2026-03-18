@@ -1,21 +1,22 @@
-import { Col, Form, Row, Spinner, Stack, Tab, Table, Tabs } from "react-bootstrap";
-import { useNavigate, useParams, useSearchParams } from "react-router";
+import {Col, Form, Row, Spinner, Stack, Tab, Table, Tabs} from "react-bootstrap";
+import {useParams, useSearchParams} from "react-router";
 import conf from "../../../shared/config/conf.json";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { NumberUtil, StringUtil } from "zavadil-ts-common";
-import { AdminRestClientContext } from "../../client/AdminRestClient";
-import { UserAlertsContext } from "../../../shared/util/UserAlerts";
+import {useCallback, useContext, useEffect, useMemo, useState} from "react";
+import {NumberUtil, StringUtil} from "zavadil-ts-common";
+import {useAdminRestClient} from "../../client/AdminRestClient";
+import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../shared/component/general/RefreshIconButton";
-import { ConfirmDialogContext, DeleteButton, SaveButton } from "zavadil-react-common";
+import {ConfirmDialogContext, DeleteButton, SaveButton} from "zavadil-react-common";
 import BackIconLink from "../../../shared/component/general/BackIconLink";
-import { PrintPreviewPayload } from "../../../shared/types/PrintPreview";
-import { ImagezUploadInput } from "../../../shared/component/images/ImagezUploadInput";
+import {PrintPreviewPayload} from "../../../shared/types/PrintPreview";
+import {ImagezUploadInput} from "../../../shared/component/images/ImagezUploadInput";
 import PrintPreviewDesigner from "./PrintPreviewDesigner";
 import DesignerPreview from "../../../shared/component/designer/preview/DesignerPreview";
-import { PrintZoneStub } from "../../../shared/types/PrintZone";
-import { DesignPayload } from "../../../shared/types/Design";
+import {PrintZoneStub} from "../../../shared/types/PrintZone";
+import {DesignPayload} from "../../../shared/types/Design";
 import ProductPreview from "../products/ProductPreview";
-import { DesignFileStub } from "../../../shared/types/DesignFile";
+import {DesignFileStub} from "../../../shared/types/DesignFile";
+import {useAdminNavigator} from "../../navigator/AdminNavigator";
 
 const TAB_PARAM_NAME = "tab";
 const DEFAULT_TAB = "design";
@@ -26,10 +27,10 @@ const COL_1_LG = 2;
 const COL_2_LG = 6;
 
 export default function PrintPreviewDetail() {
-	const { id, productId } = useParams();
-	const navigate = useNavigate();
+	const {id, productId} = useParams();
+	const navigator = useAdminNavigator();
 	const [searchParams, setSearchParams] = useSearchParams();
-	const restClient = useContext(AdminRestClientContext);
+	const restClient = useAdminRestClient();
 	const userAlerts = useContext(UserAlertsContext);
 	const confirmDialog = useContext(ConfirmDialogContext);
 	const [activeTab, setActiveTab] = useState<string>();
@@ -41,7 +42,7 @@ export default function PrintPreviewDetail() {
 	useEffect(() => {
 		if (!activeTab) return;
 		searchParams.set(TAB_PARAM_NAME, activeTab);
-		setSearchParams(searchParams, { replace: true });
+		setSearchParams(searchParams, {replace: true});
 	}, [activeTab]);
 
 	useEffect(() => {
@@ -51,7 +52,7 @@ export default function PrintPreviewDetail() {
 	const onChanged = useCallback(
 		(newData?: PrintPreviewPayload) => {
 			if (!data) return;
-			setData(newData ? newData : { ...data });
+			setData(newData ? newData : {...data});
 			setChanged(true);
 		},
 		[data],
@@ -98,7 +99,7 @@ export default function PrintPreviewDetail() {
 			.save(data)
 			.then((f) => {
 				if (inserting) {
-					navigate(`/products/print-previews/detail/${f.printPreview.id}`, { replace: true });
+					navigator.products.printPreviews.detail(f.printPreview.id, true);
 				} else {
 					setData(f);
 				}
@@ -106,7 +107,7 @@ export default function PrintPreviewDetail() {
 			})
 			.catch((e: Error) => userAlerts.err(e))
 			.finally(() => setSaving(false));
-	}, [restClient, data, userAlerts, navigate]);
+	}, [restClient, data, userAlerts, navigator]);
 
 	const deletePrintPreview = useCallback(() => {
 		if (!data?.printPreview.id) return;
@@ -115,12 +116,12 @@ export default function PrintPreviewDetail() {
 			restClient.printPreviews
 				.delete(Number(data.printPreview.id))
 				.then((f) => {
-					navigate(`/products/detail/${data.printPreview.productId}`);
+					navigator.products.detail(data.printPreview.productId);
 				})
 				.catch((e: Error) => userAlerts.err(e))
 				.finally(() => setDeleting(false));
 		});
-	}, [restClient, data, userAlerts, navigate, confirmDialog]);
+	}, [restClient, data, userAlerts, navigator, confirmDialog]);
 
 	const dummyDesign: DesignPayload | undefined = useMemo((): DesignPayload | undefined => {
 		if (!data) return;
@@ -155,15 +156,15 @@ export default function PrintPreviewDetail() {
 	}, [data, productZones]);
 
 	if (!data) {
-		return <Spinner />;
+		return <Spinner/>;
 	}
 
 	return (
 		<div>
 			<div className="p-2">
 				<Stack direction="horizontal" gap={2}>
-					<BackIconLink changed={changed} />
-					<RefreshIconButton onClick={reload} />
+					<BackIconLink changed={changed}/>
+					<RefreshIconButton onClick={reload}/>
 					<SaveButton loading={saving} disabled={!changed} onClick={saveData}>
 						Save
 					</SaveButton>
@@ -182,7 +183,7 @@ export default function PrintPreviewDetail() {
 							</Col>
 							<Col md={COL_2_MD} lg={COL_2_LG}>
 								<div>
-									<ProductPreview productId={data.printPreview.productId} />
+									<ProductPreview productId={data.printPreview.productId}/>
 								</div>
 							</Col>
 						</Row>
@@ -278,7 +279,7 @@ export default function PrintPreviewDetail() {
 						<Tab title="Design" eventKey="design">
 							{productZones && (
 								<Stack direction="horizontal" gap={2}>
-									<PrintPreviewDesigner printPreview={data} productZones={productZones} onChange={onChanged} />
+									<PrintPreviewDesigner printPreview={data} productZones={productZones} onChange={onChanged}/>
 									{dummyDesign && (
 										<DesignerPreview
 											design={dummyDesign}
@@ -295,28 +296,28 @@ export default function PrintPreviewDetail() {
 						<Tab title="Zones" eventKey="zones">
 							<Table>
 								<thead>
-									<tr>
-										<td>Preview Zone ID</td>
-										<td>Zone ID</td>
-										<td>Name</td>
-										<td>StartX</td>
-										<td>StartY</td>
-										<td>Width</td>
-										<td>Height</td>
-									</tr>
+								<tr>
+									<td>Preview Zone ID</td>
+									<td>Zone ID</td>
+									<td>Name</td>
+									<td>StartX</td>
+									<td>StartY</td>
+									<td>Width</td>
+									<td>Height</td>
+								</tr>
 								</thead>
 								<tbody>
-									{data.zones.map((previewZone, index) => (
-										<tr key={index}>
-											<td>{previewZone.id}</td>
-											<td>{previewZone.printZoneId}</td>
-											<td>{productZones?.find((z) => z.id === previewZone.printZoneId)?.name}</td>
-											<td>{previewZone.startXPx}</td>
-											<td>{previewZone.startYPx}</td>
-											<td>{previewZone.widthPx}</td>
-											<td>{previewZone.heightPx}</td>
-										</tr>
-									))}
+								{data.zones.map((previewZone, index) => (
+									<tr key={index}>
+										<td>{previewZone.id}</td>
+										<td>{previewZone.printZoneId}</td>
+										<td>{productZones?.find((z) => z.id === previewZone.printZoneId)?.name}</td>
+										<td>{previewZone.startXPx}</td>
+										<td>{previewZone.startYPx}</td>
+										<td>{previewZone.widthPx}</td>
+										<td>{previewZone.heightPx}</td>
+									</tr>
+								))}
 								</tbody>
 							</Table>
 						</Tab>

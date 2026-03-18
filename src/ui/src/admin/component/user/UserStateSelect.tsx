@@ -1,15 +1,16 @@
-import {EnumSelect} from "zavadil-react-common";
-import {UserState} from "../../../shared/types/User";
+import EnumDynamicSelect from "../../../shared/component/general/EnumDynamicSelect";
+import {usePublicRestClient} from "../../../public/client/PublicRestClient";
 
 export type UserStateSelectProps = {
-	state: UserState;
-	onChange: (state: UserState) => any;
+	state: string;
+	onChange: (state: string) => any;
 }
 
 export default function UserStateSelect({state, onChange}: UserStateSelectProps) {
-	return <EnumSelect
-		options={["Temporary", "Active", "Disabled"]}
+	const client = usePublicRestClient();
+	return <EnumDynamicSelect
+		supplier={() => client.enumerations.userStates.get()}
 		value={state}
-		onChange={(s) => onChange(s as UserState)}
+		onChange={(s) => onChange(String(s))}
 	/>
 }

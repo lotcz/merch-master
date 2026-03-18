@@ -1,13 +1,10 @@
 import {EntityWithName} from "zavadil-ts-common";
 import {Account} from "./Account";
-import {SyncState} from "./SyncState";
-
-export type ShopState = "Pending" | "Approved" | "Disabled";
 
 export type ShopBase = EntityWithName & {
 	slug: string;
-	state: ShopState;
-	syncState: SyncState;
+	state: string;
+	syncState: string;
 }
 
 export type Shop = ShopBase & {

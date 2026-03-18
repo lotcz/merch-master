@@ -1,14 +1,14 @@
 import conf from "../../shared/config/conf.json";
-import { RestClient } from "zavadil-ts-common";
-import { Product } from "../../shared/types/Product";
-import { PrintTypePayload, PrintTypeStub } from "../../shared/types/PrintType";
-import { DesignPayload } from "../../shared/types/Design";
-import { ProductColorStub } from "../../shared/types/ProductColor";
-import { PrintPreviewPayload } from "../../shared/types/PrintPreview";
-import { createContext } from "react";
+import {RestClient} from "zavadil-ts-common";
+import {Product} from "../../shared/types/Product";
+import {PrintTypePayload, PrintTypeStub} from "../../shared/types/PrintType";
+import {DesignPayload} from "../../shared/types/Design";
+import {ProductColorStub} from "../../shared/types/ProductColor";
+import {PrintPreviewPayload} from "../../shared/types/PrintPreview";
+import {createContext} from "react";
 
 /**
- * Client for public Designer - all endpoints should be unprotected
+ * Client for designer - all endpoints should be unprotected
  */
 export class DesignerRestClient extends RestClient {
 	constructor() {

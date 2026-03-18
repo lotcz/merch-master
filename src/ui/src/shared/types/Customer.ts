@@ -1,9 +1,9 @@
 import {EntityBase} from "zavadil-ts-common";
-import {User, UserState} from "./User";
+import {User} from "./User";
 import {Shop} from "./Shop";
 
 export type CustomerBase = EntityBase & {
-	userState: UserState;
+	userState: string;
 }
 
 export type Customer = CustomerBase & {

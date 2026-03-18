@@ -1,7 +1,7 @@
 import {useCallback, useContext, useEffect, useState} from "react";
 import {useNavigate} from "react-router";
 import {TablePlaceholder} from "zavadil-react-common";
-import {AdminRestClientContext} from "../../client/AdminRestClient";
+import {useAdminRestClient} from "../../client/AdminRestClient";
 import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import {Button, Table} from "react-bootstrap";
 import {Shop} from "../../../shared/types/Shop";
@@ -12,7 +12,7 @@ export type AccountShopsListProps = {
 
 export default function AccountShopsList({accountId}: AccountShopsListProps) {
 	const navigate = useNavigate();
-	const restClient = useContext(AdminRestClientContext);
+	const restClient = useAdminRestClient();
 	const userAlerts = useContext(UserAlertsContext);
 	const [data, setData] = useState<Array<Shop>>();
 

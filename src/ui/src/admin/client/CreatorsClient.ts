@@ -1,4 +1,4 @@
-import {EntityClientWithStub, Page, PagingRequest, PagingUtil, RestClient} from "zavadil-ts-common";
+import {EntityClientWithStub, RestClient} from "zavadil-ts-common";
 import {Creator, CreatorStub} from "../../shared/types/Creator";
 
 export class CreatorsClient extends EntityClientWithStub<Creator, CreatorStub> {
@@ -6,7 +6,7 @@ export class CreatorsClient extends EntityClientWithStub<Creator, CreatorStub> {
 		super(client, "admin/creators");
 	}
 
-	loadByAccount(accountId: number, pr: PagingRequest): Promise<Page<Creator>> {
-		return this.client.getJson(`${this.name}/by-account/${accountId}`, PagingUtil.pagingRequestToQueryParams(pr));
+	loadByAccount(accountId: number): Promise<Array<Creator>> {
+		return this.client.getJson(`${this.name}/by-account/${accountId}`);
 	}
 }

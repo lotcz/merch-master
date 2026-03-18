@@ -13,7 +13,7 @@ public interface CreatorRepository extends EntityRepository<Creator> {
 	@Query(
 		"""
 				select c
-				from Customer c
+				from Creator c
 				where c.user.name ILIKE %:search% OR c.user.email ILIKE %:search%
 			"""
 	)

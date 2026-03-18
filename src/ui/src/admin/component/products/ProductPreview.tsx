@@ -1,16 +1,16 @@
-import { Spinner } from "react-bootstrap";
-import { Link } from "react-router";
-import { useCallback, useContext, useEffect, useState } from "react";
-import { AdminRestClientContext } from "../../client/AdminRestClient";
-import { UserAlertsContext } from "../../../shared/util/UserAlerts";
-import { Product } from "../../../shared/types/Product";
+import {Spinner} from "react-bootstrap";
+import {Link} from "react-router";
+import {useCallback, useContext, useEffect, useState} from "react";
+import {useAdminRestClient} from "../../client/AdminRestClient";
+import {UserAlertsContext} from "../../../shared/util/UserAlerts";
+import {Product} from "../../../shared/types/Product";
 
 export type ProductPreviewParams = {
 	productId: number;
 };
 
-export default function ProductPreview({ productId }: ProductPreviewParams) {
-	const restClient = useContext(AdminRestClientContext);
+export default function ProductPreview({productId}: ProductPreviewParams) {
+	const restClient = useAdminRestClient();
 	const userAlerts = useContext(UserAlertsContext);
 	const [data, setData] = useState<Product>();
 
@@ -27,7 +27,7 @@ export default function ProductPreview({ productId }: ProductPreviewParams) {
 	useEffect(reload, [productId]);
 
 	if (!data) {
-		return <Spinner />;
+		return <Spinner/>;
 	}
 
 	return <Link to={`/products/detail/${productId}`}>{data.name}</Link>;

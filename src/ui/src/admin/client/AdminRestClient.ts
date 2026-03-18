@@ -1,4 +1,4 @@
-import {createContext} from "react";
+import {createContext, useContext} from "react";
 import {MerchMasterStats} from "../../shared/types/Stats";
 import {ProductsClient} from "./ProductsClient";
 import {PrintTypesClient} from "./PrintTypesClient";
@@ -78,4 +78,10 @@ export class AdminRestClient extends MmRestClient {
 	}
 }
 
-export const AdminRestClientContext = createContext(new AdminRestClient(false));
+export const AdminRestClientContext = createContext<AdminRestClient | undefined>(undefined);
+
+export function useAdminRestClient(): AdminRestClient {
+	const ctx = useContext(AdminRestClientContext);
+	if (!ctx) throw new Error("useAdminRestClient must be used within CreatorApp!");
+	return ctx;
+}

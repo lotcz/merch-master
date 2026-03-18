@@ -53,7 +53,8 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
-			.cors(c -> {})
+			.cors(c -> {
+			})
 			.csrf(c -> {
 				c.disable();
 			})
@@ -64,7 +65,8 @@ public class SecurityConfig {
 					.requestMatchers(
 						String.format("%s/status/**", this.apiBaseUrl),
 						String.format("%s/imagez/**", this.apiBaseUrl),
-						String.format("%s/designer/**", this.apiBaseUrl)
+						String.format("%s/designer/**", this.apiBaseUrl),
+						String.format("%s/enumerations/**", this.apiBaseUrl)
 					)
 					.permitAll()
 					// ── Admin-only endpoint

@@ -1,24 +1,20 @@
-import { useCallback, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import { TablePlaceholder } from "zavadil-react-common";
-import { AdminRestClientContext } from "../../client/AdminRestClient";
-import { UserAlertsContext } from "../../../shared/util/UserAlerts";
-import { Button, Table } from "react-bootstrap";
-import { PrintZoneStub } from "../../../shared/types/PrintZone";
+import {useCallback, useContext, useEffect, useState} from "react";
+import {TablePlaceholder} from "zavadil-react-common";
+import {useAdminRestClient} from "../../client/AdminRestClient";
+import {UserAlertsContext} from "../../../shared/util/UserAlerts";
+import {Button, Table} from "react-bootstrap";
+import {PrintZoneStub} from "../../../shared/types/PrintZone";
+import {useAdminNavigator} from "../../navigator/AdminNavigator";
 
 export type ProductPrintZonesListProps = {
 	productId: number;
 };
 
-export default function ProductPrintZonesList({ productId }: ProductPrintZonesListProps) {
-	const navigate = useNavigate();
-	const restClient = useContext(AdminRestClientContext);
+export default function ProductPrintZonesList({productId}: ProductPrintZonesListProps) {
+	const navigator = useAdminNavigator();
+	const restClient = useAdminRestClient();
 	const userAlerts = useContext(UserAlertsContext);
 	const [data, setData] = useState<Array<PrintZoneStub>>();
-
-	const navigateToDetail = (d: PrintZoneStub) => {
-		navigate(`/admin/products/print-zones/detail/${d.id}`);
-	};
 
 	const load = useCallback(() => {
 		restClient.printZones
@@ -32,42 +28,42 @@ export default function ProductPrintZonesList({ productId }: ProductPrintZonesLi
 
 	useEffect(load, [productId]);
 
-	if (!data) return <TablePlaceholder />;
+	if (!data) return <TablePlaceholder/>;
 
 	return (
 		<div>
 			<div className="pt-2 d-flex gap-2 align-items-center">
-				<Button variant="primary" size="sm" onClick={() => navigate(`/admin/products/print-zones/detail/add/${productId}`)}>
+				<Button variant="primary" size="sm" onClick={() => navigator.products.printZones.detail(productId)}>
 					+ Add
 				</Button>
 			</div>
 			<div className="pt-2">
 				<Table hover={true} striped={true}>
 					<thead>
-						<tr>
-							<th>ID</th>
-							<th>Name</th>
-							<th>Size</th>
-						</tr>
+					<tr>
+						<th>ID</th>
+						<th>Name</th>
+						<th>Size</th>
+					</tr>
 					</thead>
 					<tbody>
-						{data.length === 0 ? (
-							<tr>
-								<td colSpan={4}>Nothing.</td>
-							</tr>
-						) : (
-							data.map((pt, index) => {
-								return (
-									<tr key={index} role="button" onClick={() => navigateToDetail(pt)}>
-										<td>{pt.id}</td>
-										<td>{pt.name}</td>
-										<td>
-											{pt.widthMm} x {pt.heightMm} mm
-										</td>
-									</tr>
-								);
-							})
-						)}
+					{data.length === 0 ? (
+						<tr>
+							<td colSpan={4}>Nothing.</td>
+						</tr>
+					) : (
+						data.map((pt, index) => {
+							return (
+								<tr key={index} role="button" onClick={() => navigator.products.printZones.detail(pt.id)}>
+									<td>{pt.id}</td>
+									<td>{pt.name}</td>
+									<td>
+										{pt.widthMm} x {pt.heightMm} mm
+									</td>
+								</tr>
+							);
+						})
+					)}
 					</tbody>
 				</Table>
 			</div>

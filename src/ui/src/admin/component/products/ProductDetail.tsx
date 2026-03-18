@@ -1,17 +1,18 @@
-import { Col, Form, Row, Spinner, Stack, Tab, Tabs } from "react-bootstrap";
-import { useNavigate, useParams, useSearchParams } from "react-router";
-import { useCallback, useContext, useEffect, useState } from "react";
-import { NumberUtil, StringUtil } from "zavadil-ts-common";
-import { AdminRestClientContext } from "../../client/AdminRestClient";
-import { UserAlertsContext } from "../../../shared/util/UserAlerts";
+import {Col, Form, Row, Spinner, Stack, Tab, Tabs} from "react-bootstrap";
+import {useParams, useSearchParams} from "react-router";
+import {useCallback, useContext, useEffect, useState} from "react";
+import {NumberUtil, StringUtil} from "zavadil-ts-common";
+import {useAdminRestClient} from "../../client/AdminRestClient";
+import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../shared/component/general/RefreshIconButton";
-import { ConfirmDialogContext, DeleteButton, SaveButton } from "zavadil-react-common";
+import {ConfirmDialogContext, DeleteButton, SaveButton} from "zavadil-react-common";
 import BackIconLink from "../../../shared/component/general/BackIconLink";
-import { Product } from "../../../shared/types/Product";
+import {Product} from "../../../shared/types/Product";
 import ProductPrintTypesList from "./ProductPrintTypesList";
 import ProductColorsList from "./ProductColorsList";
 import ProductPrintZonesList from "./ProductPrintZonesList";
 import ProductPrintPreviewsList from "./ProductPrintPreviewsList";
+import {useAdminNavigator} from "../../navigator/AdminNavigator";
 
 const TAB_PARAM_NAME = "tab";
 const DEFAULT_TAB = "print-types";
@@ -22,10 +23,10 @@ const COL_1_LG = 2;
 const COL_2_LG = 6;
 
 export default function ProductDetail() {
-	const { id } = useParams();
-	const navigate = useNavigate();
+	const {id} = useParams();
+	const navigator = useAdminNavigator();
 	const [searchParams, setSearchParams] = useSearchParams();
-	const restClient = useContext(AdminRestClientContext);
+	const restClient = useAdminRestClient();
 	const userAlerts = useContext(UserAlertsContext);
 	const confirmDialog = useContext(ConfirmDialogContext);
 	const [activeTab, setActiveTab] = useState<string>();
@@ -37,7 +38,7 @@ export default function ProductDetail() {
 	useEffect(() => {
 		if (!activeTab) return;
 		searchParams.set(TAB_PARAM_NAME, activeTab);
-		setSearchParams(searchParams, { replace: true });
+		setSearchParams(searchParams, {replace: true});
 	}, [activeTab]);
 
 	useEffect(() => {
@@ -46,7 +47,7 @@ export default function ProductDetail() {
 
 	const onChanged = useCallback(() => {
 		if (!data) return;
-		setData({ ...data });
+		setData({...data});
 		setChanged(true);
 	}, [data]);
 
@@ -54,6 +55,7 @@ export default function ProductDetail() {
 		if (!id) {
 			setData({
 				name: "",
+				basePrice: 0
 			});
 			return;
 		}
@@ -74,7 +76,7 @@ export default function ProductDetail() {
 			.save(data)
 			.then((f) => {
 				if (inserting) {
-					navigate(`/products/detail/${f.id}`, { replace: true });
+					navigator.products.detail(f.id, true);
 				} else {
 					setData(f);
 				}
@@ -82,7 +84,7 @@ export default function ProductDetail() {
 			})
 			.catch((e: Error) => userAlerts.err(e))
 			.finally(() => setSaving(false));
-	}, [restClient, data, userAlerts, navigate]);
+	}, [restClient, data, userAlerts, navigator]);
 
 	const deleteProduct = useCallback(() => {
 		if (!data?.id) return;
@@ -91,23 +93,23 @@ export default function ProductDetail() {
 			restClient.products
 				.delete(Number(data.id))
 				.then((f) => {
-					navigate(-1);
+					navigator.products.list();
 				})
 				.catch((e: Error) => userAlerts.err(e))
 				.finally(() => setDeleting(false));
 		});
-	}, [restClient, data, userAlerts, navigate, confirmDialog]);
+	}, [restClient, data, userAlerts, navigator, confirmDialog]);
 
 	if (!data) {
-		return <Spinner />;
+		return <Spinner/>;
 	}
 
 	return (
 		<div>
 			<div className="p-2">
 				<Stack direction="horizontal" gap={2}>
-					<BackIconLink changed={changed} />
-					<RefreshIconButton onClick={reload} />
+					<BackIconLink changed={changed}/>
+					<RefreshIconButton onClick={reload}/>
 					<SaveButton loading={saving} disabled={!changed} onClick={saveData}>
 						Save
 					</SaveButton>
@@ -141,16 +143,16 @@ export default function ProductDetail() {
 			{data.id && (
 				<div className="mt-2">
 					<Tabs activeKey={activeTab} onSelect={(key) => setActiveTab(StringUtil.getNonEmpty(key, DEFAULT_TAB))}>
-						<Tab title="Print Types" eventKey="print-types" />
-						<Tab title="Print Zones" eventKey="print-zones" />
-						<Tab title="Colors" eventKey="product-colors" />
-						<Tab title="Previews" eventKey="previews" />
+						<Tab title="Print Types" eventKey="print-types"/>
+						<Tab title="Print Zones" eventKey="print-zones"/>
+						<Tab title="Colors" eventKey="product-colors"/>
+						<Tab title="Previews" eventKey="previews"/>
 					</Tabs>
 					<div className="px-3 py-1">
-						{activeTab === "print-types" && <ProductPrintTypesList productId={data.id} />}
-						{activeTab === "print-zones" && <ProductPrintZonesList productId={data.id} />}
-						{activeTab === "product-colors" && <ProductColorsList productId={data.id} />}
-						{activeTab === "previews" && <ProductPrintPreviewsList productId={data.id} />}
+						{activeTab === "print-types" && <ProductPrintTypesList productId={data.id}/>}
+						{activeTab === "print-zones" && <ProductPrintZonesList productId={data.id}/>}
+						{activeTab === "product-colors" && <ProductColorsList productId={data.id}/>}
+						{activeTab === "previews" && <ProductPrintPreviewsList productId={data.id}/>}
 					</div>
 				</div>
 			)}

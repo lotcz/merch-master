@@ -1,13 +1,10 @@
 import {EntityWithName} from "zavadil-ts-common";
-import {SyncState} from "./SyncState";
 import {Customer} from "./Customer";
-
-export type OrderState = "Cart" | "Pending" | "Processing" | "Finished" | "Cancelled" | "Returned" | "Refunded";
 
 export type OrderBase = EntityWithName & {
 	billingDate: Date;
-	state: OrderState;
-	syncState: SyncState;
+	state: string;
+	syncState: string;
 }
 
 export type Order = OrderBase & {

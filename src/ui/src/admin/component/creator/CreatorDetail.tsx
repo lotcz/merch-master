@@ -1,43 +1,29 @@
-import {Form, Spinner, Stack, Tab, Tabs} from "react-bootstrap";
-import {useParams, useSearchParams} from "react-router";
+import {Form, Spinner, Stack} from "react-bootstrap";
+import {useParams} from "react-router";
 import {useCallback, useContext, useEffect, useState} from "react";
-import {NumberUtil, StringUtil} from "zavadil-ts-common";
+import {NumberUtil} from "zavadil-ts-common";
 import {useAdminRestClient} from "../../client/AdminRestClient";
 import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../shared/component/general/RefreshIconButton";
-import {ConfirmDialogContext, DeleteButton, FormRow, FormRowControl, SaveButton} from "zavadil-react-common";
+import {ConfirmDialogContext, DeleteButton, FormRow, SaveButton} from "zavadil-react-common";
 import BackIconLink from "../../../shared/component/general/BackIconLink";
-import {ShopStub} from "../../../shared/types/Shop";
-import AccountPreview from "../account/AccountPreview";
-import ShopStateSelect from "./ShopStateSelect";
-import SyncStateSelect from "../general/SyncStateSelect";
+import {CreatorStub} from "../../../shared/types/Creator";
+import UserStateSelect from "../user/UserStateSelect";
 import {useAdminNavigator} from "../../navigator/AdminNavigator";
+import UserSelect from "../user/UserSelect";
+import AccountSelect from "../account/AccountSelect";
 
-const TAB_PARAM_NAME = "tab";
-const DEFAULT_TAB = "shop-products";
 
-export default function ShopDetail() {
-	const {id, accountId} = useParams();
+export default function CreatorDetail() {
+	const {id, accountId, userId} = useParams();
 	const navigator = useAdminNavigator();
-	const [searchParams, setSearchParams] = useSearchParams();
 	const restClient = useAdminRestClient();
 	const userAlerts = useContext(UserAlertsContext);
 	const confirmDialog = useContext(ConfirmDialogContext);
-	const [activeTab, setActiveTab] = useState<string>();
-	const [data, setData] = useState<ShopStub>();
+	const [data, setData] = useState<CreatorStub>();
 	const [changed, setChanged] = useState<boolean>(false);
 	const [deleting, setDeleting] = useState<boolean>(false);
 	const [saving, setSaving] = useState<boolean>(false);
-
-	useEffect(() => {
-		if (!activeTab) return;
-		searchParams.set(TAB_PARAM_NAME, activeTab);
-		setSearchParams(searchParams, {replace: true});
-	}, [activeTab]);
-
-	useEffect(() => {
-		setActiveTab(StringUtil.getNonEmpty(searchParams.get(TAB_PARAM_NAME), DEFAULT_TAB));
-	}, [id]);
 
 	const onChanged = useCallback(() => {
 		if (!data) return;
@@ -49,19 +35,18 @@ export default function ShopDetail() {
 		if (!id) {
 			setData({
 				accountId: Number(accountId),
-				name: "",
-				slug: "",
-				state: "Approved",
-				syncState: "Pending"
+				userId: Number(userId),
+				userState: "Active"
 			});
+			setChanged(true);
 			return;
 		}
 		setData(undefined);
-		restClient.shops
+		restClient.creators
 			.loadSingleStub(Number(id))
 			.then(setData)
 			.catch((e: Error) => userAlerts.err(e));
-	}, [id, accountId, restClient, userAlerts]);
+	}, [id, accountId, userId, restClient, userAlerts]);
 
 	useEffect(reload, [id]);
 
@@ -69,11 +54,11 @@ export default function ShopDetail() {
 		if (!data) return;
 		const inserting = NumberUtil.isEmpty(data.id);
 		setSaving(true);
-		restClient.shops
+		restClient.creators
 			.saveStub(data)
 			.then((f) => {
 				if (inserting) {
-					navigator.shops.detail(f.id, true);
+					navigator.accounts.creators.detail(f.id, true);
 				} else {
 					setData(f);
 				}
@@ -85,12 +70,12 @@ export default function ShopDetail() {
 
 	const deleteAccount = useCallback(() => {
 		if (!data?.id) return;
-		confirmDialog.confirm("Confirm", "Really delete this shop? Consider making it inactive.", () => {
+		confirmDialog.confirm("Confirm", "Really delete this user? Consider making it inactive.", () => {
 			setDeleting(true);
-			restClient.shops
+			restClient.users
 				.delete(Number(data.id))
 				.then((f) => {
-					navigator.shops.list();
+					navigator.accounts.creators.list();
 				})
 				.catch((e: Error) => userAlerts.err(e))
 				.finally(() => setDeleting(false));
@@ -118,60 +103,35 @@ export default function ShopDetail() {
 
 			<Form className="px-3 w-75">
 				<Stack direction="vertical" gap={2}>
-					<FormRow label="Account">
-						<AccountPreview accountId={data.accountId}/>
-					</FormRow>
-					<FormRowControl
-						label="Name"
-						type="text"
-						value={data.name}
-						onChange={(e) => {
-							data.name = e.target.value;
-							onChanged();
-						}}
-					/>
-					<FormRow label="State">
-						<ShopStateSelect
-							state={data.state}
+					<FormRow label="User">
+						<UserSelect
+							userId={data.userId}
 							onChange={(e) => {
-								data.state = e;
+								data.userId = e;
 								onChanged();
 							}}
 						/>
 					</FormRow>
-					<FormRowControl
-						label="Slug"
-						type="text"
-						value={data.slug}
-						onChange={(e) => {
-							data.slug = e.target.value;
-							onChanged();
-						}}
-					/>
-
-					<FormRow forId="sync_state" label="Sync">
-						<SyncStateSelect
-							state={data.syncState}
+					<FormRow label="Account">
+						<AccountSelect
+							accountId={data.accountId}
 							onChange={(e) => {
-								data.syncState = e;
+								data.accountId = e;
+								onChanged();
+							}}
+						/>
+					</FormRow>
+					<FormRow label="State">
+						<UserStateSelect
+							state={data.userState}
+							onChange={(e) => {
+								data.userState = e;
 								onChanged();
 							}}
 						/>
 					</FormRow>
 				</Stack>
 			</Form>
-			{data.id && (
-				<div className="mt-2">
-					<Tabs activeKey={activeTab} onSelect={(key) => setActiveTab(StringUtil.getNonEmpty(key, DEFAULT_TAB))}>
-						<Tab title="Products" eventKey="products"/>
-						<Tab title="Orders" eventKey="orders"/>
-					</Tabs>
-					<div className="px-3 py-1">
-						{activeTab === "products" && <></>}
-						{activeTab === "orders" && <></>}
-					</div>
-				</div>
-			)}
 		</div>
 	);
 }

@@ -2,11 +2,12 @@ import {FormEvent, useCallback, useContext, useEffect, useMemo, useState} from "
 import {Button, Form, Stack} from "react-bootstrap";
 import {DateTime, SelectableTableHeader, TablePlaceholder, TableWithSelect, TextInputWithReset} from "zavadil-react-common";
 import {ObjectUtil, Page, PagingRequest, PagingUtil, StringUtil} from "zavadil-ts-common";
-import {useNavigate, useParams} from "react-router";
-import {AdminRestClientContext} from "../../client/AdminRestClient";
+import {useParams} from "react-router";
+import {useAdminRestClient} from "../../client/AdminRestClient";
 import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../shared/component/general/RefreshIconButton";
 import {Shop} from "../../../shared/types/Shop";
+import {useAdminNavigator} from "../../navigator/AdminNavigator";
 
 const HEADER: SelectableTableHeader<Shop> = [
 	{name: "id", label: "ID"},
@@ -23,8 +24,8 @@ const DEFAULT_PAGING: PagingRequest = {page: 0, size: 100, sorting: [{name: "las
 
 export default function ShopsList() {
 	const {pagingString} = useParams();
-	const navigate = useNavigate();
-	const restClient = useContext(AdminRestClientContext);
+	const navigator = useAdminNavigator();
+	const restClient = useAdminRestClient();
 	const userAlerts = useContext(UserAlertsContext);
 	const [data, setData] = useState<Page<Shop> | null>(null);
 
@@ -35,35 +36,14 @@ export default function ShopsList() {
 
 	const [searchInput, setSearchInput] = useState<string>(StringUtil.getNonEmpty(paging.search));
 
-	const navigateToPage = useCallback(
-		(p?: PagingRequest) => {
-			navigate(`/admin/shops/${PagingUtil.pagingRequestToString(p)}`);
-		},
-		[navigate],
-	);
-
-	const navigateToId = useCallback(
-		(id: number) => {
-			navigate(`/admin/shops/detail/${id}`);
-		},
-		[navigate],
-	);
-
-	const navigateToDetail = useCallback(
-		(p: Shop) => {
-			if (p.id) navigateToId(p.id);
-		},
-		[navigateToId],
-	);
-
 	const applySearch = useCallback(
 		(e: FormEvent) => {
 			e.preventDefault();
 			paging.search = searchInput;
 			paging.page = 0;
-			navigateToPage(paging);
+			navigator.shops.list(paging);
 		},
-		[paging, searchInput, navigateToPage],
+		[paging, searchInput, navigator],
 	);
 
 	const loadPageHandler = useCallback(() => {
@@ -96,7 +76,7 @@ export default function ShopsList() {
 								onChange={setSearchInput}
 								onReset={() => {
 									setSearchInput("");
-									navigateToPage(DEFAULT_PAGING);
+									navigator.shops.list(DEFAULT_PAGING);
 								}}
 							/>
 						</Form>
@@ -114,8 +94,8 @@ export default function ShopsList() {
 						header={HEADER}
 						paging={paging}
 						totalItems={data.totalItems}
-						onPagingChanged={navigateToPage}
-						onClick={navigateToDetail}
+						onPagingChanged={(p) => navigator.shops.list(p)}
+						onClick={(item) => navigator.shops.detail(item.id)}
 						items={data.content}
 						hover={true}
 						striped={true}

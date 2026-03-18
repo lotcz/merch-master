@@ -1,15 +1,16 @@
-import {EnumSelect} from "zavadil-react-common";
-import {AccountState} from "../../../shared/types/Account";
+import EnumDynamicSelect from "../../../shared/component/general/EnumDynamicSelect";
+import {usePublicRestClient} from "../../../public/client/PublicRestClient";
 
 export type AccountStateSelectProps = {
-	state: AccountState;
-	onChange: (state: AccountState) => any;
+	state: string;
+	onChange: (state: string) => any;
 }
 
 export default function AccountStateSelect({state, onChange}: AccountStateSelectProps) {
-	return <EnumSelect
-		options={["Temporary", "Pending", "Approved", "Disabled"]}
+	const client = usePublicRestClient();
+	return <EnumDynamicSelect
+		supplier={() => client.enumerations.accountStates.get()}
 		value={state}
-		onChange={(s) => onChange(s as AccountState)}
+		onChange={(s) => onChange(String(s))}
 	/>
 }

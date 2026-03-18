@@ -1,14 +1,15 @@
 import {Col, Form, Row, Spinner, Stack} from "react-bootstrap";
-import {useNavigate, useParams} from "react-router";
+import {useParams} from "react-router";
 import {useCallback, useContext, useEffect, useState} from "react";
 import {NumberUtil} from "zavadil-ts-common";
-import {AdminRestClientContext} from "../../client/AdminRestClient";
+import {useAdminRestClient} from "../../client/AdminRestClient";
 import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../shared/component/general/RefreshIconButton";
 import {ConfirmDialogContext, DeleteButton, SaveButton} from "zavadil-react-common";
 import BackIconLink from "../../../shared/component/general/BackIconLink";
 import {PrintZoneStub} from "../../../shared/types/PrintZone";
 import ProductPreview from "../products/ProductPreview";
+import {useAdminNavigator} from "../../navigator/AdminNavigator";
 
 const COL_1_MD = 3;
 const COL_2_MD = 5;
@@ -17,8 +18,8 @@ const COL_2_LG = 6;
 
 export default function PrintZoneDetail() {
 	const {id, productId} = useParams();
-	const navigate = useNavigate();
-	const restClient = useContext(AdminRestClientContext);
+	const navigator = useAdminNavigator();
+	const restClient = useAdminRestClient();
 	const userAlerts = useContext(UserAlertsContext);
 	const confirmDialog = useContext(ConfirmDialogContext);
 	const [data, setData] = useState<PrintZoneStub>();
@@ -59,7 +60,7 @@ export default function PrintZoneDetail() {
 			.save(data)
 			.then((f) => {
 				if (inserting) {
-					navigate(`/admin/products/print-zones/detail/${f.id}`, {replace: true});
+					navigator.products.printZones.detail(f.id, true);
 				} else {
 					setData(f);
 				}
@@ -67,7 +68,7 @@ export default function PrintZoneDetail() {
 			})
 			.catch((e: Error) => userAlerts.err(e))
 			.finally(() => setSaving(false));
-	}, [restClient, data, userAlerts, navigate]);
+	}, [restClient, data, userAlerts, navigator]);
 
 	const deletePrintZone = useCallback(() => {
 		if (!data?.id) return;
@@ -76,12 +77,12 @@ export default function PrintZoneDetail() {
 			restClient.printZones
 				.delete(Number(data.id))
 				.then((f) => {
-					navigate(`/admin/products/${data.productId}`);
+					navigator.products.detail(data.productId);
 				})
 				.catch((e: Error) => userAlerts.err(e))
 				.finally(() => setDeleting(false));
 		});
-	}, [restClient, data, userAlerts, navigate, confirmDialog]);
+	}, [restClient, data, userAlerts, navigator, confirmDialog]);
 
 	if (!data) {
 		return <Spinner/>;

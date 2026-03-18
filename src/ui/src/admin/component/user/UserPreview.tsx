@@ -3,32 +3,34 @@ import {Link} from "react-router";
 import {useCallback, useContext, useEffect, useState} from "react";
 import {useAdminRestClient} from "../../client/AdminRestClient";
 import {UserAlertsContext} from "../../../shared/util/UserAlerts";
-import {Account} from "../../../shared/types/Account";
+import {User} from "../../../shared/types/User";
+import {useAdminNavigator} from "../../navigator/AdminNavigator";
 
-export type AccountPreviewParams = {
-	accountId: number;
+export type UserPreviewParams = {
+	userId: number;
 };
 
-export default function AccountPreview({accountId}: AccountPreviewParams) {
+export default function UserPreview({userId}: UserPreviewParams) {
+	const navigator = useAdminNavigator();
 	const restClient = useAdminRestClient();
 	const userAlerts = useContext(UserAlertsContext);
-	const [data, setData] = useState<Account>();
+	const [data, setData] = useState<User>();
 
 	const reload = useCallback(() => {
 		setData(undefined);
-		if (accountId) {
-			restClient.accounts
-				.loadSingle(accountId)
+		if (userId) {
+			restClient.users
+				.loadSingle(userId)
 				.then(setData)
 				.catch((e: Error) => userAlerts.err(e));
 		}
-	}, [accountId, restClient, userAlerts]);
+	}, [userId, restClient, userAlerts]);
 
-	useEffect(reload, [accountId]);
+	useEffect(reload, [userId]);
 
 	if (!data) {
 		return <Spinner/>;
 	}
 
-	return <Link to={`/admin/accounts/detail/${accountId}`}>{data.name}</Link>;
+	return <Link to={navigator.users.provider.detail(userId)}>{data.name}</Link>;
 }

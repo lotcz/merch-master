@@ -1,25 +1,21 @@
-import { useCallback, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import { DateTime, TablePlaceholder } from "zavadil-react-common";
-import { AdminRestClientContext } from "../../client/AdminRestClient";
-import { UserAlertsContext } from "../../../shared/util/UserAlerts";
-import { Button, Table } from "react-bootstrap";
+import {useCallback, useContext, useEffect, useState} from "react";
+import {DateTime, TablePlaceholder} from "zavadil-react-common";
+import {useAdminRestClient} from "../../client/AdminRestClient";
+import {UserAlertsContext} from "../../../shared/util/UserAlerts";
+import {Button, Table} from "react-bootstrap";
 import ColorPreview from "../../../shared/component/productColor/ColorPreview";
-import { ProductColorStub } from "../../../shared/types/ProductColor";
+import {ProductColorStub} from "../../../shared/types/ProductColor";
+import {useAdminNavigator} from "../../navigator/AdminNavigator";
 
 export type ProductColorsListProps = {
 	productId: number;
 };
 
-export default function ProductColorsList({ productId }: ProductColorsListProps) {
-	const navigate = useNavigate();
-	const restClient = useContext(AdminRestClientContext);
+export default function ProductColorsList({productId}: ProductColorsListProps) {
+	const navigator = useAdminNavigator();
+	const restClient = useAdminRestClient();
 	const userAlerts = useContext(UserAlertsContext);
 	const [data, setData] = useState<Array<ProductColorStub>>();
-
-	const navigateToDetail = (d: ProductColorStub) => {
-		navigate(`/admin/products/product-colors/detail/${d.id}`);
-	};
 
 	const load = useCallback(() => {
 		restClient.productColors
@@ -33,48 +29,48 @@ export default function ProductColorsList({ productId }: ProductColorsListProps)
 
 	useEffect(load, [productId]);
 
-	if (!data) return <TablePlaceholder />;
+	if (!data) return <TablePlaceholder/>;
 
 	return (
 		<div>
 			<div className="pt-2 d-flex gap-2 align-items-center">
-				<Button variant="primary" size="sm" onClick={() => navigate(`/admin/products/product-colors/detail/add/${productId}`)}>
+				<Button variant="primary" size="sm" onClick={() => navigator.products.colors.add(productId)}>
 					+ Add
 				</Button>
 			</div>
 			<div className="pt-2">
 				<Table hover={true} striped={true}>
 					<thead>
-						<tr>
-							<th>ID</th>
-							<th>Name</th>
-							<th>Updated</th>
-							<th>Created</th>
-						</tr>
+					<tr>
+						<th>ID</th>
+						<th>Name</th>
+						<th>Updated</th>
+						<th>Created</th>
+					</tr>
 					</thead>
 					<tbody>
-						{data.length === 0 ? (
-							<tr>
-								<td colSpan={4}>Nothing.</td>
-							</tr>
-						) : (
-							data.map((pt, index) => {
-								return (
-									<tr key={index} role="button" onClick={() => navigateToDetail(pt)}>
-										<td>{pt.id}</td>
-										<td>
-											<ColorPreview color={pt} />
-										</td>
-										<td>
-											<DateTime value={pt.lastUpdatedOn} />
-										</td>
-										<td>
-											<DateTime value={pt.createdOn} />
-										</td>
-									</tr>
-								);
-							})
-						)}
+					{data.length === 0 ? (
+						<tr>
+							<td colSpan={4}>Nothing.</td>
+						</tr>
+					) : (
+						data.map((pt, index) => {
+							return (
+								<tr key={index} role="button" onClick={() => navigator.products.colors.detail(pt.id)}>
+									<td>{pt.id}</td>
+									<td>
+										<ColorPreview color={pt}/>
+									</td>
+									<td>
+										<DateTime value={pt.lastUpdatedOn}/>
+									</td>
+									<td>
+										<DateTime value={pt.createdOn}/>
+									</td>
+								</tr>
+							);
+						})
+					)}
 					</tbody>
 				</Table>
 			</div>

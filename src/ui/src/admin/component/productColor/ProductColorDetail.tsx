@@ -1,14 +1,15 @@
-import { Col, Form, Row, Spinner, Stack } from "react-bootstrap";
-import { useNavigate, useParams, useSearchParams } from "react-router";
-import { useCallback, useContext, useEffect, useState } from "react";
-import { NumberUtil } from "zavadil-ts-common";
-import { AdminRestClientContext } from "../../client/AdminRestClient";
-import { UserAlertsContext } from "../../../shared/util/UserAlerts";
+import {Col, Form, Row, Spinner, Stack} from "react-bootstrap";
+import {useParams} from "react-router";
+import {useCallback, useContext, useEffect, useState} from "react";
+import {NumberUtil} from "zavadil-ts-common";
+import {useAdminRestClient} from "../../client/AdminRestClient";
+import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../shared/component/general/RefreshIconButton";
-import { ConfirmDialogContext, DeleteButton, SaveButton } from "zavadil-react-common";
+import {ConfirmDialogContext, DeleteButton, SaveButton} from "zavadil-react-common";
 import BackIconLink from "../../../shared/component/general/BackIconLink";
 import ProductPreview from "../products/ProductPreview";
-import { ProductColorStub } from "../../../shared/types/ProductColor";
+import {ProductColorStub} from "../../../shared/types/ProductColor";
+import {useAdminNavigator} from "../../navigator/AdminNavigator";
 
 const COL_1_MD = 3;
 const COL_2_MD = 5;
@@ -16,10 +17,9 @@ const COL_1_LG = 2;
 const COL_2_LG = 6;
 
 export default function ProductColorDetail() {
-	const { id, productId } = useParams();
-	const navigate = useNavigate();
-	const [searchParams, setSearchParams] = useSearchParams();
-	const restClient = useContext(AdminRestClientContext);
+	const {id, productId} = useParams();
+	const navigator = useAdminNavigator();
+	const restClient = useAdminRestClient();
 	const userAlerts = useContext(UserAlertsContext);
 	const confirmDialog = useContext(ConfirmDialogContext);
 	const [data, setData] = useState<ProductColorStub>();
@@ -29,7 +29,7 @@ export default function ProductColorDetail() {
 
 	const onChanged = useCallback(() => {
 		if (!data) return;
-		setData({ ...data });
+		setData({...data});
 		setChanged(true);
 	}, [data]);
 
@@ -38,6 +38,7 @@ export default function ProductColorDetail() {
 			setData({
 				color: "",
 				name: "",
+				extraPrice: 0,
 				productId: NumberUtil.parseNumber(productId) || 0,
 			});
 			return;
@@ -61,7 +62,7 @@ export default function ProductColorDetail() {
 			.save(data)
 			.then((f) => {
 				if (inserting) {
-					navigate(`/products/product-colors/detail/${f.id}`, { replace: true });
+					navigator.products.colors.detail(f.id, true);
 				} else {
 					setData(f);
 				}
@@ -69,7 +70,7 @@ export default function ProductColorDetail() {
 			})
 			.catch((e: Error) => userAlerts.err(e))
 			.finally(() => setSaving(false));
-	}, [restClient, data, userAlerts, navigate]);
+	}, [restClient, data, userAlerts, navigator]);
 
 	const deleteColor = useCallback(() => {
 		if (!data?.id) return;
@@ -78,23 +79,23 @@ export default function ProductColorDetail() {
 			restClient.productColors
 				.delete(Number(data.id))
 				.then((f) => {
-					navigate(`/products/${data.productId}`);
+					navigator.products.detail(data.productId);
 				})
 				.catch((e: Error) => userAlerts.err(e))
 				.finally(() => setDeleting(false));
 		});
-	}, [restClient, data, userAlerts, navigate, confirmDialog]);
+	}, [restClient, data, userAlerts, navigator, confirmDialog]);
 
 	if (!data) {
-		return <Spinner />;
+		return <Spinner/>;
 	}
 
 	return (
 		<div>
 			<div className="p-2">
 				<Stack direction="horizontal" gap={2}>
-					<BackIconLink changed={changed} />
-					<RefreshIconButton onClick={reload} />
+					<BackIconLink changed={changed}/>
+					<RefreshIconButton onClick={reload}/>
 					<SaveButton loading={saving} disabled={!changed} onClick={saveData}>
 						Save
 					</SaveButton>
@@ -112,7 +113,7 @@ export default function ProductColorDetail() {
 						</Col>
 						<Col md={COL_2_MD} lg={COL_2_LG}>
 							<div>
-								<ProductPreview productId={data.productId} />
+								<ProductPreview productId={data.productId}/>
 							</div>
 						</Col>
 					</Row>
@@ -144,6 +145,23 @@ export default function ProductColorDetail() {
 									value={data.color}
 									onChange={(e) => {
 										data.color = e.target.value;
+										onChanged();
+									}}
+								/>
+							</div>
+						</Col>
+					</Row>
+					<Row className="align-items-center">
+						<Col md={COL_1_MD} lg={COL_1_LG}>
+							<Form.Label>Extra price:</Form.Label>
+						</Col>
+						<Col md={COL_2_MD} lg={COL_2_LG}>
+							<div>
+								<Form.Control
+									type="integer"
+									value={data.extraPrice}
+									onChange={(e) => {
+										data.extraPrice = Number(e.target.value);
 										onChanged();
 									}}
 								/>

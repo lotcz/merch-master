@@ -18,6 +18,7 @@ import ShopDetail from "./shop/ShopDetail";
 import UsersList from "./user/UsersList";
 import UserDetail from "./user/UserDetail";
 import ImageCacheDetail from "./imageCache/ImageCacheDetail";
+import CreatorDetail from "./creator/CreatorDetail";
 
 export default function Main() {
 	return (
@@ -27,39 +28,7 @@ export default function Main() {
 				<div className="flex-grow-1 pb-4">
 					<Routes>
 						<Route path="/" element={<Dashboard/>}/>
-
-						<Route path="accounts">
-							<Route path="" element={<AccountsList/>}/>
-							<Route path="detail">
-								<Route path="add" element={<AccountDetail/>}/>
-								<Route path=":id" element={<AccountDetail/>}/>
-							</Route>
-							<Route path="image-cache">
-								<Route path="detail">
-									<Route path="add/:accountId" element={<ImageCacheDetail/>}/>
-									<Route path=":id" element={<ImageCacheDetail/>}/>
-								</Route>
-							</Route>
-							<Route path=":pagingString" element={<AccountsList/>}/>
-						</Route>
-
-						<Route path="shops">
-							<Route path="" element={<ShopsList/>}/>
-							<Route path="detail">
-								<Route path="add/:accountId" element={<ShopDetail/>}/>
-								<Route path=":id" element={<ShopDetail/>}/>
-							</Route>
-							<Route path=":pagingString" element={<ShopsList/>}/>
-						</Route>
-
-						<Route path="users">
-							<Route path="" element={<UsersList/>}/>
-							<Route path="detail">
-								<Route path="add/:accountId" element={<UserDetail/>}/>
-								<Route path=":id" element={<UserDetail/>}/>
-							</Route>
-							<Route path=":pagingString" element={<UsersList/>}/>
-						</Route>
+						<Route path="dashboard" element={<Dashboard/>}/>
 
 						<Route path="products">
 							<Route path="" element={<ProductsList/>}/>
@@ -92,6 +61,45 @@ export default function Main() {
 								</Route>
 							</Route>
 							<Route path=":pagingString" element={<ProductsList/>}/>
+						</Route>
+
+						<Route path="accounts">
+							<Route path="" element={<AccountsList/>}/>
+							<Route path="detail">
+								<Route path="add" element={<AccountDetail/>}/>
+								<Route path=":id" element={<AccountDetail/>}/>
+							</Route>
+							<Route path="creators">
+								<Route path="detail">
+									<Route path="add/:accountId" element={<CreatorDetail/>}/>
+									<Route path=":id" element={<CreatorDetail/>}/>
+								</Route>
+							</Route>
+							<Route path="image-cache">
+								<Route path="detail">
+									<Route path="add/:accountId" element={<ImageCacheDetail/>}/>
+									<Route path=":id" element={<ImageCacheDetail/>}/>
+								</Route>
+							</Route>
+							<Route path=":pagingString" element={<AccountsList/>}/>
+						</Route>
+
+						<Route path="shops">
+							<Route path="" element={<ShopsList/>}/>
+							<Route path="detail">
+								<Route path="add/:accountId" element={<ShopDetail/>}/>
+								<Route path=":id" element={<ShopDetail/>}/>
+							</Route>
+							<Route path=":pagingString" element={<ShopsList/>}/>
+						</Route>
+
+						<Route path="users">
+							<Route path="" element={<UsersList/>}/>
+							<Route path="detail">
+								<Route path="add" element={<UserDetail/>}/>
+								<Route path=":id" element={<UserDetail/>}/>
+							</Route>
+							<Route path=":pagingString" element={<UsersList/>}/>
 						</Route>
 
 						<Route path="designs">

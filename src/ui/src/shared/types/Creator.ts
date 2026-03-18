@@ -1,9 +1,9 @@
 import {EntityBase} from "zavadil-ts-common";
 import {Account} from "./Account";
-import {User, UserState} from "./User";
+import {User} from "./User";
 
 export type CreatorBase = EntityBase & {
-	userState: UserState;
+	userState: string;
 }
 
 export type Creator = CreatorBase & {
@@ -12,6 +12,6 @@ export type Creator = CreatorBase & {
 }
 
 export type CreatorStub = CreatorBase & {
-	accountId: number;
-	userId: number;
+	accountId?: number | null;
+	userId?: number | null;
 }

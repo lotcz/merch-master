@@ -19,7 +19,7 @@ export default function BackIconLink({changed}: BackIconLinkProps) {
 				if (changed) {
 					confirmDialog.confirm(
 						"Unsaved changes",
-						"There is unsaved changes on the page you are leaving. Do you stil want to leave?",
+						"There is unsaved changes on the page you are leaving. Do you still want to leave?",
 						() => navigate(-1)
 					)
 				} else {

@@ -1,7 +1,7 @@
 import {FormEvent, useCallback, useContext, useEffect, useState} from "react";
 import {useNavigate} from "react-router";
 import {DateTime, SelectableTableHeader, TablePlaceholder, TableWithSelect, TextInputWithReset} from "zavadil-react-common";
-import {AdminRestClientContext} from "../../client/AdminRestClient";
+import {useAdminRestClient} from "../../client/AdminRestClient";
 import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import {Button, Form} from "react-bootstrap";
 import {ImageCache} from "../../../shared/types/Image";
@@ -24,7 +24,7 @@ export type AccountImageCacheListProps = {
 
 export default function AccountImageCacheList({accountId}: AccountImageCacheListProps) {
 	const navigate = useNavigate();
-	const restClient = useContext(AdminRestClientContext);
+	const restClient = useAdminRestClient();
 	const userAlerts = useContext(UserAlertsContext);
 	const [data, setData] = useState<Page<ImageCache>>();
 	const [searchInput, setSearchInput] = useState<string>('');

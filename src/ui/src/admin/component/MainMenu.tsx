@@ -1,39 +1,40 @@
 import {useCallback, useContext} from "react";
-import {NavLink, useNavigate} from "react-router";
+import {NavLink} from "react-router";
 import {UserAlertsContext} from "../../shared/util/UserAlerts";
 import {Localize} from "zavadil-react-common";
-import {AdminRestClientContext} from "../client/AdminRestClient";
+import {useAdminRestClient} from "../client/AdminRestClient";
+import {useAdminNavigator} from "../navigator/AdminNavigator";
 
 function MainMenu() {
-	const navigate = useNavigate();
-	const restClient = useContext(AdminRestClientContext);
+	const navigator = useAdminNavigator();
+	const restClient = useAdminRestClient();
 	const userAlerts = useContext(UserAlertsContext);
 
 	const logOut = useCallback(() => {
 		restClient.logout().then(() => {
 			userAlerts.info("Logged out");
-			navigate("/");
+			navigator.dashboard.go();
 		});
-	}, [navigate, restClient, userAlerts]);
+	}, [navigator, restClient, userAlerts]);
 
 	return (
 		<div className="main-menu p-3">
 			<h4 className="mt-2">Manage</h4>
 			<div className="ps-3">
 				<div>
-					<NavLink to="/admin/products">Products</NavLink>
+					<NavLink to={navigator.products.provider.list()}>Products</NavLink>
 				</div>
 				<div>
-					<NavLink to="/admin/accounts">Accounts</NavLink>
+					<NavLink to={navigator.accounts.provider.list()}>Accounts</NavLink>
 				</div>
 				<div>
-					<NavLink to="/admin/users">Users</NavLink>
+					<NavLink to={navigator.users.provider.list()}>Users</NavLink>
 				</div>
 				<div>
-					<NavLink to="/admin/shops">Shops</NavLink>
+					<NavLink to={navigator.shops.provider.list()}>Shops</NavLink>
 				</div>
 				<div>
-					<NavLink to="/admin/designs">Designs</NavLink>
+					<NavLink to={navigator.designs.provider.list()}>Designs</NavLink>
 				</div>
 			</div>
 			<h4 className="mt-2">
@@ -41,7 +42,7 @@ function MainMenu() {
 			</h4>
 			<div className="ps-3">
 				<div className="text-nowrap">
-					<NavLink to="/">
+					<NavLink to={navigator.dashboard.path()}>
 						<Localize text="System State"/>
 					</NavLink>
 				</div>

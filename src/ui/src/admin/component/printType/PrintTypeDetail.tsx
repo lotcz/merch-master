@@ -1,8 +1,8 @@
 import {Col, Form, Row, Spinner, Stack, Tab, Tabs} from "react-bootstrap";
-import {useNavigate, useParams, useSearchParams} from "react-router";
+import {useParams, useSearchParams} from "react-router";
 import {useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {NumberUtil, StringUtil} from "zavadil-ts-common";
-import {AdminRestClientContext} from "../../client/AdminRestClient";
+import {useAdminRestClient} from "../../client/AdminRestClient";
 import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../shared/component/general/RefreshIconButton";
 import {ConfirmDialogContext, DeleteButton, SaveButton, Switch} from "zavadil-react-common";
@@ -11,6 +11,7 @@ import {PrintTypeAdminPayload} from "../../../shared/types/PrintType";
 import ProductPreview from "../products/ProductPreview";
 import {PrintZoneStub} from "../../../shared/types/PrintZone";
 import {PrintPreviewStub} from "../../../shared/types/PrintPreview";
+import {useAdminNavigator} from "../../navigator/AdminNavigator";
 
 const TAB_PARAM_NAME = "tab";
 const DEFAULT_TAB = "print-zones";
@@ -22,9 +23,9 @@ const COL_2_LG = 6;
 
 export default function PrintTypeDetail() {
 	const {id, productId} = useParams();
-	const navigate = useNavigate();
+	const navigator = useAdminNavigator();
 	const [searchParams, setSearchParams] = useSearchParams();
-	const restClient = useContext(AdminRestClientContext);
+	const restClient = useAdminRestClient();
 	const userAlerts = useContext(UserAlertsContext);
 	const confirmDialog = useContext(ConfirmDialogContext);
 	const [activeTab, setActiveTab] = useState<string>(DEFAULT_TAB);
@@ -101,7 +102,7 @@ export default function PrintTypeDetail() {
 			.save(data)
 			.then((f) => {
 				if (inserting) {
-					navigate(`/admin/products/print-types/detail/${f.printType.id}`, {replace: true});
+					navigator.products.printTypes.detail(f.printType.id, true);
 				} else {
 					setData(f);
 				}
@@ -109,7 +110,7 @@ export default function PrintTypeDetail() {
 			})
 			.catch((e: Error) => userAlerts.err(e))
 			.finally(() => setSaving(false));
-	}, [restClient, data, userAlerts, navigate]);
+	}, [restClient, data, userAlerts, navigator]);
 
 	const deletePrintType = useCallback(() => {
 		if (!data?.printType.id) return;
@@ -118,12 +119,12 @@ export default function PrintTypeDetail() {
 			restClient.printTypes
 				.delete(Number(data.printType.id))
 				.then((f) => {
-					navigate(`/admin/products/${data.printType.productId}`);
+					navigator.products.detail(data.printType.productId);
 				})
 				.catch((e: Error) => userAlerts.err(e))
 				.finally(() => setDeleting(false));
 		});
-	}, [restClient, data, userAlerts, navigate, confirmDialog]);
+	}, [restClient, data, userAlerts, navigator, confirmDialog]);
 
 	if (!data) {
 		return <Spinner/>;

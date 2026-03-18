@@ -2,11 +2,12 @@ import {FormEvent, useCallback, useContext, useEffect, useMemo, useState} from "
 import {Button, Form, Stack} from "react-bootstrap";
 import {DateTime, SelectableTableHeader, TablePlaceholder, TableWithSelect, TextInputWithReset} from "zavadil-react-common";
 import {ObjectUtil, Page, PagingRequest, PagingUtil, StringUtil} from "zavadil-ts-common";
-import {useNavigate, useParams} from "react-router";
-import {AdminRestClientContext} from "../../client/AdminRestClient";
+import {useParams} from "react-router";
+import {useAdminRestClient} from "../../client/AdminRestClient";
 import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../shared/component/general/RefreshIconButton";
 import {User} from "../../../shared/types/User";
+import {useAdminNavigator} from "../../navigator/AdminNavigator";
 
 const HEADER: SelectableTableHeader<User> = [
 	{name: "id", label: "ID"},
@@ -23,8 +24,8 @@ const DEFAULT_PAGING: PagingRequest = {page: 0, size: 100, sorting: [{name: "las
 
 export default function UsersList() {
 	const {pagingString} = useParams();
-	const navigate = useNavigate();
-	const restClient = useContext(AdminRestClientContext);
+	const navigator = useAdminNavigator();
+	const restClient = useAdminRestClient();
 	const userAlerts = useContext(UserAlertsContext);
 	const [data, setData] = useState<Page<User> | null>(null);
 
@@ -35,35 +36,14 @@ export default function UsersList() {
 
 	const [searchInput, setSearchInput] = useState<string>(StringUtil.getNonEmpty(paging.search));
 
-	const navigateToPage = useCallback(
-		(p?: PagingRequest) => {
-			navigate(`/admin/users/${PagingUtil.pagingRequestToString(p)}`);
-		},
-		[navigate],
-	);
-
-	const navigateToId = useCallback(
-		(id: number) => {
-			navigate(`/admin/users/detail/${id}`);
-		},
-		[navigate],
-	);
-
-	const navigateToDetail = useCallback(
-		(p: User) => {
-			if (p.id) navigateToId(p.id);
-		},
-		[navigateToId],
-	);
-
 	const applySearch = useCallback(
 		(e: FormEvent) => {
 			e.preventDefault();
 			paging.search = searchInput;
 			paging.page = 0;
-			navigateToPage(paging);
+			navigator.users.list(paging);
 		},
-		[paging, searchInput, navigateToPage],
+		[paging, searchInput, navigator],
 	);
 
 	const loadPageHandler = useCallback(() => {
@@ -89,6 +69,9 @@ export default function UsersList() {
 			<div className="pt-2 ps-3">
 				<Stack direction="horizontal" gap={2}>
 					<RefreshIconButton onClick={reload}/>
+					<Button onClick={() => navigator.users.add()} className="text-nowrap">
+						+ Add
+					</Button>
 					<div style={{width: "250px"}}>
 						<Form onSubmit={applySearch}>
 							<TextInputWithReset
@@ -96,7 +79,7 @@ export default function UsersList() {
 								onChange={setSearchInput}
 								onReset={() => {
 									setSearchInput("");
-									navigateToPage(DEFAULT_PAGING);
+									navigator.users.list(DEFAULT_PAGING);
 								}}
 							/>
 						</Form>
@@ -114,8 +97,8 @@ export default function UsersList() {
 						header={HEADER}
 						paging={paging}
 						totalItems={data.totalItems}
-						onPagingChanged={navigateToPage}
-						onClick={navigateToDetail}
+						onPagingChanged={(p) => navigator.users.list(p)}
+						onClick={(item) => navigator.users.detail(item.id)}
 						items={data.content}
 						hover={true}
 						striped={true}

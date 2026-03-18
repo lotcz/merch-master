@@ -1,8 +1,8 @@
 import {Form, Spinner, Stack} from "react-bootstrap";
-import {useNavigate, useParams} from "react-router";
+import {useParams} from "react-router";
 import {useCallback, useContext, useEffect, useState} from "react";
 import {NumberUtil} from "zavadil-ts-common";
-import {AdminRestClientContext} from "../../client/AdminRestClient";
+import {useAdminRestClient} from "../../client/AdminRestClient";
 import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../shared/component/general/RefreshIconButton";
 import {ConfirmDialogContext, DeleteButton, FormRow, FormRowControl, SaveButton} from "zavadil-react-common";
@@ -10,11 +10,12 @@ import BackIconLink from "../../../shared/component/general/BackIconLink";
 import AccountPreview from "../account/AccountPreview";
 import {ImageCacheStub} from "../../../shared/types/Image";
 import {ImagezUploadInput} from "../../../shared/component/images/ImagezUploadInput";
+import {useAdminNavigator} from "../../navigator/AdminNavigator";
 
 export default function ImageCacheDetail() {
 	const {id, accountId} = useParams();
-	const navigate = useNavigate();
-	const restClient = useContext(AdminRestClientContext);
+	const navigator = useAdminNavigator();
+	const restClient = useAdminRestClient();
 	const userAlerts = useContext(UserAlertsContext);
 	const confirmDialog = useContext(ConfirmDialogContext);
 	const [data, setData] = useState<ImageCacheStub>();
@@ -56,7 +57,7 @@ export default function ImageCacheDetail() {
 			.saveStub(data)
 			.then((f) => {
 				if (inserting) {
-					navigate(`/admin/accounts/image-cache/detail/${f.id}`, {replace: true});
+					navigator.accounts.imageCache.detail(f.id, true);
 				} else {
 					setData(f);
 				}
@@ -64,7 +65,7 @@ export default function ImageCacheDetail() {
 			})
 			.catch((e: Error) => userAlerts.err(e))
 			.finally(() => setSaving(false));
-	}, [restClient, data, userAlerts, navigate]);
+	}, [restClient, data, userAlerts, navigator]);
 
 	const deleteImage = useCallback(() => {
 		if (!data?.id) return;
@@ -73,12 +74,12 @@ export default function ImageCacheDetail() {
 			restClient.imageCache
 				.delete(Number(data.id))
 				.then((f) => {
-					navigate(-1);
+					navigator.accounts.imageCache.list();
 				})
 				.catch((e: Error) => userAlerts.err(e))
 				.finally(() => setDeleting(false));
 		});
-	}, [restClient, data, userAlerts, navigate, confirmDialog]);
+	}, [restClient, data, userAlerts, navigator, confirmDialog]);
 
 	if (!data) {
 		return <Spinner/>;

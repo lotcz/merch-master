@@ -2,11 +2,12 @@ import {FormEvent, useCallback, useContext, useEffect, useMemo, useState} from "
 import {Button, Form, Stack} from "react-bootstrap";
 import {DateTime, SelectableTableHeader, TablePlaceholder, TableWithSelect, TextInputWithReset} from "zavadil-react-common";
 import {ObjectUtil, Page, PagingRequest, PagingUtil, StringUtil} from "zavadil-ts-common";
-import {useNavigate, useParams} from "react-router";
-import {AdminRestClientContext} from "../../client/AdminRestClient";
+import {useParams} from "react-router";
+import {useAdminRestClient} from "../../client/AdminRestClient";
 import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../shared/component/general/RefreshIconButton";
 import {Account} from "../../../shared/types/Account";
+import {useAdminNavigator} from "../../navigator/AdminNavigator";
 
 const HEADER: SelectableTableHeader<Account> = [
 	{name: "id", label: "ID"},
@@ -20,8 +21,8 @@ const DEFAULT_PAGING: PagingRequest = {page: 0, size: 100, sorting: [{name: "las
 
 export default function AccountsList() {
 	const {pagingString} = useParams();
-	const navigate = useNavigate();
-	const restClient = useContext(AdminRestClientContext);
+	const navigator = useAdminNavigator();
+	const restClient = useAdminRestClient();
 	const userAlerts = useContext(UserAlertsContext);
 	const [data, setData] = useState<Page<Account> | null>(null);
 
@@ -32,39 +33,14 @@ export default function AccountsList() {
 
 	const [searchInput, setSearchInput] = useState<string>(StringUtil.getNonEmpty(paging.search));
 
-	const navigateToCreateNew = useCallback(() => {
-		navigate("/admin/accounts/detail/add");
-	}, [navigate]);
-
-	const navigateToPage = useCallback(
-		(p?: PagingRequest) => {
-			navigate(`/admin/accounts/${PagingUtil.pagingRequestToString(p)}`);
-		},
-		[navigate],
-	);
-
-	const navigateToId = useCallback(
-		(id: number) => {
-			navigate(`/admin/accounts/detail/${id}`);
-		},
-		[navigate],
-	);
-
-	const navigateToDetail = useCallback(
-		(p: Account) => {
-			if (p.id) navigateToId(p.id);
-		},
-		[navigateToId],
-	);
-
 	const applySearch = useCallback(
 		(e: FormEvent) => {
 			e.preventDefault();
 			paging.search = searchInput;
 			paging.page = 0;
-			navigateToPage(paging);
+			navigator.accounts.list(paging);
 		},
-		[paging, searchInput, navigateToPage],
+		[paging, searchInput, navigator],
 	);
 
 	const loadPageHandler = useCallback(() => {
@@ -90,7 +66,7 @@ export default function AccountsList() {
 			<div className="pt-2 ps-3">
 				<Stack direction="horizontal" gap={2}>
 					<RefreshIconButton onClick={reload}/>
-					<Button onClick={navigateToCreateNew} className="text-nowrap">
+					<Button onClick={() => navigator.accounts.add()} className="text-nowrap">
 						+ Add
 					</Button>
 					<div style={{width: "250px"}}>
@@ -100,7 +76,7 @@ export default function AccountsList() {
 								onChange={setSearchInput}
 								onReset={() => {
 									setSearchInput("");
-									navigateToPage(DEFAULT_PAGING);
+									navigator.accounts.list(DEFAULT_PAGING);
 								}}
 							/>
 						</Form>
@@ -118,8 +94,8 @@ export default function AccountsList() {
 						header={HEADER}
 						paging={paging}
 						totalItems={data.totalItems}
-						onPagingChanged={navigateToPage}
-						onClick={navigateToDetail}
+						onPagingChanged={(p) => navigator.accounts.list(p)}
+						onClick={(item) => navigator.accounts.detail(item.id)}
 						items={data.content}
 						hover={true}
 						striped={true}

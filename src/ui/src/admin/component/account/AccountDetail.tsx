@@ -1,26 +1,27 @@
 import {Form, Spinner, Stack, Tab, Tabs} from "react-bootstrap";
-import {useNavigate, useParams, useSearchParams} from "react-router";
+import {useParams, useSearchParams} from "react-router";
 import {useCallback, useContext, useEffect, useState} from "react";
 import {NumberUtil, StringUtil} from "zavadil-ts-common";
-import {AdminRestClientContext} from "../../client/AdminRestClient";
+import {useAdminRestClient} from "../../client/AdminRestClient";
 import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../shared/component/general/RefreshIconButton";
 import {ConfirmDialogContext, DeleteButton, FormRow, FormRowControl, SaveButton} from "zavadil-react-common";
 import BackIconLink from "../../../shared/component/general/BackIconLink";
 import {Account} from "../../../shared/types/Account";
 import AccountShopsList from "./AccountShopsList";
-import AccountUsersList from "./AccountUsersList";
+import AccountCreatorsList from "./AccountCreatorsList";
 import AccountStateSelect from "./AccountStateSelect";
 import AccountImageCacheList from "./AccountImageCacheList";
+import {useAdminNavigator} from "../../navigator/AdminNavigator";
 
 const TAB_PARAM_NAME = "tab";
 const DEFAULT_TAB = "shops";
 
 export default function AccountDetail() {
 	const {id} = useParams();
-	const navigate = useNavigate();
+	const navigator = useAdminNavigator();
 	const [searchParams, setSearchParams] = useSearchParams();
-	const restClient = useContext(AdminRestClientContext);
+	const restClient = useAdminRestClient();
 	const userAlerts = useContext(UserAlertsContext);
 	const confirmDialog = useContext(ConfirmDialogContext);
 	const [activeTab, setActiveTab] = useState<string>();
@@ -71,7 +72,7 @@ export default function AccountDetail() {
 			.save(data)
 			.then((f) => {
 				if (inserting) {
-					navigate(`/admin/accounts/detail/${f.id}`, {replace: true});
+					navigator.accounts.detail(f.id, true);
 				} else {
 					setData(f);
 				}
@@ -79,7 +80,7 @@ export default function AccountDetail() {
 			})
 			.catch((e: Error) => userAlerts.err(e))
 			.finally(() => setSaving(false));
-	}, [restClient, data, userAlerts, navigate]);
+	}, [restClient, data, userAlerts, navigator]);
 
 	const deleteAccount = useCallback(() => {
 		if (!data?.id) return;
@@ -88,12 +89,12 @@ export default function AccountDetail() {
 			restClient.accounts
 				.delete(Number(data.id))
 				.then((f) => {
-					navigate(-1);
+					navigator.accounts.list();
 				})
 				.catch((e: Error) => userAlerts.err(e))
 				.finally(() => setDeleting(false));
 		});
-	}, [restClient, data, userAlerts, navigate, confirmDialog]);
+	}, [restClient, data, userAlerts, navigator, confirmDialog]);
 
 	if (!data) {
 		return <Spinner/>;
@@ -149,12 +150,12 @@ export default function AccountDetail() {
 				<div className="mt-2">
 					<Tabs activeKey={activeTab} onSelect={(key) => setActiveTab(StringUtil.getNonEmpty(key, DEFAULT_TAB))}>
 						<Tab title="Shops" eventKey="shops"/>
-						<Tab title="Users" eventKey="users"/>
+						<Tab title="Creators" eventKey="creators"/>
 						<Tab title="Image Cache" eventKey="image-cache"/>
 					</Tabs>
 					<div className="px-3 py-1">
 						{activeTab === "shops" && <AccountShopsList accountId={data.id}/>}
-						{activeTab === "users" && <AccountUsersList accountId={data.id}/>}
+						{activeTab === "creators" && <AccountCreatorsList accountId={data.id}/>}
 						{activeTab === "image-cache" && <AccountImageCacheList accountId={data.id}/>}
 					</div>
 				</div>

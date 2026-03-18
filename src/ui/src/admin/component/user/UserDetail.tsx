@@ -1,29 +1,28 @@
 import {Form, Spinner, Stack} from "react-bootstrap";
-import {useNavigate, useParams, useSearchParams} from "react-router";
+import {useParams, useSearchParams} from "react-router";
 import {useCallback, useContext, useEffect, useState} from "react";
 import {NumberUtil, StringUtil} from "zavadil-ts-common";
-import {AdminRestClientContext} from "../../client/AdminRestClient";
+import {useAdminRestClient} from "../../client/AdminRestClient";
 import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../shared/component/general/RefreshIconButton";
 import {ConfirmDialogContext, DeleteButton, FormRow, FormRowControl, SaveButton} from "zavadil-react-common";
 import BackIconLink from "../../../shared/component/general/BackIconLink";
-import {UserStub} from "../../../shared/types/User";
-import AccountPreview from "../account/AccountPreview";
 import SyncStateSelect from "../general/SyncStateSelect";
-import UserStateSelect from "./UserStateSelect";
+import {User} from "../../../shared/types/User";
+import {useAdminNavigator} from "../../navigator/AdminNavigator";
 
 const TAB_PARAM_NAME = "tab";
-const DEFAULT_TAB = "orders";
+const DEFAULT_TAB = "creators";
 
 export default function UserDetail() {
-	const {id, accountId} = useParams();
-	const navigate = useNavigate();
+	const {id} = useParams();
+	const navigator = useAdminNavigator();
 	const [searchParams, setSearchParams] = useSearchParams();
-	const restClient = useContext(AdminRestClientContext);
+	const restClient = useAdminRestClient();
 	const userAlerts = useContext(UserAlertsContext);
 	const confirmDialog = useContext(ConfirmDialogContext);
 	const [activeTab, setActiveTab] = useState<string>();
-	const [data, setData] = useState<UserStub>();
+	const [data, setData] = useState<User>();
 	const [changed, setChanged] = useState<boolean>(false);
 	const [deleting, setDeleting] = useState<boolean>(false);
 	const [saving, setSaving] = useState<boolean>(false);
@@ -47,20 +46,18 @@ export default function UserDetail() {
 	const reload = useCallback(() => {
 		if (!id) {
 			setData({
-				accountId: Number(accountId),
 				name: "",
 				email: "",
-				state: "Active",
 				syncState: "Pending"
 			});
 			return;
 		}
 		setData(undefined);
 		restClient.users
-			.loadSingleStub(Number(id))
+			.loadSingle(Number(id))
 			.then(setData)
 			.catch((e: Error) => userAlerts.err(e));
-	}, [id, accountId, restClient, userAlerts]);
+	}, [id, restClient, userAlerts]);
 
 	useEffect(reload, [id]);
 
@@ -69,10 +66,10 @@ export default function UserDetail() {
 		const inserting = NumberUtil.isEmpty(data.id);
 		setSaving(true);
 		restClient.users
-			.saveStub(data)
+			.save(data)
 			.then((f) => {
 				if (inserting) {
-					navigate(`/admin/users/detail/${f.id}`, {replace: true});
+					navigator.users.detail(f.id, true);
 				} else {
 					setData(f);
 				}
@@ -80,7 +77,7 @@ export default function UserDetail() {
 			})
 			.catch((e: Error) => userAlerts.err(e))
 			.finally(() => setSaving(false));
-	}, [restClient, data, userAlerts, navigate]);
+	}, [restClient, data, userAlerts, navigator]);
 
 	const deleteAccount = useCallback(() => {
 		if (!data?.id) return;
@@ -89,12 +86,12 @@ export default function UserDetail() {
 			restClient.users
 				.delete(Number(data.id))
 				.then((f) => {
-					navigate(-1);
+					navigator.users.list();
 				})
 				.catch((e: Error) => userAlerts.err(e))
 				.finally(() => setDeleting(false));
 		});
-	}, [restClient, data, userAlerts, navigate, confirmDialog]);
+	}, [restClient, data, userAlerts, navigator, confirmDialog]);
 
 	if (!data) {
 		return <Spinner/>;
@@ -117,9 +114,6 @@ export default function UserDetail() {
 
 			<Form className="px-3 w-75">
 				<Stack direction="vertical" gap={2}>
-					<FormRow label="Account">
-						<AccountPreview accountId={data.accountId}/>
-					</FormRow>
 					<FormRowControl
 						label="Name"
 						type="text"
@@ -129,16 +123,6 @@ export default function UserDetail() {
 							onChanged();
 						}}
 					/>
-
-					<FormRow label="State">
-						<UserStateSelect
-							state={data.state}
-							onChange={(e) => {
-								data.state = e;
-								onChanged();
-							}}
-						/>
-					</FormRow>
 
 					<FormRowControl
 						label="Email"
