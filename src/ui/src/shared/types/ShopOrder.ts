@@ -1,20 +1,17 @@
-import {EntityWithName} from "zavadil-ts-common";
+import {EntityBase} from "zavadil-ts-common";
 import {Shop} from "./Shop";
 import {ShopCategory} from "./ShopCategory";
 import {Design} from "./Design";
 
-export type ShopProductBase = EntityWithName & {
-	visible: boolean;
-	creatorProfit: number;
-}
+export type ShopOrderBase = EntityBase & {}
 
-export type ShopProduct = ShopProductBase & {
+export type ShopOrder = ShopOrderBase & {
 	shop: Shop;
 	category?: ShopCategory | null;
 	design: Design;
 }
 
-export type ShopProductStub = ShopProductBase & {
+export type ShopOrderStub = ShopOrderBase & {
 	shopId: number;
 	categoryId?: number | null;
 	designId: number;

@@ -1,4 +1,4 @@
-package eu.zavadil.merchmaster.data.shopProduct.shopCategory;
+package eu.zavadil.merchmaster.data.shopProduct;
 
 import eu.zavadil.java.spring.common.entity.EntityRepository;
 

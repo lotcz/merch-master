@@ -19,6 +19,8 @@ import UsersList from "./user/UsersList";
 import UserDetail from "./user/UserDetail";
 import ImageCacheDetail from "./imageCache/ImageCacheDetail";
 import CreatorDetail from "./creator/CreatorDetail";
+import ShopProductDetail from "./shopProduct/ShopProductDetail";
+import ShopCategoryDetail from "./shopCategory/ShopCategoryDetail";
 
 export default function Main() {
 	return (
@@ -89,6 +91,18 @@ export default function Main() {
 							<Route path="detail">
 								<Route path="add/:accountId" element={<ShopDetail/>}/>
 								<Route path=":id" element={<ShopDetail/>}/>
+							</Route>
+							<Route path="products">
+								<Route path="detail">
+									<Route path="add/:shopId" element={<ShopProductDetail/>}/>
+									<Route path=":id" element={<ShopProductDetail/>}/>
+								</Route>
+							</Route>
+							<Route path="categories">
+								<Route path="detail">
+									<Route path="add/:shopId" element={<ShopCategoryDetail/>}/>
+									<Route path=":id" element={<ShopCategoryDetail/>}/>
+								</Route>
 							</Route>
 							<Route path=":pagingString" element={<ShopsList/>}/>
 						</Route>

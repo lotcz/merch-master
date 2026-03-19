@@ -35,6 +35,11 @@ public class ShopCategoriesController {
 		return this.shopCategoriesService.loadStubById(id);
 	}
 
+	@GetMapping("{id}/full")
+	public ShopCategory loadFull(@PathVariable int id) {
+		return this.shopCategoriesService.loadById(id);
+	}
+
 	@PostMapping("")
 	public ShopCategoryStub insert(@RequestBody ShopCategoryStub document) {
 		document.setId(null);

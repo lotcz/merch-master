@@ -1,6 +1,5 @@
-package eu.zavadil.merchmaster.data.shopProduct.shopCategory;
+package eu.zavadil.merchmaster.data.shopProduct;
 
-import eu.zavadil.merchmaster.data.shopCategory.ShopCategoryBase;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -11,7 +10,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @Entity
 @Table(name = "shop_product")
-public class ShopProductStub extends ShopCategoryBase {
+public class ShopProductStub extends ShopProductBase {
 
 	@Column(name = "shop_id")
 	private int shopId;

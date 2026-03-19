@@ -10,4 +10,6 @@ import lombok.EqualsAndHashCode;
 @MappedSuperclass
 public class ShopCategoryBase extends EntityWithNameBase {
 
+	private boolean visible;
+	
 }

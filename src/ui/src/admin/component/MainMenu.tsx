@@ -22,19 +22,19 @@ function MainMenu() {
 			<h4 className="mt-2">Manage</h4>
 			<div className="ps-3">
 				<div>
-					<NavLink to={navigator.products.provider.list()}>Products</NavLink>
+					<NavLink to={navigator.products.path.list()}>Products</NavLink>
 				</div>
 				<div>
-					<NavLink to={navigator.accounts.provider.list()}>Accounts</NavLink>
+					<NavLink to={navigator.accounts.path.list()}>Accounts</NavLink>
 				</div>
 				<div>
-					<NavLink to={navigator.users.provider.list()}>Users</NavLink>
+					<NavLink to={navigator.users.path.list()}>Users</NavLink>
 				</div>
 				<div>
-					<NavLink to={navigator.shops.provider.list()}>Shops</NavLink>
+					<NavLink to={navigator.shops.path.list()}>Shops</NavLink>
 				</div>
 				<div>
-					<NavLink to={navigator.designs.provider.list()}>Designs</NavLink>
+					<NavLink to={navigator.designs.path.list()}>Designs</NavLink>
 				</div>
 			</div>
 			<h4 className="mt-2">

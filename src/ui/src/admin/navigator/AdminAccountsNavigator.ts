@@ -12,8 +12,8 @@ export default class AdminAccountsNavigator extends EntityNavigator {
 
 	constructor(admin: AdminNavigator) {
 		super(admin.navigate, new EntityPathProvider('accounts', admin.provider));
-		this.creators = new EntityNavigator(admin.navigate, new EntityPathProvider('creators', this.provider));
-		this.imageCache = new EntityNavigator(admin.navigate, new EntityPathProvider('image-cache', this.provider));
+		this.creators = new EntityNavigator(admin.navigate, new EntityPathProvider('creators', this.path));
+		this.imageCache = new EntityNavigator(admin.navigate, new EntityPathProvider('image-cache', this.path));
 		this.shops = new EntityNavigator(admin.navigate, new EntityPathProvider('shops', admin.provider));
 	}
 }

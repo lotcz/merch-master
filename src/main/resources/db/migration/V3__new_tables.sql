@@ -67,7 +67,8 @@ CREATE TABLE shop_product (
 	category_id int4,
 	creator_profit DECIMAL(8,2) NOT NULL DEFAULT 0,
 	CONSTRAINT fk_shop_product_shop_id FOREIGN KEY (shop_id) REFERENCES shop(id),
-	CONSTRAINT fk_shop_product_category_id FOREIGN KEY (category_id) REFERENCES shop_category(id)
+	CONSTRAINT fk_shop_product_category_id FOREIGN KEY (category_id) REFERENCES shop_category(id),
+	CONSTRAINT fk_shop_product_design_id FOREIGN KEY (design_id) REFERENCES design(id)
 );
 CREATE UNIQUE INDEX idx_shop_product_shop ON shop_product (shop_id, "name");
 CREATE INDEX idx_shop_product_category ON shop_product (shop_id, category_id);

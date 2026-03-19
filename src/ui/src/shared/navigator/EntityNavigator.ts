@@ -5,22 +5,22 @@ import GenericNavigator from "./GenericNavigator";
 
 export default class EntityNavigator extends GenericNavigator {
 
-	public provider: EntityPathProvider;
+	public path: EntityPathProvider;
 
 	constructor(navigate: NavigateFunction, pathProvider: EntityPathProvider) {
 		super(navigate);
-		this.provider = pathProvider;
+		this.path = pathProvider;
 	}
 
 	public add(param?: string | number) {
-		this.navigate(this.provider.add(param));
+		this.navigate(this.path.add(param));
 	}
 
 	public detail(id?: number | null, replace?: boolean) {
-		this.navigate(this.provider.detail(id), replace ? {replace: true} : undefined);
+		this.navigate(this.path.detail(id), replace ? {replace: true} : undefined);
 	}
 
 	public list(paging?: PagingRequest) {
-		this.navigate(this.provider.list(paging));
+		this.navigate(this.path.list(paging));
 	}
 }

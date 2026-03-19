@@ -6,29 +6,30 @@ import {createContext, useContext} from "react";
 import AdminAccountsNavigator from "./AdminAccountsNavigator";
 import AdminProductsNavigator from "./AdminProductsNavigator";
 import LinkNavigator from "../../shared/navigator/LinkNavigator";
+import AdminShopsNavigator from "./AdminShopsNavigator";
 
 export default class AdminNavigator extends LinkNavigator {
 
 	dashboard: LinkNavigator;
 
+	users: EntityNavigator;
+
+	designs: EntityNavigator;
+
 	products: AdminProductsNavigator;
 
 	accounts: AdminAccountsNavigator;
 
-	users: EntityNavigator;
-
-	shops: EntityNavigator;
-
-	designs: EntityNavigator;
+	shops: AdminShopsNavigator;
 
 	constructor(navigate: NavigateFunction) {
 		super(navigate, new PathProvider('/admin'));
 		this.dashboard = new LinkNavigator(navigate, new PathProvider('dashboard', this.provider));
+		this.users = new EntityNavigator(navigate, new EntityPathProvider('users', this.provider));
+		this.designs = new EntityNavigator(navigate, new EntityPathProvider('designs', this.provider));
 		this.products = new AdminProductsNavigator(this);
 		this.accounts = new AdminAccountsNavigator(this);
-		this.users = new EntityNavigator(navigate, new EntityPathProvider('users', this.provider));
-		this.shops = new EntityNavigator(navigate, new EntityPathProvider('shops', this.provider));
-		this.designs = new EntityNavigator(navigate, new EntityPathProvider('designs', this.provider));
+		this.shops = new AdminShopsNavigator(this);
 	}
 
 }

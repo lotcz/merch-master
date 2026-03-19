@@ -16,6 +16,7 @@ import {CreatorsClient} from "./CreatorsClient";
 import {CustomersClient} from "./CustomersClient";
 import {ShopCategoriesClient} from "./ShopCategoriesClient";
 import {ShopProductsClient} from "./ShopProductsClient";
+import {ShopOrdersClient} from "./ShopOrdersClient";
 
 export class AdminRestClient extends MmRestClient {
 
@@ -28,6 +29,8 @@ export class AdminRestClient extends MmRestClient {
 	public shopCategories: ShopCategoriesClient;
 
 	public shopProducts: ShopProductsClient;
+
+	public shopOrders: ShopOrdersClient;
 
 	public users: UsersClient;
 
@@ -57,6 +60,7 @@ export class AdminRestClient extends MmRestClient {
 		this.shops = new ShopsClient(this);
 		this.shopCategories = new ShopCategoriesClient(this);
 		this.shopProducts = new ShopProductsClient(this);
+		this.shopOrders = new ShopOrdersClient(this);
 		this.users = new UsersClient(this);
 		this.creators = new CreatorsClient(this);
 		this.customers = new CustomersClient(this);

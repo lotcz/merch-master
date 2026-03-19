@@ -1,45 +1,27 @@
-import {Form, Spinner, Stack, Tab, Tabs} from "react-bootstrap";
-import {useParams, useSearchParams} from "react-router";
+import {Form, Spinner, Stack} from "react-bootstrap";
+import {useParams} from "react-router";
 import {useCallback, useContext, useEffect, useState} from "react";
-import {NumberUtil, StringUtil} from "zavadil-ts-common";
+import {NumberUtil} from "zavadil-ts-common";
 import {useAdminRestClient} from "../../client/AdminRestClient";
 import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../shared/component/general/RefreshIconButton";
-import {ConfirmDialogContext, DeleteButton, FormRow, FormRowControl, SaveButton} from "zavadil-react-common";
+import {ConfirmDialogContext, DeleteButton, FormRow, FormRowControl, Localize, SaveButton, Switch} from "zavadil-react-common";
 import BackIconLink from "../../../shared/component/general/BackIconLink";
-import {ShopStub} from "../../../shared/types/Shop";
-import AccountPreview from "../account/AccountPreview";
-import ShopStateSelect from "./ShopStateSelect";
-import SyncStateSelect from "../general/SyncStateSelect";
 import {useAdminNavigator} from "../../navigator/AdminNavigator";
-import ShopProductsList from "./ShopProductsList";
-import ShopCategoriesList from "./ShopCategoriesList";
+import {ShopProductStub} from "../../../shared/types/ShopProduct";
+import ShopPreview from "../shop/ShopPreview";
+import ShopCategorySelect from "../shopCategory/ShopCategorySelect";
 
-const TAB_PARAM_NAME = "tab";
-const DEFAULT_TAB = "categories";
-
-export default function ShopDetail() {
-	const {id, accountId} = useParams();
+export default function ShopProductDetail() {
+	const {id, shopId} = useParams();
 	const navigator = useAdminNavigator();
-	const [searchParams, setSearchParams] = useSearchParams();
 	const restClient = useAdminRestClient();
 	const userAlerts = useContext(UserAlertsContext);
 	const confirmDialog = useContext(ConfirmDialogContext);
-	const [activeTab, setActiveTab] = useState<string>();
-	const [data, setData] = useState<ShopStub>();
+	const [data, setData] = useState<ShopProductStub>();
 	const [changed, setChanged] = useState<boolean>(false);
 	const [deleting, setDeleting] = useState<boolean>(false);
 	const [saving, setSaving] = useState<boolean>(false);
-
-	useEffect(() => {
-		if (!activeTab) return;
-		searchParams.set(TAB_PARAM_NAME, activeTab);
-		setSearchParams(searchParams, {replace: true});
-	}, [activeTab]);
-
-	useEffect(() => {
-		setActiveTab(StringUtil.getNonEmpty(searchParams.get(TAB_PARAM_NAME), DEFAULT_TAB));
-	}, [id]);
 
 	const onChanged = useCallback(() => {
 		if (!data) return;
@@ -50,20 +32,21 @@ export default function ShopDetail() {
 	const reload = useCallback(() => {
 		if (!id) {
 			setData({
-				accountId: Number(accountId),
+				shopId: Number(shopId),
+				categoryId: 0,
+				designId: 0,
 				name: "",
-				slug: "",
-				state: "Approved",
-				syncState: "Pending"
+				visible: true,
+				creatorProfit: 0
 			});
 			return;
 		}
 		setData(undefined);
-		restClient.shops
+		restClient.shopProducts
 			.loadSingleStub(Number(id))
 			.then(setData)
 			.catch((e: Error) => userAlerts.err(e));
-	}, [id, accountId, restClient, userAlerts]);
+	}, [id, shopId, restClient, userAlerts]);
 
 	useEffect(reload, [id]);
 
@@ -71,11 +54,11 @@ export default function ShopDetail() {
 		if (!data) return;
 		const inserting = NumberUtil.isEmpty(data.id);
 		setSaving(true);
-		restClient.shops
+		restClient.shopProducts
 			.saveStub(data)
 			.then((f) => {
 				if (inserting) {
-					navigator.shops.detail(f.id, true);
+					navigator.shops.products.detail(f.id, true);
 				} else {
 					setData(f);
 				}
@@ -87,7 +70,7 @@ export default function ShopDetail() {
 
 	const deleteAccount = useCallback(() => {
 		if (!data?.id) return;
-		confirmDialog.confirm("Confirm", "Really delete this shop? Consider making it inactive.", () => {
+		confirmDialog.confirm("Confirm", "Really delete this product?", () => {
 			setDeleting(true);
 			restClient.shops
 				.delete(Number(data.id))
@@ -120,8 +103,8 @@ export default function ShopDetail() {
 
 			<Form className="px-3 w-75">
 				<Stack direction="vertical" gap={2}>
-					<FormRow label="Account">
-						<AccountPreview accountId={data.accountId}/>
+					<FormRow label="Shop">
+						<ShopPreview shopId={data.shopId}/>
 					</FormRow>
 					<FormRowControl
 						label="Name"
@@ -132,50 +115,35 @@ export default function ShopDetail() {
 							onChanged();
 						}}
 					/>
-					<FormRow label="State">
-						<ShopStateSelect
-							state={data.state}
+					<FormRow label="Category">
+						<ShopCategorySelect
+							shopId={data.shopId}
+							categoryId={data.categoryId}
 							onChange={(e) => {
-								data.state = e;
+								data.categoryId = e;
 								onChanged();
 							}}
 						/>
 					</FormRow>
-					<FormRowControl
-						label="Slug"
-						type="text"
-						value={data.slug}
+					<Switch
+						label={<Localize text="Visible"/>}
+						checked={data.visible}
 						onChange={(e) => {
-							data.slug = e.target.value;
+							data.visible = e;
 							onChanged();
 						}}
 					/>
-
-					<FormRow forId="sync_state" label="Sync">
-						<SyncStateSelect
-							state={data.syncState}
-							onChange={(e) => {
-								data.syncState = e;
-								onChanged();
-							}}
-						/>
-					</FormRow>
+					<FormRowControl
+						label="Profit"
+						type="integer"
+						value={data.creatorProfit}
+						onChange={(e) => {
+							data.creatorProfit = Number(e.target.value);
+							onChanged();
+						}}
+					/>
 				</Stack>
 			</Form>
-			{data.id && (
-				<div className="mt-2">
-					<Tabs activeKey={activeTab} onSelect={(key) => setActiveTab(StringUtil.getNonEmpty(key, DEFAULT_TAB))}>
-						<Tab title="Categories" eventKey="categories"/>
-						<Tab title="Products" eventKey="products"/>
-						<Tab title="Orders" eventKey="orders"/>
-					</Tabs>
-					<div className="px-3 py-1">
-						{activeTab === "categories" && <ShopCategoriesList shopId={data.id}/>}
-						{activeTab === "products" && <ShopProductsList shopId={data.id}/>}
-						{activeTab === "orders" && <></>}
-					</div>
-				</div>
-			)}
 		</div>
 	);
 }

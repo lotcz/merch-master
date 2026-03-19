@@ -6,6 +6,10 @@ export class ShopCategoriesClient extends EntityClientWithStub<ShopCategory, Sho
 		super(client, "admin/shop-categories");
 	}
 
+	loadFull(categoryId: number): Promise<ShopCategory> {
+		return this.client.getJson(`${this.name}/${categoryId}/full`);
+	}
+
 	loadByShop(shopId: number, pr: PagingRequest): Promise<Page<ShopCategory>> {
 		return this.client.getJson(`${this.name}/by-shop/${shopId}`, PagingUtil.pagingRequestToQueryParams(pr));
 	}

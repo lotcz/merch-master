@@ -16,6 +16,24 @@ public interface OrderRepository extends EntityRepository<Order> {
 	)
 	Page<Order> search(String search, Pageable pr);
 
-	Page<Order> findAllByCustomerId(int accountId, Pageable pr);
+	Page<Order> findAllByCustomerId(int customerId, Pageable pr);
+
+	@Query(
+		"""
+				select o
+				from Order o
+				where o.customer.shop.id = :orderId
+			"""
+	)
+	Page<Order> findAllByShopId(int orderId, Pageable pr);
+
+	@Query(
+		"""
+				select o
+				from Order o
+				where o.customer.shop.id = :orderId AND o.customer.user.name ILIKE %:search% OR o.customer.user.email ILIKE %:search%
+			"""
+	)
+	Page<Order> searchByShopId(int orderId, String search, Pageable pr);
 
 }

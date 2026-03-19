@@ -1,4 +1,4 @@
-package eu.zavadil.merchmaster.data.shopProduct.shopCategory;
+package eu.zavadil.merchmaster.data.shopProduct;
 
 import eu.zavadil.merchmaster.data.design.Design;
 import eu.zavadil.merchmaster.data.shop.Shop;

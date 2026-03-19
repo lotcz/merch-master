@@ -10,7 +10,7 @@ public interface ShopCategoryRepository extends EntityRepository<ShopCategory> {
 	@Query(
 		"""
 				select c
-				from ShopProduct c
+				from ShopCategory c
 				where c.name ILIKE %:search%
 			"""
 	)
@@ -19,7 +19,7 @@ public interface ShopCategoryRepository extends EntityRepository<ShopCategory> {
 	@Query(
 		"""
 				select c
-				from ShopProduct c
+				from ShopCategory c
 				where c.shop.id = :shopId AND c.name ILIKE %:search%
 			"""
 	)
