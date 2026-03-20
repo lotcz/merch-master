@@ -8,11 +8,12 @@ import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../shared/component/general/RefreshIconButton";
 import {Shop} from "../../../shared/types/Shop";
 import {useAdminNavigator} from "../../navigator/AdminNavigator";
+import ShopLabel from "./ShopLabel";
 
 const HEADER: SelectableTableHeader<Shop> = [
 	{name: "id", label: "ID"},
 	{name: "account.name", label: "Account"},
-	{name: "name", label: "Name"},
+	{name: "name", label: "Name", renderer: (s) => <ShopLabel shop={s}/>},
 	{name: "slug", label: "Slug"},
 	{name: "state", label: "State"},
 	{name: "lastUpdatedOn", label: "Updated", renderer: (p) => <DateTime value={p.lastUpdatedOn}/>},

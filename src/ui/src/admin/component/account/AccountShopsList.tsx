@@ -5,6 +5,7 @@ import {useAdminRestClient} from "../../client/AdminRestClient";
 import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import {Button, Table} from "react-bootstrap";
 import {Shop} from "../../../shared/types/Shop";
+import ShopLabel from "../shop/ShopLabel";
 
 export type AccountShopsListProps = {
 	accountId: number;
@@ -46,8 +47,8 @@ export default function AccountShopsList({accountId}: AccountShopsListProps) {
 					<thead>
 					<tr>
 						<th>ID</th>
-						<th>Slug</th>
 						<th>Name</th>
+						<th>Slug</th>
 						<th>State</th>
 					</tr>
 					</thead>
@@ -61,8 +62,8 @@ export default function AccountShopsList({accountId}: AccountShopsListProps) {
 							return (
 								<tr key={index} role="button" onClick={() => navigateToDetail(shop)}>
 									<td>{shop.id}</td>
+									<td><ShopLabel shop={shop}/></td>
 									<td>{shop.slug}</td>
-									<td>{shop.name}</td>
 									<td>{shop.state}</td>
 								</tr>
 							);

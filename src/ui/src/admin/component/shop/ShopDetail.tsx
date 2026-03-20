@@ -14,6 +14,7 @@ import SyncStateSelect from "../general/SyncStateSelect";
 import {useAdminNavigator} from "../../navigator/AdminNavigator";
 import ShopProductsList from "./ShopProductsList";
 import ShopCategoriesList from "./ShopCategoriesList";
+import {ImagezUploadInput} from "../../../shared/component/images/ImagezUploadInput";
 
 const TAB_PARAM_NAME = "tab";
 const DEFAULT_TAB = "categories";
@@ -54,6 +55,14 @@ export default function ShopDetail() {
 				oauthAudienceName: "",
 				name: "",
 				slug: "",
+				backgroundColor: "#ffffff",
+				foregroundColor: "#000000",
+				linkColor: "#0000ff",
+				fontFamily: "Times New Roman, serif",
+				brandBgColor: "#ff0000",
+				brandFgColor: "#ffffff",
+				brandShowName: true,
+				brandFontFamily: "Arial, sans-serif",
 				state: "Approved",
 				syncState: "Pending"
 			});
@@ -133,15 +142,6 @@ export default function ShopDetail() {
 							onChanged();
 						}}
 					/>
-					<FormRow label="State">
-						<ShopStateSelect
-							state={data.state}
-							onChange={(e) => {
-								data.state = e;
-								onChanged();
-							}}
-						/>
-					</FormRow>
 					<FormRowControl
 						label="Slug"
 						type="text"
@@ -151,7 +151,80 @@ export default function ShopDetail() {
 							onChanged();
 						}}
 					/>
-
+					<FormRowControl
+						label="Brand background"
+						type="color"
+						value={data.brandBgColor}
+						onChange={(e) => {
+							data.brandBgColor = e.target.value;
+							onChanged();
+						}}
+					/>
+					<FormRowControl
+						label="Brand text"
+						type="color"
+						value={data.brandFgColor}
+						onChange={(e) => {
+							data.brandFgColor = e.target.value;
+							onChanged();
+						}}
+					/>
+					<FormRow label="Brand image">
+						<ImagezUploadInput
+							name={data.brandImage}
+							onSelected={(e) => {
+								data.brandImage = e;
+								onChanged();
+							}}
+						/>
+					</FormRow>
+					<FormRowControl
+						label="Brand font"
+						type="text"
+						maxLength={255}
+						value={data.brandFontFamily}
+						onChange={(e) => {
+							data.brandFontFamily = e.target.value;
+							onChanged();
+						}}
+					/>
+					<FormRowControl
+						label="Background color"
+						type="color"
+						value={data.backgroundColor}
+						onChange={(e) => {
+							data.backgroundColor = e.target.value;
+							onChanged();
+						}}
+					/>
+					<FormRowControl
+						label="Text color"
+						type="color"
+						value={data.foregroundColor}
+						onChange={(e) => {
+							data.foregroundColor = e.target.value;
+							onChanged();
+						}}
+					/>
+					<FormRowControl
+						label="Text font"
+						type="text"
+						maxLength={255}
+						value={data.fontFamily}
+						onChange={(e) => {
+							data.fontFamily = e.target.value;
+							onChanged();
+						}}
+					/>
+					<FormRow label="State">
+						<ShopStateSelect
+							state={data.state}
+							onChange={(e) => {
+								data.state = e;
+								onChanged();
+							}}
+						/>
+					</FormRow>
 					<FormRow forId="sync_state" label="Sync">
 						<SyncStateSelect
 							state={data.syncState}
