@@ -2,6 +2,7 @@ package eu.zavadil.merchmaster.api.admin;
 
 import eu.zavadil.java.spring.common.paging.JsonPage;
 import eu.zavadil.java.spring.common.paging.JsonPageImpl;
+import eu.zavadil.merchmaster.data.SyncState;
 import eu.zavadil.merchmaster.data.shop.Shop;
 import eu.zavadil.merchmaster.data.shop.ShopStub;
 import eu.zavadil.merchmaster.service.ShopsService;
@@ -39,6 +40,7 @@ public class ShopsController {
 	@PostMapping("")
 	public ShopStub insert(@RequestBody ShopStub document) {
 		document.setId(null);
+		document.setSyncState(SyncState.Pending);
 		return this.shopsService.saveStub(document);
 	}
 

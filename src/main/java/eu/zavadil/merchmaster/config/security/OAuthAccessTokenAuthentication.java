@@ -20,7 +20,8 @@ public class OAuthAccessTokenAuthentication extends AbstractAuthenticationToken 
 		if (level != PermissionLevel.admin) return null;
 		String privilege = PermissionUtil.extractPrivilege(scope);
 		if (StringUtils.safeEquals(privilege, "*")) return "ROLE_ADMIN";
-		if (StringUtils.safeStartsWith(privilege, "creator/")) return "ROLE_CREATOR";
+		if (StringUtils.safeStartsWith(privilege, "account/")) return "ROLE_CREATOR";
+		if (StringUtils.safeStartsWith(privilege, "customer/")) return "ROLE_CUSTOMER";
 		return null;
 	}
 

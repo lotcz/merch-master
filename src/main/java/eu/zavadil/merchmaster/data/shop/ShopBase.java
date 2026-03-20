@@ -33,4 +33,14 @@ public class ShopBase extends EntityWithNameBase {
 	public void setSlug(String name) {
 		this.slug = this.truncateString(name, SLUG_LENGTH);
 	}
+
+	static final int OAUTH_AUDIENCE_LENGTH = 255;
+
+	@Column(length = OAUTH_AUDIENCE_LENGTH)
+	@Size(max = OAUTH_AUDIENCE_LENGTH)
+	private String oauthAudienceName;
+
+	public void setOauthAudienceName(String name) {
+		this.oauthAudienceName = this.truncateString(name, OAUTH_AUDIENCE_LENGTH);
+	}
 }

@@ -11,7 +11,6 @@ import {useAdminNavigator} from "../../navigator/AdminNavigator";
 
 const HEADER: SelectableTableHeader<User> = [
 	{name: "id", label: "ID"},
-	{name: "account.name", label: "Account"},
 	{name: "name", label: "Name"},
 	{name: "email", label: "Email"},
 	{name: "state", label: "State"},

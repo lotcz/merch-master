@@ -51,6 +51,7 @@ export default function ShopDetail() {
 		if (!id) {
 			setData({
 				accountId: Number(accountId),
+				oauthAudienceName: "",
 				name: "",
 				slug: "",
 				state: "Approved",

@@ -1,6 +1,7 @@
 package eu.zavadil.merchmaster.data.shop;
 
 import eu.zavadil.java.spring.common.entity.EntityRepository;
+import eu.zavadil.merchmaster.data.SyncState;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +19,6 @@ public interface ShopRepository extends EntityRepository<Shop> {
 	Page<Shop> search(String search, Pageable pr);
 
 	List<Shop> findAllByAccountId(int accountId);
+
+	Page<Shop> findBySyncStateOrderByLastUpdatedOn(SyncState state, Pageable pr);
 }

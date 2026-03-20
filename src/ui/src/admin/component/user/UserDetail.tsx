@@ -134,6 +134,16 @@ export default function UserDetail() {
 						}}
 					/>
 
+					<FormRowControl
+						label="OAuth Subject"
+						type="text"
+						value={StringUtil.getNonEmpty(data.oauthSubject)}
+						onChange={(e) => {
+							data.oauthSubject = e.target.value;
+							onChanged();
+						}}
+					/>
+
 					<FormRow forId="sync_state" label="Sync">
 						<SyncStateSelect
 							state={data.syncState}

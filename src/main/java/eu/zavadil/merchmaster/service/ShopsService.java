@@ -1,6 +1,7 @@
 package eu.zavadil.merchmaster.service;
 
 import eu.zavadil.java.spring.common.paging.PagingUtils;
+import eu.zavadil.merchmaster.data.SyncState;
 import eu.zavadil.merchmaster.data.shop.Shop;
 import eu.zavadil.merchmaster.data.shop.ShopRepository;
 import eu.zavadil.merchmaster.data.shop.ShopStub;
@@ -54,5 +55,9 @@ public class ShopsService {
 
 	public List<Shop> loadAllByAccountId(int accountId) {
 		return this.repository.findAllByAccountId(accountId);
+	}
+
+	public Page<Shop> loadSyncQueue() {
+		return this.repository.findBySyncStateOrderByLastUpdatedOn(SyncState.Pending, PagingUtils.of(0, 10));
 	}
 }

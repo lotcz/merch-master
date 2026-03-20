@@ -23,7 +23,6 @@ public class UsersService {
 	}
 
 	public User save(User user) {
-		user.setSyncState(SyncState.Pending);
 		return this.repository.save(user);
 	}
 
@@ -35,4 +34,7 @@ public class UsersService {
 		if (user.getId() != null) this.delete(user.getId());
 	}
 
+	public Page<User> loadSyncQueue() {
+		return this.repository.findBySyncStateOrderByLastUpdatedOn(SyncState.Pending, PagingUtils.of(0, 10));
+	}
 }

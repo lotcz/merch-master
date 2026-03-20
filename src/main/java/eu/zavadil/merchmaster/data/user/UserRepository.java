@@ -1,6 +1,7 @@
 package eu.zavadil.merchmaster.data.user;
 
 import eu.zavadil.java.spring.common.entity.EntityRepository;
+import eu.zavadil.merchmaster.data.SyncState;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -15,4 +16,6 @@ public interface UserRepository extends EntityRepository<User> {
 			"""
 	)
 	Page<User> search(String search, Pageable pr);
+
+	Page<User> findBySyncStateOrderByLastUpdatedOn(SyncState state, Pageable pr);
 }
