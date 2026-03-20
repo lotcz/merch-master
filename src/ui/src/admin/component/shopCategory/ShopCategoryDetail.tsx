@@ -8,7 +8,7 @@ import RefreshIconButton from "../../../shared/component/general/RefreshIconButt
 import {ConfirmDialogContext, DeleteButton, FormRow, FormRowControl, Localize, SaveButton, Switch} from "zavadil-react-common";
 import BackIconLink from "../../../shared/component/general/BackIconLink";
 import {useAdminNavigator} from "../../navigator/AdminNavigator";
-import ShopPreview from "../shop/ShopPreview";
+import ShopLink from "../shop/ShopLink";
 import {ShopCategoryStub} from "../../../shared/types/ShopCategory";
 
 export default function ShopCategoryDetail() {
@@ -100,7 +100,7 @@ export default function ShopCategoryDetail() {
 			<Form className="px-3 w-75">
 				<Stack direction="vertical" gap={2}>
 					<FormRow label="Shop">
-						<ShopPreview shopId={data.shopId}/>
+						<ShopLink shopId={data.shopId}/>
 					</FormRow>
 					<FormRowControl
 						label="Name"

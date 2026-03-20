@@ -3,7 +3,6 @@ import {useContext, useEffect, useState} from "react";
 import {useAdminRestClient} from "../../client/AdminRestClient";
 import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import {ShopBase} from "../../../shared/types/Shop";
-import {useAdminNavigator} from "../../navigator/AdminNavigator";
 
 export type ShopLabelParams = {
 	shopId?: number;
@@ -12,7 +11,6 @@ export type ShopLabelParams = {
 
 export default function ShopLabel({shopId, shop}: ShopLabelParams) {
 	const restClient = useAdminRestClient();
-	const navigator = useAdminNavigator();
 	const userAlerts = useContext(UserAlertsContext);
 	const [data, setData] = useState<ShopBase>();
 

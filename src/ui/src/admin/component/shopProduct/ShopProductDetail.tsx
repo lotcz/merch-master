@@ -9,7 +9,7 @@ import {ConfirmDialogContext, DeleteButton, FormRow, FormRowControl, Localize, S
 import BackIconLink from "../../../shared/component/general/BackIconLink";
 import {useAdminNavigator} from "../../navigator/AdminNavigator";
 import {ShopProductStub} from "../../../shared/types/ShopProduct";
-import ShopPreview from "../shop/ShopPreview";
+import ShopLink from "../shop/ShopLink";
 import ShopCategorySelect from "../shopCategory/ShopCategorySelect";
 
 export default function ShopProductDetail() {
@@ -104,7 +104,7 @@ export default function ShopProductDetail() {
 			<Form className="px-3 w-75">
 				<Stack direction="vertical" gap={2}>
 					<FormRow label="Shop">
-						<ShopPreview shopId={data.shopId}/>
+						<ShopLink shopId={data.shopId}/>
 					</FormRow>
 					<FormRowControl
 						label="Name"

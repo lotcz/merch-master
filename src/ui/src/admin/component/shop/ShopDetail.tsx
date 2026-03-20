@@ -1,4 +1,4 @@
-import {Form, Spinner, Stack, Tab, Tabs} from "react-bootstrap";
+import {Col, Form, Row, Spinner, Stack, Tab, Tabs} from "react-bootstrap";
 import {useParams, useSearchParams} from "react-router";
 import {useCallback, useContext, useEffect, useState} from "react";
 import {NumberUtil, StringUtil} from "zavadil-ts-common";
@@ -15,6 +15,7 @@ import {useAdminNavigator} from "../../navigator/AdminNavigator";
 import ShopProductsList from "./ShopProductsList";
 import ShopCategoriesList from "./ShopCategoriesList";
 import {ImagezUploadInput} from "../../../shared/component/images/ImagezUploadInput";
+import ShopPreview from "./ShopPreview";
 
 const TAB_PARAM_NAME = "tab";
 const DEFAULT_TAB = "categories";
@@ -130,110 +131,138 @@ export default function ShopDetail() {
 
 			<Form className="px-3 w-75">
 				<Stack direction="vertical" gap={2}>
-					<FormRow label="Account">
-						<AccountPreview accountId={data.accountId}/>
-					</FormRow>
-					<FormRowControl
-						label="Name"
-						type="text"
-						value={data.name}
-						onChange={(e) => {
-							data.name = e.target.value;
-							onChanged();
-						}}
-					/>
-					<FormRowControl
-						label="Slug"
-						type="text"
-						value={data.slug}
-						onChange={(e) => {
-							data.slug = e.target.value;
-							onChanged();
-						}}
-					/>
-					<FormRowControl
-						label="Brand background"
-						type="color"
-						value={data.brandBgColor}
-						onChange={(e) => {
-							data.brandBgColor = e.target.value;
-							onChanged();
-						}}
-					/>
-					<FormRowControl
-						label="Brand text"
-						type="color"
-						value={data.brandFgColor}
-						onChange={(e) => {
-							data.brandFgColor = e.target.value;
-							onChanged();
-						}}
-					/>
-					<FormRow label="Brand image">
-						<ImagezUploadInput
-							name={data.brandImage}
-							onSelected={(e) => {
-								data.brandImage = e;
-								onChanged();
-							}}
-						/>
-					</FormRow>
-					<FormRowControl
-						label="Brand font"
-						type="text"
-						maxLength={255}
-						value={data.brandFontFamily}
-						onChange={(e) => {
-							data.brandFontFamily = e.target.value;
-							onChanged();
-						}}
-					/>
-					<FormRowControl
-						label="Background color"
-						type="color"
-						value={data.backgroundColor}
-						onChange={(e) => {
-							data.backgroundColor = e.target.value;
-							onChanged();
-						}}
-					/>
-					<FormRowControl
-						label="Text color"
-						type="color"
-						value={data.foregroundColor}
-						onChange={(e) => {
-							data.foregroundColor = e.target.value;
-							onChanged();
-						}}
-					/>
-					<FormRowControl
-						label="Text font"
-						type="text"
-						maxLength={255}
-						value={data.fontFamily}
-						onChange={(e) => {
-							data.fontFamily = e.target.value;
-							onChanged();
-						}}
-					/>
-					<FormRow label="State">
-						<ShopStateSelect
-							state={data.state}
+					<Stack direction="horizontal" className="align-items-start" gap={4}>
+						<FormRowControl
+							label="Name"
+							type="text"
+							value={data.name}
 							onChange={(e) => {
-								data.state = e;
+								data.name = e.target.value;
 								onChanged();
 							}}
 						/>
-					</FormRow>
-					<FormRow forId="sync_state" label="Sync">
-						<SyncStateSelect
-							state={data.syncState}
+						<FormRowControl
+							label="Slug"
+							type="text"
+							value={data.slug}
 							onChange={(e) => {
-								data.syncState = e;
+								data.slug = e.target.value;
 								onChanged();
 							}}
 						/>
-					</FormRow>
+					</Stack>
+
+					<Stack direction="horizontal" className="align-items-start" gap={4}>
+						<FormRow label="Account">
+							<AccountPreview accountId={data.accountId}/>
+						</FormRow>
+						<FormRow label="State">
+							<ShopStateSelect
+								state={data.state}
+								onChange={(e) => {
+									data.state = e;
+									onChanged();
+								}}
+							/>
+						</FormRow>
+						<FormRow forId="sync_state" label="Sync">
+							<SyncStateSelect
+								state={data.syncState}
+								onChange={(e) => {
+									data.syncState = e;
+									onChanged();
+								}}
+							/>
+						</FormRow>
+					</Stack>
+
+					<Row>
+						<Col>
+							<Stack direction="horizontal" className="align-items-start" gap={4}>
+								<FormRowControl
+									label="Brand background"
+									type="color"
+									value={data.brandBgColor}
+									onChange={(e) => {
+										data.brandBgColor = e.target.value;
+										onChanged();
+									}}
+								/>
+								<FormRowControl
+									label="Brand text"
+									type="color"
+									value={data.brandFgColor}
+									onChange={(e) => {
+										data.brandFgColor = e.target.value;
+										onChanged();
+									}}
+								/>
+							</Stack>
+							<FormRow label="Brand image">
+								<ImagezUploadInput
+									name={data.brandImage}
+									onSelected={(e) => {
+										data.brandImage = e;
+										onChanged();
+									}}
+								/>
+							</FormRow>
+							<FormRowControl
+								label="Brand font"
+								type="text"
+								maxLength={255}
+								value={data.brandFontFamily}
+								onChange={(e) => {
+									data.brandFontFamily = e.target.value;
+									onChanged();
+								}}
+							/>
+							<Stack direction="horizontal" className="align-items-start" gap={4}>
+								<FormRowControl
+									label="Background color"
+									type="color"
+									value={data.backgroundColor}
+									onChange={(e) => {
+										data.backgroundColor = e.target.value;
+										onChanged();
+									}}
+								/>
+								<FormRowControl
+									label="Text color"
+									type="color"
+									value={data.foregroundColor}
+									onChange={(e) => {
+										data.foregroundColor = e.target.value;
+										onChanged();
+									}}
+								/>
+								<FormRowControl
+									label="Link color"
+									type="color"
+									value={data.linkColor}
+									onChange={(e) => {
+										data.linkColor = e.target.value;
+										onChanged();
+									}}
+								/>
+							</Stack>
+							<FormRowControl
+								label="Text font"
+								type="text"
+								maxLength={255}
+								value={data.fontFamily}
+								onChange={(e) => {
+									data.fontFamily = e.target.value;
+									onChanged();
+								}}
+							/>
+						</Col>
+						<Col>
+							<ShopPreview shop={data}/>
+						</Col>
+					</Row>
+
+
 				</Stack>
 			</Form>
 			{data.id && (
