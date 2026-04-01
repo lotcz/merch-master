@@ -44,8 +44,8 @@ public class DesignController {
 
 	@PostMapping("")
 	public DesignPayload insert(@RequestBody DesignPayload document) {
-		//document.getDesign().setId(null);
-		//document.getFiles().forEach(file -> file.setId(null));
+		document.getDesign().setId(null);
+		document.getFiles().forEach(file -> file.setId(null));
 		return this.designsService.savePayload(document);
 	}
 

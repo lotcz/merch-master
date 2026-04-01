@@ -31,7 +31,7 @@ public class ProductController {
 
 	@PostMapping("")
 	public Product insert(@RequestBody Product document) {
-		//document.setId(null);
+		document.setId(null);
 		return this.productRepository.save(document);
 	}
 
