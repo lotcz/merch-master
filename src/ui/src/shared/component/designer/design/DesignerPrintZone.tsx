@@ -1,8 +1,9 @@
-import {MouseEvent, MouseEventHandler, useCallback, useMemo, useState} from "react";
+import React, {MouseEvent, MouseEventHandler, useCallback, useContext, useMemo, useState} from "react";
 import {PrintZoneStub} from "../../../types/PrintZone";
 import {DesignPayload} from "../../../types/Design";
 import {NumberUtil, Vector2} from "zavadil-ts-common";
 import DesignerFile from "./DesignerFile";
+import {UploadImageDialogContext} from "../../../util/UploadImageDialogContext";
 import {DesignFileStub} from "../../../types/DesignFile";
 import ImageUtil, {PIXEL_PER_MM} from "../../../util/ImageUtil";
 import {ImageHealth} from "../../../types/Image";
@@ -18,7 +19,7 @@ export type DesignerPrintZoneParams = {
 	onChange: (design: DesignPayload) => any;
 	onUpdateFile: (file: DesignFileStub) => any;
 	onFileSelected: (selectedFile?: DesignFileStub) => any;
-};
+}
 
 export default function DesignerPrintZone({
 	printZone,
@@ -29,7 +30,7 @@ export default function DesignerPrintZone({
 	selectedFile,
 	onUpdateFile,
 	onChange,
-	onFileSelected,
+	onFileSelected
 }: DesignerPrintZoneParams) {
 	const widthMm = useMemo(() => printZone.widthMm, [printZone]);
 
@@ -64,24 +65,25 @@ export default function DesignerPrintZone({
 				imageHeightMm: imageHeight,
 				aspectLocked: true,
 				rotateDeg: 0,
-				removeBackgroundThreshold: 10,
+				removeBackgroundThreshold: 10
 			};
 			design.files = [...design.files, file];
 			onChange({...design});
 			onFileSelected(file);
+			uploadImageDialog.hide();
 		},
-		[design, printZone, onChange, widthMm, heightMm, onFileSelected],
+		[uploadImageDialog, design, printZone, onChange, widthMm, heightMm, onFileSelected]
 	);
 
 	const [isResizing, setIsResizing] = useState<boolean>(false);
 	const [moveImagePosition, setMoveImagePosition] = useState<Vector2>();
 
-	const onMouseMove: MouseEventHandler<HTMLDivElement> = useCallback(
-		(e: MouseEvent<HTMLDivElement>) => {
+	const onMove = useCallback(
+		(coords: Vector2) => {
 			if (!selectedFile) return;
 			if (!(moveImagePosition || isResizing)) return;
 
-			const pos = new Vector2(e.nativeEvent.offsetX, e.nativeEvent.offsetY).multiply(1 / scale).multiply(1 / PIXEL_PER_MM);
+			const pos = coords.multiply(1 / scale).multiply(1 / PIXEL_PER_MM);
 
 			if (isResizing) {
 				selectedFile.imageWidthMm = pos.x - selectedFile.positionXMm;
@@ -91,6 +93,7 @@ export default function DesignerPrintZone({
 					const aspect = selectedFile.originalImageWidthPx / selectedFile.originalImageHeightPx;
 					selectedFile.imageHeightMm = selectedFile.imageWidthMm / aspect;
 				}
+
 			} else if (moveImagePosition) {
 				selectedFile.positionXMm = pos.x - moveImagePosition.x;
 				selectedFile.positionYMm = pos.y - moveImagePosition.y;
@@ -98,62 +101,124 @@ export default function DesignerPrintZone({
 
 			onUpdateFile(selectedFile);
 		},
-		[isResizing, moveImagePosition, selectedFile, scale, onUpdateFile],
+		[isResizing, moveImagePosition, selectedFile, scale, onUpdateFile]
 	);
 
-	const files = useMemo(() => design.files.filter((f) => f.printZoneId === printZone.id), [design, printZone]);
+	// register touch events
+	useEffect(
+		() => {
+			const el = containerRef.current;
+			if (!el) return;
+
+			const onTouchStart = (e: TouchEvent) => {
+				e.stopPropagation();
+				e.preventDefault();
+			}
+
+			const onTouchMove = (e: TouchEvent) => {
+				e.stopPropagation();
+				e.preventDefault();
+				const touch = e.touches[0];
+				if (!touch) return;
+				const rect = el.getBoundingClientRect();
+				onMove(new Vector2(touch.clientX - rect.left, touch.clientY - rect.top));
+			}
+
+			const onTouchEnd = () => {
+				setIsResizing(false);
+				setMoveImagePosition(undefined);
+			}
+
+			// @ts-ignore
+			//el.addEventListener("touchstart", onTouchStart, {passive: false});
+			// @ts-ignore
+			el.addEventListener("touchmove", onTouchMove, {passive: false});
+			el.addEventListener("touchend", onTouchEnd);
+
+			return () => {
+				// @ts-ignore
+				//el.removeEventListener("touchstart", onTouchStart);
+				// @ts-ignore
+				el.removeEventListener("touchmove", onTouchMove);
+				el.removeEventListener("touchend", onTouchEnd);
+			};
+		},
+		[containerRef, onMove]
+	);
+
+	const files = useMemo(
+		() => design.files.filter(f => f.printZoneId === printZone.id),
+		[design, printZone]
+	)
 
 	return (
 		<div className="print-zone">
 			<div className="mb-2 d-flex align-items-center gap-2">
-				<div>
-					Rozměry: {widthCm} x {heightCm} cm
-				</div>
-				{!readOnly && <ImagezUploadButton name="Nahrát..." onSelected={uploadImage}/>}
+				<div>Rozměry: {widthCm} x {heightCm} cm</div>
+				{
+					(!readOnly) && <ImagezUploadButton name="Nahrát..." onSelected={uploadImage}/>
+				}
 			</div>
 			<div
-				className={`boundary ${isResizing ? "resizing" : ""} ${moveImagePosition ? "moving" : ""}`}
+				ref={containerRef}
+				className={`boundary ${isResizing ? 'resizing' : ''} ${moveImagePosition ? 'moving' : ''}`}
 				style={{width: width, height: height}}
-				onMouseMove={onMouseMove}
-				onMouseUp={(e: MouseEvent<HTMLDivElement>) => {
-					setIsResizing(false);
-					setMoveImagePosition(undefined);
-				}}
-				onMouseLeave={(e: MouseEvent<HTMLDivElement>) => {
-					setIsResizing(false);
-					setMoveImagePosition(undefined);
-				}}
+				onMouseMove={
+					(e: MouseEvent<HTMLDivElement>) => {
+						e.stopPropagation();
+						e.preventDefault();
+						onMove(new Vector2(e.nativeEvent.offsetX, e.nativeEvent.offsetY));
+					}
+				}
+				onMouseUp={
+					(e: MouseEvent<HTMLDivElement>) => {
+						setIsResizing(false);
+						setMoveImagePosition(undefined);
+					}
+				}
+				onMouseLeave={
+					(e: MouseEvent<HTMLDivElement>) => {
+						setIsResizing(false);
+						setMoveImagePosition(undefined);
+					}
+				}
 			>
-				{files.map((file, index) => (
-					<DesignerFile
-						file={file}
-						key={file.imageName}
-						scale={scale}
-						maxWidth={width}
-						maxHeight={height}
-						isSelected={file === selectedFile}
-						isManipulating={isResizing || moveImagePosition !== undefined}
-						readOnly={readOnly}
-						onSelected={() => onFileSelected(file)}
-						onStartMove={setMoveImagePosition}
-						onEndMove={() => setMoveImagePosition(undefined)}
-						onStartResize={() => setIsResizing(true)}
-						onEndResize={() => setIsResizing(false)}
-						onDeleted={() => {
-							onChange({design: design.design, files: design.files.filter((f) => f !== file)});
-							onFileSelected(undefined);
-						}}
-						onLockUnlock={() => {
-							file.aspectLocked = !file.aspectLocked;
-							if (file.aspectLocked) {
-								const aspect = file.originalImageWidthPx / file.originalImageHeightPx;
-								file.imageHeightMm = file.imageWidthMm / aspect;
+				{
+					files.map(
+						(file, index) => <DesignerFile
+							file={file}
+							key={index}
+							scale={scale}
+							maxWidth={width}
+							maxHeight={height}
+							isSelected={file === selectedFile}
+							isManipulating={isResizing || moveImagePosition !== undefined}
+							readOnly={readOnly}
+							onSelected={() => onFileSelected(file)}
+							onStartMove={setMoveImagePosition}
+							onEndMove={() => setMoveImagePosition(undefined)}
+							onStartResize={() => setIsResizing(true)}
+							onEndResize={() => setIsResizing(false)}
+							onDeleted={
+								() => {
+									onChange({design: design.design, files: design.files.filter(f => f !== file)});
+									onFileSelected(undefined);
+								}
 							}
-							onUpdateFile(file);
-						}}
-					/>
-				))}
+							onLockUnlock={
+								() => {
+									file.aspectLocked = !file.aspectLocked;
+									if (file.aspectLocked) {
+										const aspect = file.originalImageWidthPx / file.originalImageHeightPx;
+										file.imageHeightMm = file.imageWidthMm / aspect;
+									}
+									onUpdateFile(file);
+								}
+							}
+						/>
+					)
+				}
 			</div>
 		</div>
-	);
+	)
 }
