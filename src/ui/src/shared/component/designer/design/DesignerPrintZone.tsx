@@ -1,4 +1,4 @@
-import React, {MouseEvent, MouseEventHandler, useCallback, useContext, useMemo, useState} from "react";
+import React, {MouseEvent, TouchEvent, useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
 import {PrintZoneStub} from "../../../types/PrintZone";
 import {DesignPayload} from "../../../types/Design";
 import {NumberUtil, Vector2} from "zavadil-ts-common";
@@ -32,26 +32,54 @@ export default function DesignerPrintZone({
 	onChange,
 	onFileSelected
 }: DesignerPrintZoneParams) {
-	const widthMm = useMemo(() => printZone.widthMm, [printZone]);
+	const containerRef = useRef<HTMLDivElement>(null);
+	const uploadImageDialog = useContext(UploadImageDialogContext);
 
-	const heightMm = useMemo(() => printZone.heightMm, [printZone]);
+	const widthMm = useMemo(
+		() => printZone.widthMm,
+		[printZone]
+	);
 
-	const widthCm = useMemo(() => NumberUtil.round(widthMm / 10, 1), [widthMm]);
+	const heightMm = useMemo(
+		() => printZone.heightMm,
+		[printZone]
+	);
 
-	const heightCm = useMemo(() => NumberUtil.round(heightMm / 10, 1), [heightMm]);
+	const widthCm = useMemo(
+		() => NumberUtil.round(widthMm / 10, 1),
+		[widthMm]
+	);
 
-	const scale = useMemo(() => {
-		return ImageUtil.imageFitScale(widthMm * PIXEL_PER_MM, heightMm * PIXEL_PER_MM, maxWidth, maxHeight);
-	}, [widthMm, heightMm, maxHeight, maxWidth]);
+	const heightCm = useMemo(
+		() => NumberUtil.round(heightMm / 10, 1),
+		[heightMm]
+	);
+
+	const scale = useMemo(
+		() => {
+			return ImageUtil.imageFitScale(
+				widthMm * PIXEL_PER_MM,
+				heightMm * PIXEL_PER_MM,
+				maxWidth,
+				maxHeight
+			);
+		},
+		[widthMm, heightMm, maxHeight, maxWidth]
+	);
 
 	const width = useMemo(() => Math.round(widthMm * PIXEL_PER_MM * scale), [widthMm, scale]);
 	const height = useMemo(() => Math.round(heightMm * PIXEL_PER_MM * scale), [heightMm, scale]);
 
 	const uploadImage = useCallback(
 		(originalName: string, health: ImageHealth) => {
-			const imageScale = ImageUtil.imageFitScale(health.width / PIXEL_PER_MM, health.height / PIXEL_PER_MM, widthMm, heightMm);
-			const imageWidth = (imageScale * health.width) / PIXEL_PER_MM;
-			const imageHeight = (imageScale * health.height) / PIXEL_PER_MM;
+			const imageScale = ImageUtil.imageFitScale(
+				health.width / PIXEL_PER_MM,
+				health.height / PIXEL_PER_MM,
+				widthMm,
+				heightMm
+			);
+			const imageWidth = imageScale * health.width / PIXEL_PER_MM;
+			const imageHeight = imageScale * health.height / PIXEL_PER_MM;
 			const file: DesignFileStub = {
 				designId: Number(design.design.id),
 				printZoneId: Number(printZone.id),
@@ -110,11 +138,6 @@ export default function DesignerPrintZone({
 			const el = containerRef.current;
 			if (!el) return;
 
-			const onTouchStart = (e: TouchEvent) => {
-				e.stopPropagation();
-				e.preventDefault();
-			}
-
 			const onTouchMove = (e: TouchEvent) => {
 				e.stopPropagation();
 				e.preventDefault();
@@ -130,14 +153,10 @@ export default function DesignerPrintZone({
 			}
 
 			// @ts-ignore
-			//el.addEventListener("touchstart", onTouchStart, {passive: false});
-			// @ts-ignore
 			el.addEventListener("touchmove", onTouchMove, {passive: false});
 			el.addEventListener("touchend", onTouchEnd);
 
 			return () => {
-				// @ts-ignore
-				//el.removeEventListener("touchstart", onTouchStart);
 				// @ts-ignore
 				el.removeEventListener("touchmove", onTouchMove);
 				el.removeEventListener("touchend", onTouchEnd);
