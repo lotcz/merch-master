@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import {StrictMode} from "react";
 import ReactDOM from "react-dom/client";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./shared/style/general.less";
@@ -10,6 +10,6 @@ const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement)
 
 root.render(
 	<StrictMode>
-		<App />
-	</StrictMode>,
+		<App/>
+	</StrictMode>
 );

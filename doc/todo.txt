@@ -1,6 +1,6 @@
 todo:
 
-- mobile designer
+- mobile designer (moving images!)
 - optimize imagez use (size buckets)
 - improve preview (use full screen size, zoom)
 - switch to prod OAuth (switch WorldNews first)
