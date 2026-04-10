@@ -1,4 +1,4 @@
-import React, {MouseEvent, MouseEventHandler, useCallback, useContext, useMemo, useState} from "react";
+import React, {MouseEvent, TouchEvent, useCallback, useContext, useMemo, useState} from "react";
 import {PrintZoneStub} from "../../../types/PrintZone";
 import {DesignPayload} from "../../../types/Design";
 import {NumberUtil, Vector2} from "zavadil-ts-common";
@@ -105,12 +105,12 @@ export default function DesignerPrintZone({
 	const [isResizing, setIsResizing] = useState<boolean>(false);
 	const [moveImagePosition, setMoveImagePosition] = useState<Vector2>();
 
-	const onMouseMove: MouseEventHandler<HTMLDivElement> = useCallback(
-		(e: MouseEvent<HTMLDivElement>) => {
+	const onMove = useCallback(
+		(coords: Vector2) => {
 			if (!selectedFile) return;
 			if (!(moveImagePosition || isResizing)) return;
 
-			const pos = new Vector2(e.nativeEvent.offsetX, e.nativeEvent.offsetY).multiply(1 / scale).multiply(1 / PIXEL_PER_MM);
+			const pos = coords.multiply(1 / scale).multiply(1 / PIXEL_PER_MM);
 
 			if (isResizing) {
 				selectedFile.imageWidthMm = pos.x - selectedFile.positionXMm;
@@ -147,9 +147,30 @@ export default function DesignerPrintZone({
 			<div
 				className={`boundary ${isResizing ? 'resizing' : ''} ${moveImagePosition ? 'moving' : ''}`}
 				style={{width: width, height: height}}
-				onMouseMove={onMouseMove}
+				onMouseMove={
+					(e: MouseEvent<HTMLDivElement>) => {
+						e.stopPropagation();
+						e.preventDefault();
+						onMove(new Vector2(e.nativeEvent.offsetX, e.nativeEvent.offsetY));
+					}
+				}
+				onTouchMove={
+					(e: TouchEvent<HTMLDivElement>) => {
+						e.stopPropagation();
+						e.preventDefault();
+						const touch = e.nativeEvent.touches.item(0);
+						if (!touch) return;
+						onMove(new Vector2(touch.clientX, touch.clientY));
+					}
+				}
 				onMouseUp={
 					(e: MouseEvent<HTMLDivElement>) => {
+						setIsResizing(false);
+						setMoveImagePosition(undefined);
+					}
+				}
+				onTouchEnd={
+					(e: TouchEvent<HTMLDivElement>) => {
 						setIsResizing(false);
 						setMoveImagePosition(undefined);
 					}

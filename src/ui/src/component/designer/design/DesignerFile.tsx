@@ -1,4 +1,4 @@
-import React, {MouseEvent, useMemo} from "react";
+import React, {MouseEvent, TouchEvent, useCallback, useMemo} from "react";
 import {DesignFileStub} from "../../../types/DesignFile";
 import ImageUtil, {PIXEL_PER_MM} from "../../../util/ImageUtil";
 import {ImagezImage} from "../../images/ImagezImage";
@@ -44,6 +44,25 @@ export default function DesignerFile(
 	const width = useMemo(() => Math.round(file.imageWidthMm * PIXEL_PER_MM * scale), [file, scale]);
 	const height = useMemo(() => Math.round(file.imageHeightMm * PIXEL_PER_MM * scale), [file, scale]);
 
+	const startMoving = useCallback(
+		(coords: Vector2) => {
+			if (readOnly) return;
+			if (!isSelected) onSelected();
+			const pos = coords.multiply(1 / (PIXEL_PER_MM * scale));
+			onStartMove(pos);
+		},
+		[readOnly, scale, onStartMove, isSelected, onSelected]
+	);
+
+	const endMoving = useCallback(
+		() => {
+			if (readOnly) return;
+			onEndMove();
+			onEndResize();
+		},
+		[onEndMove, onEndResize, readOnly]
+	);
+
 	return (
 		<div
 			className={`design-file ${isSelected ? 'selected' : ''} ${isManipulating ? 'manipulating' : ''} ${readOnly ? 'read-only' : ''}`}
@@ -59,22 +78,22 @@ export default function DesignerFile(
 			}
 			onMouseDown={
 				(e: MouseEvent<HTMLDivElement>) => {
-					if (readOnly) return;
 					e.stopPropagation();
 					e.preventDefault();
-					if (!isSelected) onSelected();
-					const pos = new Vector2(e.nativeEvent.offsetX, e.nativeEvent.offsetY).multiply(1 / (PIXEL_PER_MM * scale));
-					onStartMove(pos);
+					startMoving(new Vector2(e.nativeEvent.offsetX, e.nativeEvent.offsetY));
 				}
 			}
-			onMouseUp={
-				(e) => {
-					if (readOnly) return;
-					onEndMove();
-					onEndResize();
+			onTouchStart={
+				(e: TouchEvent<HTMLDivElement>) => {
+					e.stopPropagation();
+					e.preventDefault();
+					const touch = e.nativeEvent.touches.item(0);
+					if (!touch) return;
+					startMoving(new Vector2(touch.clientX, touch.clientY));
 				}
 			}
-
+			onMouseUp={endMoving}
+			onTouchEnd={endMoving}
 		>
 			{
 				removeBgColor ?
