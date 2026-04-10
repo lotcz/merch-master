@@ -1,4 +1,4 @@
-import React, {MouseEvent, TouchEvent, useCallback, useMemo} from "react";
+import React, {MouseEvent, TouchEvent, useCallback, useEffect, useMemo, useRef} from "react";
 import {DesignFileStub} from "../../../types/DesignFile";
 import ImageUtil, {PIXEL_PER_MM} from "../../../util/ImageUtil";
 import {ImagezImage} from "../../images/ImagezImage";
@@ -39,6 +39,7 @@ export default function DesignerFile(
 		onLockUnlock
 	}: DesignerFileParams
 ) {
+	const containerRef = useRef<HTMLDivElement>(null);
 	const removeBgColor = useMemo(() => ImageUtil.hexToColor(file.removeBackgroundColor), [file]);
 
 	const width = useMemo(() => Math.round(file.imageWidthMm * PIXEL_PER_MM * scale), [file, scale]);
@@ -63,8 +64,41 @@ export default function DesignerFile(
 		[onEndMove, onEndResize, readOnly]
 	);
 
+	// register touch events
+	useEffect(
+		() => {
+			const el = containerRef.current;
+			if (!el) return;
+
+			const onTouchStart = (e: TouchEvent) => {
+				e.stopPropagation();
+				e.preventDefault();
+				const touch = e.touches[0];
+				if (!touch) return;
+				const rect = el.getBoundingClientRect();
+				startMoving(new Vector2(touch.clientX - rect.left, touch.clientY - rect.top));
+			}
+
+			const onTouchEnd = () => {
+				endMoving();
+			}
+
+			// @ts-ignore
+			el.addEventListener("touchstart", onTouchStart, {passive: false});
+			el.addEventListener("touchend", onTouchEnd);
+
+			return () => {
+				// @ts-ignore
+				el.removeEventListener("touchstart", onTouchStart);
+				el.removeEventListener("touchend", onTouchEnd);
+			};
+		},
+		[containerRef, startMoving, endMoving]
+	);
+
 	return (
 		<div
+			ref={containerRef}
 			className={`design-file ${isSelected ? 'selected' : ''} ${isManipulating ? 'manipulating' : ''} ${readOnly ? 'read-only' : ''}`}
 			draggable={false}
 			style={
@@ -83,17 +117,7 @@ export default function DesignerFile(
 					startMoving(new Vector2(e.nativeEvent.offsetX, e.nativeEvent.offsetY));
 				}
 			}
-			onTouchStart={
-				(e: TouchEvent<HTMLDivElement>) => {
-					e.stopPropagation();
-					e.preventDefault();
-					const touch = e.nativeEvent.touches.item(0);
-					if (!touch) return;
-					startMoving(new Vector2(touch.clientX, touch.clientY));
-				}
-			}
 			onMouseUp={endMoving}
-			onTouchEnd={endMoving}
 		>
 			{
 				removeBgColor ?

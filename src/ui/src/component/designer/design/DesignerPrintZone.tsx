@@ -1,4 +1,4 @@
-import React, {MouseEvent, TouchEvent, useCallback, useContext, useMemo, useState} from "react";
+import React, {MouseEvent, TouchEvent, useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
 import {PrintZoneStub} from "../../../types/PrintZone";
 import {DesignPayload} from "../../../types/Design";
 import {NumberUtil, Vector2} from "zavadil-ts-common";
@@ -32,6 +32,7 @@ export default function DesignerPrintZone({
 	onChange,
 	onFileSelected
 }: DesignerPrintZoneParams) {
+	const containerRef = useRef<HTMLDivElement>(null);
 	const uploadImageDialog = useContext(UploadImageDialogContext);
 
 	const widthMm = useMemo(
@@ -131,6 +132,48 @@ export default function DesignerPrintZone({
 		[isResizing, moveImagePosition, selectedFile, scale, onUpdateFile]
 	);
 
+	// register touch events
+	useEffect(
+		() => {
+			const el = containerRef.current;
+			if (!el) return;
+
+			const onTouchStart = (e: TouchEvent) => {
+				e.stopPropagation();
+				e.preventDefault();
+			}
+
+			const onTouchMove = (e: TouchEvent) => {
+				e.stopPropagation();
+				e.preventDefault();
+				const touch = e.touches[0];
+				if (!touch) return;
+				const rect = el.getBoundingClientRect();
+				onMove(new Vector2(touch.clientX - rect.left, touch.clientY - rect.top));
+			}
+
+			const onTouchEnd = () => {
+				setIsResizing(false);
+				setMoveImagePosition(undefined);
+			}
+
+			// @ts-ignore
+			//el.addEventListener("touchstart", onTouchStart, {passive: false});
+			// @ts-ignore
+			el.addEventListener("touchmove", onTouchMove, {passive: false});
+			el.addEventListener("touchend", onTouchEnd);
+
+			return () => {
+				// @ts-ignore
+				//el.removeEventListener("touchstart", onTouchStart);
+				// @ts-ignore
+				el.removeEventListener("touchmove", onTouchMove);
+				el.removeEventListener("touchend", onTouchEnd);
+			};
+		},
+		[containerRef, onMove]
+	);
+
 	const files = useMemo(
 		() => design.files.filter(f => f.printZoneId === printZone.id),
 		[design, printZone]
@@ -145,6 +188,7 @@ export default function DesignerPrintZone({
 				}
 			</div>
 			<div
+				ref={containerRef}
 				className={`boundary ${isResizing ? 'resizing' : ''} ${moveImagePosition ? 'moving' : ''}`}
 				style={{width: width, height: height}}
 				onMouseMove={
@@ -154,23 +198,8 @@ export default function DesignerPrintZone({
 						onMove(new Vector2(e.nativeEvent.offsetX, e.nativeEvent.offsetY));
 					}
 				}
-				onTouchMove={
-					(e: TouchEvent<HTMLDivElement>) => {
-						e.stopPropagation();
-						e.preventDefault();
-						const touch = e.nativeEvent.touches.item(0);
-						if (!touch) return;
-						onMove(new Vector2(touch.clientX, touch.clientY));
-					}
-				}
 				onMouseUp={
 					(e: MouseEvent<HTMLDivElement>) => {
-						setIsResizing(false);
-						setMoveImagePosition(undefined);
-					}
-				}
-				onTouchEnd={
-					(e: TouchEvent<HTMLDivElement>) => {
 						setIsResizing(false);
 						setMoveImagePosition(undefined);
 					}
@@ -186,7 +215,7 @@ export default function DesignerPrintZone({
 					files.map(
 						(file, index) => <DesignerFile
 							file={file}
-							key={file.imageName}
+							key={index}
 							scale={scale}
 							maxWidth={width}
 							maxHeight={height}
