@@ -1,15 +1,16 @@
-import {Col, Form, Row, Spinner, Stack, Tab, Table, Tabs} from "react-bootstrap";
+import {Form, Spinner, Stack, Tab, Table, Tabs} from "react-bootstrap";
 import {Link, useNavigate, useParams, useSearchParams} from "react-router";
 import {useCallback, useContext, useEffect, useState} from "react";
 import {NumberUtil, StringUtil} from "zavadil-ts-common";
 import {useAdminRestClient} from "../../client/AdminRestClient";
 import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../shared/component/general/RefreshIconButton";
-import {ConfirmDialogContext, DeleteButton, SaveButton} from "zavadil-react-common";
+import {ConfirmDialogContext, DeleteButton, FormRow, FormRowControl, SaveButton} from "zavadil-react-common";
 import BackIconLink from "../../../shared/component/general/BackIconLink";
 import {DesignPayload} from "../../../shared/types/Design";
 import Designer from "../../../shared/component/designer/Designer";
 import {DesignerRestClientContext} from "../../../designer/client/DesignerRestClient";
+import AccountSelect from "../account/AccountSelect";
 
 const TAB_PARAM_NAME = "tab";
 const DEFAULT_TAB = "designer";
@@ -121,24 +122,23 @@ export default function DesignDetail() {
 
 			<Form className="px-3 w-75">
 				<Stack direction="vertical" gap={2}>
-					<Row className="align-items-start">
-						<Col md={COL_1_MD} lg={COL_1_LG}>
-							<Form.Label>UUID:</Form.Label>
-						</Col>
-						<Col md={COL_2_MD} lg={COL_2_LG}>
-							<div className="d-flex align-items-center gap-2">
-								<Form.Control
-									type="text"
-									value={StringUtil.getNonEmpty(data.design.uuid)}
-									onChange={(e) => {
-										data.design.uuid = e.target.value;
-										onChanged({...data});
-									}}
-								/>
-								<Link to={`/designer/${data.design.uuid}`}>Designer</Link>
-							</div>
-						</Col>
-					</Row>
+					<FormRowControl
+						label="UUID"
+						disabled={true}
+						value={StringUtil.getNonEmpty(data.design.uuid)}
+					/>
+					<Link to={`/designer/${data.design.uuid}`}>Open Designer</Link>
+					<FormRow label="Account">
+						<AccountSelect
+							accountId={data.design.accountId}
+							onChange={
+								(e) => {
+									data.design.accountId = e;
+									onChanged({...data});
+								}
+							}
+						/>
+					</FormRow>
 				</Stack>
 			</Form>
 			<div>

@@ -12,6 +12,9 @@ import lombok.EqualsAndHashCode;
 @Table(name = "design")
 public class DesignStub extends DesignBase {
 
+	@Column(name = "account_id")
+	private Integer accountId;
+
 	@Column(name = "print_type_id")
 	private int printTypeId;
 

@@ -11,6 +11,7 @@ import {useAdminNavigator} from "../../navigator/AdminNavigator";
 import {ShopProductStub} from "../../../shared/types/ShopProduct";
 import ShopLink from "../shop/ShopLink";
 import ShopCategorySelect from "../shopCategory/ShopCategorySelect";
+import DesignSelectByShop from "../designs/DesignSelectByShop";
 
 export default function ShopProductDetail() {
 	const {id, shopId} = useParams();
@@ -121,6 +122,16 @@ export default function ShopProductDetail() {
 							categoryId={data.categoryId}
 							onChange={(e) => {
 								data.categoryId = e;
+								onChanged();
+							}}
+						/>
+					</FormRow>
+					<FormRow label="Design">
+						<DesignSelectByShop
+							shopId={data.shopId}
+							designId={data.designId}
+							onChange={(e) => {
+								data.designId = Number(e);
 								onChanged();
 							}}
 						/>

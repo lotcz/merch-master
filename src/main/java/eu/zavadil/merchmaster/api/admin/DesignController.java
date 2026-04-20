@@ -3,6 +3,7 @@ package eu.zavadil.merchmaster.api.admin;
 import eu.zavadil.java.spring.common.paging.JsonPage;
 import eu.zavadil.java.spring.common.paging.JsonPageImpl;
 import eu.zavadil.java.spring.common.paging.PagingUtils;
+import eu.zavadil.java.util.StringUtils;
 import eu.zavadil.merchmaster.api.payload.DesignPayload;
 import eu.zavadil.merchmaster.data.design.Design;
 import eu.zavadil.merchmaster.data.design.DesignRepository;
@@ -42,6 +43,11 @@ public class DesignController {
 		return this.designsService.loadPayload(id);
 	}
 
+	@GetMapping("{id}/full")
+	public Design loadFull(@PathVariable int id) {
+		return this.designsService.loadFull(id);
+	}
+
 	@PostMapping("")
 	public DesignPayload insert(@RequestBody DesignPayload document) {
 		document.getDesign().setId(null);
@@ -58,5 +64,19 @@ public class DesignController {
 	@DeleteMapping("{id}")
 	public void delete(@PathVariable int id) {
 		this.stubRepository.deleteById(id);
+	}
+
+	@GetMapping("by-account/{accountId}")
+	public JsonPage<Design> searchByAccount(
+		@PathVariable int accountId,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "10") int size,
+		@RequestParam(defaultValue = "") String search,
+		@RequestParam(defaultValue = "") String sorting
+	) {
+		return JsonPageImpl.of(
+			StringUtils.isBlank(search) ? this.designsService.loadByAccount(accountId, page, size, sorting)
+				: this.designsService.searchByAccount(accountId, search, page, size, sorting)
+		);
 	}
 }

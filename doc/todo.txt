@@ -1,6 +1,8 @@
 todo:
 
-- mobile designer (moving images!)
+- security
+  - limit accounts to only access their designs, products, shops, categories, creators, customers, images
+- mobile designer
 - optimize imagez use (size buckets)
 - improve preview (use full screen size, zoom)
 - switch to prod OAuth (switch WorldNews first)
