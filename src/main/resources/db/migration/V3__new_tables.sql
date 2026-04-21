@@ -72,7 +72,6 @@ CREATE TABLE shop_product (
 );
 CREATE UNIQUE INDEX idx_shop_product_shop ON shop_product (shop_id, "name");
 CREATE INDEX idx_shop_product_category ON shop_product (shop_id, category_id);
-CREATE UNIQUE INDEX idx_shop_product_design ON shop_product (design_id);
 
 create type tp_user_state AS ENUM ('Temporary', 'Active', 'Disabled');
 create cast	(varchar AS tp_user_state) WITH INOUT AS IMPLICIT;

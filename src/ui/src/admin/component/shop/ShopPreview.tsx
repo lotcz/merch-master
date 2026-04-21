@@ -24,6 +24,7 @@ export default function ShopPreview({shop}: ShopPreviewParams) {
 			</div>
 		</div>
 		<div className="shop-body">
+			<div>{shop.description}</div>
 			<p>
 				Ostatní text na e-shopu
 			</p>
