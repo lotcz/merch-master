@@ -97,37 +97,35 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="BN9TquAgf_DTlFvKtHbI-21" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Product" vertex="1">
-          <mxGeometry height="60" width="120" x="190" y="435" as="geometry" />
-        </mxCell>
-        <mxCell id="BN9TquAgf_DTlFvKtHbI-23" edge="1" parent="1" source="t4Dp8TmLi5GPdiORj_w_-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="BN9TquAgf_DTlFvKtHbI-21">
+        <mxCell id="BN9TquAgf_DTlFvKtHbI-23" edge="1" parent="1" source="t4Dp8TmLi5GPdiORj_w_-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="BN9TquAgf_DTlFvKtHbI-25">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="330" y="465" />
-              <mxPoint x="330" y="465" />
+              <mxPoint x="250" y="465" />
             </Array>
             <mxPoint x="300" y="550" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="BN9TquAgf_DTlFvKtHbI-28" edge="1" parent="1" source="BN9TquAgf_DTlFvKtHbI-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="BN9TquAgf_DTlFvKtHbI-21">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="BN9TquAgf_DTlFvKtHbI-25" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Color" vertex="1">
-          <mxGeometry height="60" width="120" x="30" y="435" as="geometry" />
-        </mxCell>
-        <mxCell id="BN9TquAgf_DTlFvKtHbI-30" edge="1" parent="1" source="BN9TquAgf_DTlFvKtHbI-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="BN9TquAgf_DTlFvKtHbI-21">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="160" y="555" />
-              <mxPoint x="160" y="485" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="BN9TquAgf_DTlFvKtHbI-29" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Size" vertex="1">
-          <mxGeometry height="60" width="120" x="30" y="515" as="geometry" />
-        </mxCell>
         <mxCell id="nKzaRsIUxxoDRtbY3JWZ-1" parent="1" style="swimlane;whiteSpace=wrap;html=1;" value="Admin" vertex="1">
           <mxGeometry height="245" width="310" x="20" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="BN9TquAgf_DTlFvKtHbI-29" parent="nKzaRsIUxxoDRtbY3JWZ-1" style="rounded=1;whiteSpace=wrap;html=1;" value="Size" vertex="1">
+          <mxGeometry height="60" width="120" x="40" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="BN9TquAgf_DTlFvKtHbI-25" parent="nKzaRsIUxxoDRtbY3JWZ-1" style="rounded=1;whiteSpace=wrap;html=1;" value="Color" vertex="1">
+          <mxGeometry height="60" width="120" x="160" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="BN9TquAgf_DTlFvKtHbI-21" parent="nKzaRsIUxxoDRtbY3JWZ-1" style="rounded=1;whiteSpace=wrap;html=1;" value="Product" vertex="1">
+          <mxGeometry height="60" width="120" x="10" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="BN9TquAgf_DTlFvKtHbI-28" edge="1" parent="nKzaRsIUxxoDRtbY3JWZ-1" source="BN9TquAgf_DTlFvKtHbI-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="BN9TquAgf_DTlFvKtHbI-21">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="BN9TquAgf_DTlFvKtHbI-30" edge="1" parent="nKzaRsIUxxoDRtbY3JWZ-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="BN9TquAgf_DTlFvKtHbI-21">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+            <mxPoint x="100" y="160" as="sourcePoint" />
+            <mxPoint x="90" y="70" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="nKzaRsIUxxoDRtbY3JWZ-2" parent="1" style="swimlane;whiteSpace=wrap;html=1;" value="Customer" vertex="1">
           <mxGeometry height="395" width="270" x="795" y="170" as="geometry" />

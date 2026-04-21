@@ -13,4 +13,7 @@ public class ShopProductBase extends EntityWithNameBase {
 	private boolean visible;
 
 	private double creatorProfit;
+
+	private String description;
+
 }

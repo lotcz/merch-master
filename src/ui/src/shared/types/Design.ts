@@ -7,6 +7,7 @@ import {Account} from "./Account";
 export type DesignBase = EntityBase & {
 	uuid?: string | null;
 	confirmed: boolean;
+	description?: string | null;
 }
 
 export type Design = DesignBase & {

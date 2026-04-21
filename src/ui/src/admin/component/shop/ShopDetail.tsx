@@ -176,6 +176,17 @@ export default function ShopDetail() {
 						</FormRow>
 					</Stack>
 
+					<FormRow label="Description">
+						<Form.Control
+							as="textarea"
+							value={StringUtil.getNonEmpty(data.description)}
+							onChange={(e) => {
+								data.description = e.target.value;
+								onChanged();
+							}}
+						/>
+					</FormRow>
+
 					<Row>
 						<Col>
 							<Stack direction="horizontal" className="align-items-start" gap={4}>
@@ -201,8 +212,8 @@ export default function ShopDetail() {
 							<FormRow label="Brand image">
 								<ImagezUploadInput
 									name={data.brandImage}
-									onSelected={(e) => {
-										data.brandImage = e;
+									onSelected={(originalName, health) => {
+										data.brandImage = health.name;
 										onChanged();
 									}}
 								/>

@@ -128,6 +128,13 @@ export default function DesignDetail() {
 						value={StringUtil.getNonEmpty(data.design.uuid)}
 					/>
 					<Link to={`/designer/${data.design.uuid}`}>Open Designer</Link>
+					<FormRow label="Description">
+						<Form.Control
+							as="textarea"
+							disabled={true}
+							value={StringUtil.getNonEmpty(data.design.description)}
+						/>
+					</FormRow>
 					<FormRow label="Account">
 						<AccountSelect
 							accountId={data.design.accountId}

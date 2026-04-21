@@ -8,8 +8,9 @@ import {useAdminNavigator} from "../../navigator/AdminNavigator";
 import {ShopProduct} from "../../../shared/types/ShopProduct";
 
 const HEADER: SelectableTableHeader<ShopProduct> = [
-	{name: "product.name", label: "Product"},
+	{name: "design.productColor.product.name", label: "Product"},
 	{name: "name", label: "Name"},
+	{name: "category.name", label: "Category"},
 	{name: "creatorProfit", label: "Profit"},
 	{name: "lastUpdatedOn", label: "Updated", renderer: (p) => <DateTime value={p.lastUpdatedOn}/>},
 	{name: "createdOn", label: "Created", renderer: (p) => <DateTime value={p.createdOn}/>},

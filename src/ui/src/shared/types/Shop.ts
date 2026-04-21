@@ -6,6 +6,7 @@ export type ShopBase = EntityWithName & {
 	oauthAudienceName: string;
 	state: string;
 	syncState: string;
+	description?: string | null;
 	backgroundColor: string;
 	foregroundColor: string;
 	linkColor: string;

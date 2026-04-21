@@ -44,6 +44,8 @@ public class ShopBase extends EntityWithNameBase {
 		this.oauthAudienceName = this.truncateString(name, OAUTH_AUDIENCE_LENGTH);
 	}
 
+	private String description;
+
 	/* DESIGN */
 
 	static final int COLOR_LENGTH = 20;
@@ -109,5 +111,5 @@ public class ShopBase extends EntityWithNameBase {
 	public void setBrandFontFamily(String family) {
 		this.brandFontFamily = this.truncateString(family, FONT_FAMILY_LENGTH);
 	}
-	
+
 }

@@ -6,6 +6,7 @@ import {Design} from "./Design";
 export type ShopProductBase = EntityWithName & {
 	visible: boolean;
 	creatorProfit: number;
+	description?: string | null;
 }
 
 export type ShopProduct = ShopProductBase & {

@@ -12,4 +12,6 @@ public class Product extends EntityWithNameBase {
 
 	private double basePrice;
 
+	private String description;
+
 }

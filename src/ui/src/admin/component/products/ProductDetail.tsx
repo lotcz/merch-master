@@ -1,11 +1,11 @@
-import {Col, Form, Row, Spinner, Stack, Tab, Tabs} from "react-bootstrap";
+import {Form, Spinner, Stack, Tab, Tabs} from "react-bootstrap";
 import {useParams, useSearchParams} from "react-router";
 import {useCallback, useContext, useEffect, useState} from "react";
 import {NumberUtil, StringUtil} from "zavadil-ts-common";
 import {useAdminRestClient} from "../../client/AdminRestClient";
 import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../shared/component/general/RefreshIconButton";
-import {ConfirmDialogContext, DeleteButton, SaveButton} from "zavadil-react-common";
+import {ConfirmDialogContext, DeleteButton, FormRow, FormRowControl, SaveButton} from "zavadil-react-common";
 import BackIconLink from "../../../shared/component/general/BackIconLink";
 import {Product} from "../../../shared/types/Product";
 import ProductPrintTypesList from "./ProductPrintTypesList";
@@ -120,25 +120,34 @@ export default function ProductDetail() {
 			</div>
 
 			<Form className="px-3 w-75">
-				<Stack direction="vertical" gap={2}>
-					<Row className="align-items-start">
-						<Col md={COL_1_MD} lg={COL_1_LG}>
-							<Form.Label>Name:</Form.Label>
-						</Col>
-						<Col md={COL_2_MD} lg={COL_2_LG}>
-							<div>
-								<Form.Control
-									type="text"
-									value={data.name}
-									onChange={(e) => {
-										data.name = e.target.value;
-										onChanged();
-									}}
-								/>
-							</div>
-						</Col>
-					</Row>
-				</Stack>
+				<FormRowControl
+					label="Name"
+					type="text"
+					value={data.name}
+					onChange={(e) => {
+						data.name = e.target.value;
+						onChanged();
+					}}
+				/>
+				<FormRow label="Description">
+					<Form.Control
+						as="textarea"
+						value={StringUtil.getNonEmpty(data.description)}
+						onChange={(e) => {
+							data.description = e.target.value;
+							onChanged();
+						}}
+					/>
+				</FormRow>
+				<FormRowControl
+					label="Base price"
+					type="number"
+					value={data.basePrice}
+					onChange={(e) => {
+						data.basePrice = Number(e.target.value);
+						onChanged();
+					}}
+				/>
 			</Form>
 			{data.id && (
 				<div className="mt-2">

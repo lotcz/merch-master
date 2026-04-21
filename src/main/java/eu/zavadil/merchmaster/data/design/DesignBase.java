@@ -18,4 +18,6 @@ public class DesignBase extends EntityBase {
 	private UUID uuid;
 
 	private boolean confirmed = false;
+
+	private String description;
 }

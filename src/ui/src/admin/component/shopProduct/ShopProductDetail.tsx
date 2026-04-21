@@ -1,7 +1,7 @@
 import {Form, Spinner, Stack} from "react-bootstrap";
 import {useParams} from "react-router";
 import {useCallback, useContext, useEffect, useState} from "react";
-import {NumberUtil} from "zavadil-ts-common";
+import {NumberUtil, StringUtil} from "zavadil-ts-common";
 import {useAdminRestClient} from "../../client/AdminRestClient";
 import {UserAlertsContext} from "../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../shared/component/general/RefreshIconButton";
@@ -12,6 +12,7 @@ import {ShopProductStub} from "../../../shared/types/ShopProduct";
 import ShopLink from "../shop/ShopLink";
 import ShopCategorySelect from "../shopCategory/ShopCategorySelect";
 import DesignSelectByShop from "../designs/DesignSelectByShop";
+import {Design} from "../../../shared/types/Design";
 
 export default function ShopProductDetail() {
 	const {id, shopId} = useParams();
@@ -20,6 +21,7 @@ export default function ShopProductDetail() {
 	const userAlerts = useContext(UserAlertsContext);
 	const confirmDialog = useContext(ConfirmDialogContext);
 	const [data, setData] = useState<ShopProductStub>();
+	const [design, setDesign] = useState<Design>();
 	const [changed, setChanged] = useState<boolean>(false);
 	const [deleting, setDeleting] = useState<boolean>(false);
 	const [saving, setSaving] = useState<boolean>(false);
@@ -50,6 +52,14 @@ export default function ShopProductDetail() {
 	}, [id, shopId, restClient, userAlerts]);
 
 	useEffect(reload, [id]);
+
+	useEffect(
+		() => {
+			if ((data && !design) || (data && design?.id !== data.designId))
+				restClient.designs.loadFull(data.designId).then(setDesign);
+		},
+		[data, design]
+	);
 
 	const saveData = useCallback(() => {
 		if (!data) return;
@@ -116,6 +126,16 @@ export default function ShopProductDetail() {
 							onChanged();
 						}}
 					/>
+					<FormRow label="Description">
+						<Form.Control
+							as="textarea"
+							value={StringUtil.getNonEmpty(data.description)}
+							onChange={(e) => {
+								data.description = e.target.value;
+								onChanged();
+							}}
+						/>
+					</FormRow>
 					<FormRow label="Category">
 						<ShopCategorySelect
 							shopId={data.shopId}
@@ -144,15 +164,29 @@ export default function ShopProductDetail() {
 							onChanged();
 						}}
 					/>
-					<FormRowControl
-						label="Profit"
-						type="integer"
-						value={data.creatorProfit}
-						onChange={(e) => {
-							data.creatorProfit = Number(e.target.value);
-							onChanged();
-						}}
-					/>
+					<div className="d-flex align-items-start gap-2">
+						<FormRow label="Base price">
+							{
+								design ? <span>{design.productColor.product.basePrice} Kč</span>
+									: <Spinner/>
+							}
+						</FormRow>
+						<FormRowControl
+							label="Profit"
+							type="number"
+							value={data.creatorProfit}
+							onChange={(e) => {
+								data.creatorProfit = Number(e.target.value);
+								onChanged();
+							}}
+						/>
+						<FormRow label="Final price">
+							{
+								design ? <strong>{design.productColor.product.basePrice + data.creatorProfit} Kč</strong>
+									: <Spinner/>
+							}
+						</FormRow>
+					</div>
 				</Stack>
 			</Form>
 		</div>
