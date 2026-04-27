@@ -1,15 +1,15 @@
-import {MutableRefObject} from "react";
 import {Editor} from "@tinymce/tinymce-react";
-import {Editor as TinyMCEEditor} from 'tinymce';
+import {useMemo} from "react";
 
 export type TinyMceInputProps = {
 	initialValue: string;
-	editorRef: MutableRefObject<TinyMCEEditor | null>;
+	onChange: (value: string) => any;
 };
 
-export default function TinyMceInput({initialValue, editorRef}: TinyMceInputProps) {
+export default function TinyMceInput({initialValue, onChange}: TinyMceInputProps) {
+	const value = useMemo(() => initialValue, []);
 	return <Editor
-		initialValue={initialValue}
+		initialValue={value}
 		tinymceScriptSrc="https://zavadil.eu/tinymce8/tinymce.min.js"
 		licenseKey="gpl"
 		init={{
@@ -18,6 +18,6 @@ export default function TinyMceInput({initialValue, editorRef}: TinyMceInputProp
 			plugins: 'advlist autolink lists link image',
 			toolbar: 'undo redo | bold italic | bullist numlist',
 		}}
-		onInit={(evt, editor) => editorRef.current = editor}
+		onInput={(evt, editor) => onChange(editor.getContent())}
 	/>
 }
