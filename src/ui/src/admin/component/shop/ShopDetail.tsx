@@ -1,6 +1,6 @@
 import {Col, Form, Row, Spinner, Stack, Tab, Tabs} from "react-bootstrap";
 import {useParams, useSearchParams} from "react-router";
-import {useCallback, useContext, useEffect, useState} from "react";
+import {useCallback, useContext, useEffect, useRef, useState} from "react";
 import {NumberUtil, StringUtil} from "zavadil-ts-common";
 import {useAdminRestClient} from "../../client/AdminRestClient";
 import {UserAlertsContext} from "../../../shared/util/UserAlerts";
@@ -16,6 +16,8 @@ import ShopProductsList from "./ShopProductsList";
 import ShopCategoriesList from "./ShopCategoriesList";
 import {ImagezUploadInput} from "../../../shared/component/images/ImagezUploadInput";
 import ShopPreview from "./ShopPreview";
+import TinyMceInput from "../../../shared/component/general/TinyMceInput";
+import {Editor as TinyMCEEditor} from 'tinymce';
 
 const TAB_PARAM_NAME = "tab";
 const DEFAULT_TAB = "categories";
@@ -28,6 +30,7 @@ export default function ShopDetail() {
 	const userAlerts = useContext(UserAlertsContext);
 	const confirmDialog = useContext(ConfirmDialogContext);
 	const [activeTab, setActiveTab] = useState<string>();
+	const editorRef = useRef<TinyMCEEditor>(null);
 	const [data, setData] = useState<ShopStub>();
 	const [changed, setChanged] = useState<boolean>(false);
 	const [deleting, setDeleting] = useState<boolean>(false);
@@ -177,13 +180,9 @@ export default function ShopDetail() {
 					</Stack>
 
 					<FormRow label="Description">
-						<Form.Control
-							as="textarea"
-							value={StringUtil.getNonEmpty(data.description)}
-							onChange={(e) => {
-								data.description = e.target.value;
-								onChanged();
-							}}
+						<TinyMceInput
+							initialValue={StringUtil.getNonEmpty(data.description)}
+							editorRef={editorRef}
 						/>
 					</FormRow>
 
