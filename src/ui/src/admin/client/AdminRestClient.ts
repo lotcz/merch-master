@@ -13,7 +13,7 @@ import {UsersClient} from "./UsersClient";
 import {ImageCacheClient} from "./ImageCacheClient";
 import {ProductSizesClient} from "./ProductSizesClient";
 import {CreatorsClient} from "./CreatorsClient";
-import {CustomersClient} from "./CustomersClient";
+import {ShopCustomersClient} from "./ShopCustomersClient";
 import {ShopCategoriesClient} from "./ShopCategoriesClient";
 import {ShopProductsClient} from "./ShopProductsClient";
 import {ShopOrdersClient} from "./ShopOrdersClient";
@@ -32,11 +32,11 @@ export class AdminRestClient extends MmRestClient {
 
 	public shopOrders: ShopOrdersClient;
 
+	public shopCustomers: ShopCustomersClient;
+
 	public users: UsersClient;
 
 	public creators: CreatorsClient;
-
-	public customers: CustomersClient;
 
 	public imageCache: ImageCacheClient;
 
@@ -63,7 +63,7 @@ export class AdminRestClient extends MmRestClient {
 		this.shopOrders = new ShopOrdersClient(this);
 		this.users = new UsersClient(this);
 		this.creators = new CreatorsClient(this);
-		this.customers = new CustomersClient(this);
+		this.shopCustomers = new ShopCustomersClient(this);
 		this.imageCache = new ImageCacheClient(this);
 		this.printTypes = new PrintTypesClient(this);
 		this.printZones = new PrintZonesClient(this);

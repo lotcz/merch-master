@@ -8,7 +8,6 @@ import {useAdminNavigator} from "../../navigator/AdminNavigator";
 import {ShopOrder} from "../../../shared/types/ShopOrder";
 
 const HEADER: SelectableTableHeader<ShopOrder> = [
-	{name: "customer.user.email", label: "Customer"},
 	{name: "orderState", label: "State"},
 	{name: "totalPrice", label: "Price"},
 	{name: "lastUpdatedOn", label: "Updated", renderer: (p) => <DateTime value={p.lastUpdatedOn}/>},
@@ -17,11 +16,11 @@ const HEADER: SelectableTableHeader<ShopOrder> = [
 
 const DEFAULT_PAGING: PagingRequest = {page: 0, size: 10, sorting: [{name: "lastUpdatedOn", desc: true}]};
 
-export type ShopOrderListProps = {
-	shopId: number;
+export type ShopCustomerOrderListProps = {
+	customerId: number;
 };
 
-export default function ShopOrdersList({shopId}: ShopOrderListProps) {
+export default function ShopCustomerOrdersList({customerId}: ShopCustomerOrderListProps) {
 	const navigator = useAdminNavigator();
 	const restClient = useAdminRestClient();
 	const userAlerts = useContext(UserAlertsContext);
@@ -31,15 +30,15 @@ export default function ShopOrdersList({shopId}: ShopOrderListProps) {
 
 	const load = useCallback(() => {
 		restClient.shopOrders
-			.loadByShop(shopId, paging)
+			.loadByCustomer(customerId, paging)
 			.then(setData)
 			.catch((e: Error) => {
 				setData(undefined);
 				userAlerts.err(e);
 			});
-	}, [shopId, paging, restClient, userAlerts]);
+	}, [customerId, paging, restClient, userAlerts]);
 
-	useEffect(load, [shopId, paging]);
+	useEffect(load, [customerId, paging]);
 
 	const applySearch = useCallback(
 		(e: FormEvent) => {
@@ -56,6 +55,9 @@ export default function ShopOrdersList({shopId}: ShopOrderListProps) {
 	return (
 		<div>
 			<div className="pt-2 d-flex gap-2 align-items-center">
+				<Button variant="primary" size="sm" onClick={() => navigator.shops.orders.add(customerId)}>
+					+ Add
+				</Button>
 				<div style={{width: "250px"}}>
 					<Form onSubmit={applySearch}>
 						<TextInputWithReset

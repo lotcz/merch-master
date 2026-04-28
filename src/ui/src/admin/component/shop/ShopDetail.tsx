@@ -17,6 +17,8 @@ import ShopCategoriesList from "./ShopCategoriesList";
 import {ImagezUploadInput} from "../../../shared/component/images/ImagezUploadInput";
 import ShopPreview from "./ShopPreview";
 import TinyMceInput from "../../../shared/component/general/TinyMceInput";
+import ShopOrdersList from "./ShopOrdersList";
+import ShopCustomersList from "./ShopCustomersList";
 
 const TAB_PARAM_NAME = "tab";
 const DEFAULT_TAB = "categories";
@@ -277,20 +279,24 @@ export default function ShopDetail() {
 
 				</Stack>
 			</Form>
-			{data.id && (
-				<div className="mt-2">
-					<Tabs activeKey={activeTab} onSelect={(key) => setActiveTab(StringUtil.getNonEmpty(key, DEFAULT_TAB))}>
-						<Tab title="Categories" eventKey="categories"/>
-						<Tab title="Products" eventKey="products"/>
-						<Tab title="Orders" eventKey="orders"/>
-					</Tabs>
-					<div className="px-3 py-1">
-						{activeTab === "categories" && <ShopCategoriesList shopId={data.id}/>}
-						{activeTab === "products" && <ShopProductsList shopId={data.id}/>}
-						{activeTab === "orders" && <></>}
+			{
+				data.id && (
+					<div className="mt-2">
+						<Tabs activeKey={activeTab} onSelect={(key) => setActiveTab(StringUtil.getNonEmpty(key, DEFAULT_TAB))}>
+							<Tab title="Categories" eventKey="categories"/>
+							<Tab title="Products" eventKey="products"/>
+							<Tab title="Customers" eventKey="customers"/>
+							<Tab title="Orders" eventKey="orders"/>
+						</Tabs>
+						<div className="px-3 py-1">
+							{activeTab === "categories" && <ShopCategoriesList shopId={data.id}/>}
+							{activeTab === "products" && <ShopProductsList shopId={data.id}/>}
+							{activeTab === "customers" && <ShopCustomersList shopId={data.id}/>}
+							{activeTab === "orders" && <ShopOrdersList shopId={data.id}/>}
+						</div>
 					</div>
-				</div>
-			)}
+				)
+			}
 		</div>
 	);
 }

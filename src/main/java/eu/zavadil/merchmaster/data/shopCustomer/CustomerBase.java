@@ -1,6 +1,6 @@
 package eu.zavadil.merchmaster.data.shopCustomer;
 
-import eu.zavadil.java.spring.common.entity.EntityWithNameBase;
+import eu.zavadil.java.spring.common.entity.EntityBase;
 import eu.zavadil.merchmaster.data.user.UserState;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Data;
@@ -11,9 +11,9 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @MappedSuperclass
-public class CustomerBase extends EntityWithNameBase {
+public class CustomerBase extends EntityBase {
 
 	@JdbcType(PostgreSQLEnumJdbcType.class)
-	private UserState state = UserState.Temporary;
+	private UserState userState = UserState.Temporary;
 
 }

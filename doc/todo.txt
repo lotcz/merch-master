@@ -2,6 +2,7 @@ todo:
 
 - security
   - limit accounts to only access their designs, products, shops, categories, creators, customers, images
+  - filter out potential XSS from description fields
 - mobile designer
 - optimize imagez use (size buckets)
 - improve preview (use full screen size, zoom)

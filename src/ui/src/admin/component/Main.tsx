@@ -21,6 +21,8 @@ import ImageCacheDetail from "./imageCache/ImageCacheDetail";
 import CreatorDetail from "./creator/CreatorDetail";
 import ShopProductDetail from "./shopProduct/ShopProductDetail";
 import ShopCategoryDetail from "./shopCategory/ShopCategoryDetail";
+import ShopCustomerDetail from "./shopCustomer/ShopCustomerDetail";
+import ShopOrderDetail from "./shopOrder/ShopOrderDetail";
 
 export default function Main() {
 	return (
@@ -102,6 +104,18 @@ export default function Main() {
 								<Route path="detail">
 									<Route path="add/:shopId" element={<ShopCategoryDetail/>}/>
 									<Route path=":id" element={<ShopCategoryDetail/>}/>
+								</Route>
+							</Route>
+							<Route path="customers">
+								<Route path="detail">
+									<Route path="add/:shopId" element={<ShopCustomerDetail/>}/>
+									<Route path=":id" element={<ShopCustomerDetail/>}/>
+								</Route>
+							</Route>
+							<Route path="orders">
+								<Route path="detail">
+									<Route path="add/:customerId" element={<ShopOrderDetail/>}/>
+									<Route path=":id" element={<ShopOrderDetail/>}/>
 								</Route>
 							</Route>
 							<Route path=":pagingString" element={<ShopsList/>}/>

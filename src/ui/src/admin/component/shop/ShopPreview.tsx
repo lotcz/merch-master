@@ -24,7 +24,7 @@ export default function ShopPreview({shop}: ShopPreviewParams) {
 			</div>
 		</div>
 		<div className="shop-body">
-			<div>{shop.description}</div>
+			<div dangerouslySetInnerHTML={{__html: StringUtil.getNonEmpty(shop.description)}}/>
 			<p>
 				Ostatní text na e-shopu
 			</p>

@@ -1,6 +1,5 @@
 package eu.zavadil.merchmaster.data.shopCustomer;
 
-import eu.zavadil.merchmaster.data.creator.CreatorBase;
 import eu.zavadil.merchmaster.data.shop.Shop;
 import eu.zavadil.merchmaster.data.user.User;
 import jakarta.persistence.Entity;
@@ -13,7 +12,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @Entity
 @Table(name = "shop_customer")
-public class Customer extends CreatorBase {
+public class Customer extends CustomerBase {
 
 	@ManyToOne(optional = false)
 	private Shop shop;

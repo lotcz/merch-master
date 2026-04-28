@@ -1,18 +1,24 @@
 import {EntityBase} from "zavadil-ts-common";
-import {Shop} from "./Shop";
-import {ShopCategory} from "./ShopCategory";
-import {Design} from "./Design";
+import {ShopCustomer} from "./ShopCustomer";
 
-export type ShopOrderBase = EntityBase & {}
+export type ShopOrderBase = EntityBase & {
+	orderState: string;
+	shippingName?: string | null;
+	shippingStreet?: string | null;
+	shippingCity?: string | null;
+	shippingZip?: number | null;
+	useShippingAddress: boolean;
+	billingName?: string | null;
+	billingStreet?: string | null;
+	billingCity?: string | null;
+	billingZip?: number | null;
+	totalPrice: number;
+}
 
 export type ShopOrder = ShopOrderBase & {
-	shop: Shop;
-	category?: ShopCategory | null;
-	design: Design;
+	customer: ShopCustomer;
 }
 
 export type ShopOrderStub = ShopOrderBase & {
-	shopId: number;
-	categoryId?: number | null;
-	designId: number;
+	customerId: number;
 }

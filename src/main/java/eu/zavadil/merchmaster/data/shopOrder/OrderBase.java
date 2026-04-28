@@ -1,6 +1,6 @@
 package eu.zavadil.merchmaster.data.shopOrder;
 
-import eu.zavadil.java.spring.common.entity.EntityWithNameBase;
+import eu.zavadil.java.spring.common.entity.EntityBase;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.Size;
@@ -14,7 +14,7 @@ import static eu.zavadil.merchmaster.data.user.User.ADDRESS_FIELD_LENGTH;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @MappedSuperclass
-public class OrderBase extends EntityWithNameBase {
+public class OrderBase extends EntityBase {
 
 	@JdbcType(PostgreSQLEnumJdbcType.class)
 	private OrderState orderState = OrderState.Cart;

@@ -33,7 +33,7 @@ public class OAuthSyncService {
 	CreatorsService creatorsService;
 
 	@Autowired
-	CustomersService customersService;
+	ShopCustomersService customersService;
 
 	@Autowired
 	ShopsService shopsService;

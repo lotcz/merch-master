@@ -5,20 +5,20 @@ import eu.zavadil.java.spring.common.paging.JsonPageImpl;
 import eu.zavadil.java.util.StringUtils;
 import eu.zavadil.merchmaster.data.shopCustomer.Customer;
 import eu.zavadil.merchmaster.data.shopCustomer.CustomerStub;
-import eu.zavadil.merchmaster.service.CustomersService;
+import eu.zavadil.merchmaster.service.ShopCustomersService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${api.base-url}/admin/customers")
+@RequestMapping("${api.base-url}/admin/shop-customers")
 @Tag(name = "Customers")
 @Slf4j
-public class CustomersController {
+public class ShopCustomersController {
 
 	@Autowired
-	CustomersService customersService;
+	ShopCustomersService customersService;
 
 	@GetMapping("")
 	public JsonPage<Customer> loadPaged(
@@ -33,6 +33,11 @@ public class CustomersController {
 	@GetMapping("{id}")
 	public CustomerStub load(@PathVariable int id) {
 		return this.customersService.loadStubById(id);
+	}
+
+	@GetMapping("{id}/full")
+	public Customer loadFull(@PathVariable int id) {
+		return this.customersService.loadById(id);
 	}
 
 	@PostMapping("")
