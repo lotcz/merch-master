@@ -77,7 +77,7 @@ export default function ShopOrdersList({shopId}: ShopOrderListProps) {
 					paging={paging}
 					totalItems={data.totalItems}
 					onPagingChanged={setPaging}
-					onClick={(item) => navigator.shops.orders.detail(item.id)}
+					onClick={(item) => navigator.orders.detail(item.id)}
 					items={data.content}
 					hover={true}
 					striped={true}

@@ -34,6 +34,9 @@ function MainMenu() {
 					<NavLink to={navigator.shops.path.list()}>Shops</NavLink>
 				</div>
 				<div>
+					<NavLink to={navigator.orders.path.list()}>Orders</NavLink>
+				</div>
+				<div>
 					<NavLink to={navigator.designs.path.list()}>Designs</NavLink>
 				</div>
 			</div>

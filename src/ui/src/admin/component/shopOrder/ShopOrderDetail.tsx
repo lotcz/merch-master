@@ -56,7 +56,7 @@ export default function ShopOrderDetail() {
 			.saveStub(data)
 			.then((f) => {
 				if (inserting) {
-					navigator.shops.orders.detail(f.id, true);
+					navigator.orders.detail(f.id, true);
 				} else {
 					setData(f);
 				}
@@ -73,7 +73,7 @@ export default function ShopOrderDetail() {
 			restClient.shopOrders
 				.delete(Number(data.id))
 				.then((f) => {
-					navigator.shops.orders.list();
+					navigator.orders.list();
 				})
 				.catch((e: Error) => userAlerts.err(e))
 				.finally(() => setDeleting(false));

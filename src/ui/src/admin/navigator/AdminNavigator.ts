@@ -22,6 +22,8 @@ export default class AdminNavigator extends LinkNavigator {
 
 	shops: AdminShopsNavigator;
 
+	orders: EntityNavigator;
+
 	constructor(navigate: NavigateFunction) {
 		super(navigate, new PathProvider('/admin'));
 		this.dashboard = new LinkNavigator(navigate, new PathProvider('dashboard', this.provider));
@@ -30,6 +32,7 @@ export default class AdminNavigator extends LinkNavigator {
 		this.products = new AdminProductsNavigator(this);
 		this.accounts = new AdminAccountsNavigator(this);
 		this.shops = new AdminShopsNavigator(this);
+		this.orders = new EntityNavigator(navigate, new EntityPathProvider('orders', this.provider));
 	}
 
 }

@@ -55,7 +55,7 @@ export default function ShopCustomerOrdersList({customerId}: ShopCustomerOrderLi
 	return (
 		<div>
 			<div className="pt-2 d-flex gap-2 align-items-center">
-				<Button variant="primary" size="sm" onClick={() => navigator.shops.orders.add(customerId)}>
+				<Button variant="primary" size="sm" onClick={() => navigator.orders.add(customerId)}>
 					+ Add
 				</Button>
 				<div style={{width: "250px"}}>
@@ -79,7 +79,7 @@ export default function ShopCustomerOrdersList({customerId}: ShopCustomerOrderLi
 					paging={paging}
 					totalItems={data.totalItems}
 					onPagingChanged={setPaging}
-					onClick={(item) => navigator.shops.orders.detail(item.id)}
+					onClick={(item) => navigator.orders.detail(item.id)}
 					items={data.content}
 					hover={true}
 					striped={true}

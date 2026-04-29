@@ -23,6 +23,7 @@ import ShopProductDetail from "./shopProduct/ShopProductDetail";
 import ShopCategoryDetail from "./shopCategory/ShopCategoryDetail";
 import ShopCustomerDetail from "./shopCustomer/ShopCustomerDetail";
 import ShopOrderDetail from "./shopOrder/ShopOrderDetail";
+import OrdersList from "./shopOrder/OrdersList";
 
 export default function Main() {
 	return (
@@ -112,13 +113,16 @@ export default function Main() {
 									<Route path=":id" element={<ShopCustomerDetail/>}/>
 								</Route>
 							</Route>
-							<Route path="orders">
-								<Route path="detail">
-									<Route path="add/:customerId" element={<ShopOrderDetail/>}/>
-									<Route path=":id" element={<ShopOrderDetail/>}/>
-								</Route>
-							</Route>
 							<Route path=":pagingString" element={<ShopsList/>}/>
+						</Route>
+
+						<Route path="orders">
+							<Route path="detail">
+								<Route path="add/:customerId" element={<ShopOrderDetail/>}/>
+								<Route path=":id" element={<ShopOrderDetail/>}/>
+							</Route>
+							<Route path=":pagingString" element={<OrdersList/>}/>
+							<Route path="" element={<OrdersList/>}/>
 						</Route>
 
 						<Route path="users">
