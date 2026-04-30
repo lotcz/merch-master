@@ -1,6 +1,6 @@
-import {Form, Spinner, Stack} from "react-bootstrap";
+import {Form, Spinner, Stack, Table} from "react-bootstrap";
 import {useParams} from "react-router";
-import {useCallback, useContext, useEffect, useState} from "react";
+import {useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {NumberUtil} from "zavadil-ts-common";
 import {useAdminRestClient} from "../../client/AdminRestClient";
 import {UserAlertsContext} from "../../../shared/util/UserAlerts";
@@ -9,8 +9,11 @@ import {ConfirmDialogContext, DeleteButton, FormRow, SaveButton} from "zavadil-r
 import BackIconLink from "../../../shared/component/general/BackIconLink";
 import {useAdminNavigator} from "../../navigator/AdminNavigator";
 import {ShopOrderStub} from "../../../shared/types/ShopOrder";
-import ShopCustomerSelect from "../shopCustomer/ShopCustomerSelect";
 import OrderStateSelect from "./OrderStateSelect";
+import {ShopOrderItemStub} from "../../../shared/types/ShopOrderItem";
+import ShopProductSelect from "../shopProduct/ShopProductSelect";
+import ShopCustomerByShopSelect from "../shopCustomer/ShopCustomerByShopSelect";
+import ShopSelect from "../shop/ShopSelect";
 
 export default function ShopOrderDetail() {
 	const {id, customerId} = useParams();
@@ -18,7 +21,9 @@ export default function ShopOrderDetail() {
 	const restClient = useAdminRestClient();
 	const userAlerts = useContext(UserAlertsContext);
 	const confirmDialog = useContext(ConfirmDialogContext);
+	const [shopId, setShopId] = useState<number | null>();
 	const [data, setData] = useState<ShopOrderStub>();
+	const [items, setItems] = useState<Array<ShopOrderItemStub>>();
 	const [changed, setChanged] = useState<boolean>(false);
 	const [deleting, setDeleting] = useState<boolean>(false);
 	const [saving, setSaving] = useState<boolean>(false);
@@ -29,7 +34,21 @@ export default function ShopOrderDetail() {
 		setChanged(true);
 	}, [data]);
 
+	const shopCustomerId = useMemo(() => data?.customerId, [data]);
+
+	useEffect(
+		() => {
+			if (shopCustomerId) {
+				restClient.shopCustomers
+					.loadSingleStub(shopCustomerId)
+					.then((c) => setShopId(c.shopId));
+			}
+		},
+		[shopCustomerId]
+	);
+
 	const reload = useCallback(() => {
+		setChanged(false);
 		if (!id) {
 			setData({
 				customerId: Number(customerId),
@@ -47,6 +66,20 @@ export default function ShopOrderDetail() {
 	}, [id, customerId, restClient, userAlerts]);
 
 	useEffect(reload, [id]);
+
+	const orderId = useMemo(() => data?.id, [data]);
+
+	const loadItems = useCallback(() => {
+		setItems(undefined);
+		if (orderId) restClient.shopOrders.loadItems(orderId)
+			.then(setItems)
+			.catch((e: Error) => {
+				setData(undefined);
+				userAlerts.err(e);
+			});
+	}, [orderId, restClient, userAlerts]);
+
+	useEffect(loadItems, [orderId]);
 
 	const saveData = useCallback(() => {
 		if (!data) return;
@@ -102,23 +135,79 @@ export default function ShopOrderDetail() {
 			<Form className="px-3 w-75">
 				<Stack direction="vertical" gap={2}>
 
-					<ShopCustomerSelect
-						customerId={data.customerId}
-						onChange={(e) => {
-							data.customerId = Number(e);
-							onChanged();
-						}}
-					/>
+					<FormRow label="Shop">
+						<ShopSelect
+							shopId={shopId}
+							onChange={setShopId}
+						/>
+					</FormRow>
 
-					<FormRow label="Description">
-						<OrderStateSelect
-							state={data.orderState}
+					<FormRow label="Customer">
+						<ShopCustomerByShopSelect
+							shopId={Number(shopId)}
+							disabled={shopId === undefined || shopId === null}
+							customerId={data.customerId}
 							onChange={(e) => {
-								data.orderState = e;
+								data.customerId = Number(e);
 								onChanged();
 							}}
 						/>
 					</FormRow>
+
+					<FormRow label="State">
+						<div className="float-start">
+							<OrderStateSelect
+								state={data.orderState}
+								onChange={(e) => {
+									data.orderState = e;
+									onChanged();
+								}}
+							/>
+						</div>
+					</FormRow>
+
+					<div>
+						{
+							items && <Table>
+								<thead>
+								<tr>
+									<th>Product</th>
+									<th>Price</th>
+									<th>Quantity</th>
+									<th>Total Price</th>
+								</tr>
+								</thead>
+								<tbody>
+								{
+									shopId && items.map(
+										(item, index) => <tr key={index}>
+											<td>
+												<ShopProductSelect
+													shopId={shopId}
+													onChange={
+														(id) => {
+															item.productId = Number(id);
+															setItems([...items]);
+														}
+													}
+												/>
+											</td>
+											<td>
+
+											</td>
+											<td>
+
+											</td>
+											<td>
+
+											</td>
+										</tr>
+									)
+								}
+								</tbody>
+							</Table>
+						}
+					</div>
 				</Stack>
 			</Form>
 		</div>

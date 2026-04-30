@@ -6,9 +6,13 @@ import eu.zavadil.merchmaster.data.shopOrder.Order;
 import eu.zavadil.merchmaster.data.shopOrder.OrderRepository;
 import eu.zavadil.merchmaster.data.shopOrder.OrderStub;
 import eu.zavadil.merchmaster.data.shopOrder.OrderStubRepository;
+import eu.zavadil.merchmaster.data.shopOrderItem.OrderItemStub;
+import eu.zavadil.merchmaster.data.shopOrderItem.OrderItemStubRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ShopOrdersService {
@@ -18,6 +22,9 @@ public class ShopOrdersService {
 
 	@Autowired
 	OrderRepository repository;
+
+	@Autowired
+	OrderItemStubRepository itemStubRepository;
 
 	public Page<Order> search(int page, int size, String search, String sorting) {
 		return this.repository.search(search, PagingUtils.of(page, size, sorting));
@@ -49,6 +56,10 @@ public class ShopOrdersService {
 
 	public void delete(Order shopOrder) {
 		if (shopOrder.getId() != null) this.delete(shopOrder.getId());
+	}
+
+	public List<OrderItemStub> loadItems(int orderId) {
+		return this.itemStubRepository.findAllByOrderId(orderId);
 	}
 
 	public Page<Order> loadByCustomerId(int shopId, int page, int size, String sorting) {

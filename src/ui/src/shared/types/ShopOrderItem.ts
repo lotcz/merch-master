@@ -12,7 +12,7 @@ export type ShopOrderItem = ShopOrderItemBase & {
 	product: ShopProduct;
 }
 
-export type OrderItemStub = ShopOrderItemBase & {
+export type ShopOrderItemStub = ShopOrderItemBase & {
 	orderId: number;
 	productId: number;
 }

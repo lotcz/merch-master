@@ -4,11 +4,14 @@ import eu.zavadil.java.spring.common.paging.JsonPage;
 import eu.zavadil.java.spring.common.paging.JsonPageImpl;
 import eu.zavadil.merchmaster.data.shopOrder.Order;
 import eu.zavadil.merchmaster.data.shopOrder.OrderStub;
+import eu.zavadil.merchmaster.data.shopOrderItem.OrderItemStub;
 import eu.zavadil.merchmaster.service.ShopOrdersService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("${api.base-url}/admin/shop-orders")
@@ -49,6 +52,11 @@ public class ShopOrdersController {
 	@DeleteMapping("{id}")
 	public void delete(@PathVariable int id) {
 		this.shopOrdersService.delete(id);
+	}
+
+	@GetMapping("{id}/items")
+	public List<OrderItemStub> loadItems(@PathVariable int id) {
+		return this.shopOrdersService.loadItems(id);
 	}
 
 	@GetMapping("by-shop/{shopId}")

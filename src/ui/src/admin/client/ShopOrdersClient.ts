@@ -1,5 +1,6 @@
 import {EntityClientWithStub, Page, PagingRequest, PagingUtil, RestClient} from "zavadil-ts-common";
 import {ShopOrder, ShopOrderStub} from "../../shared/types/ShopOrder";
+import {ShopOrderItemStub} from "../../shared/types/ShopOrderItem";
 
 export class ShopOrdersClient extends EntityClientWithStub<ShopOrder, ShopOrderStub> {
 	constructor(client: RestClient) {
@@ -12,5 +13,9 @@ export class ShopOrdersClient extends EntityClientWithStub<ShopOrder, ShopOrderS
 
 	loadByCustomer(customerId: number, pr: PagingRequest): Promise<Page<ShopOrder>> {
 		return this.client.getJson(`${this.name}/by-customer/${customerId}`, PagingUtil.pagingRequestToQueryParams(pr));
+	}
+
+	loadItems(orderId: number): Promise<Array<ShopOrderItemStub>> {
+		return this.client.getJson(`${this.name}/${orderId}/items`);
 	}
 }
