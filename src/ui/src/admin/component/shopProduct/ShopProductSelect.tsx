@@ -1,26 +1,16 @@
 import {AutocompleteSelect} from "zavadil-react-common";
 import {useAdminRestClient} from "../../client/AdminRestClient";
-import {useCallback, useEffect, useState} from "react";
+import {useCallback} from "react";
 import {ShopProduct} from "../../../shared/types/ShopProduct";
 
 export type ShopCustomerSelectProps = {
 	shopId: number;
-	shopProductId?: number | null;
-	onChange: (shopProductId?: number | null) => any;
+	shopProduct?: ShopProduct | null;
+	onChange: (shopProduct?: ShopProduct | null) => any;
 }
 
-export default function ShopProductSelect({shopProductId, shopId, onChange}: ShopCustomerSelectProps) {
+export default function ShopProductSelect({shopId, shopProduct, onChange}: ShopCustomerSelectProps) {
 	const client = useAdminRestClient();
-	const [shopProduct, setShopProduct] = useState<ShopProduct | null>();
-
-	useEffect(
-		() => {
-			if (shopProductId && shopProduct?.id !== shopProductId) {
-				client.shopProducts.loadFull(shopProductId).then(setShopProduct);
-			}
-		},
-		[shopProductId]
-	);
 
 	const onSearch = useCallback(
 		(text: string) => client.shopProducts
@@ -33,10 +23,6 @@ export default function ShopProductSelect({shopProductId, shopId, onChange}: Sho
 		onSearch={onSearch}
 		labelGetter={(p) => `${p.name}`}
 		selected={shopProduct}
-		onChange={
-			(shopProduct) => {
-				setShopProduct(shopProduct);
-				onChange(shopProduct?.id);
-			}}
+		onChange={onChange}
 	/>
 }

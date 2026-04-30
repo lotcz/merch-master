@@ -18,4 +18,8 @@ export class ShopOrdersClient extends EntityClientWithStub<ShopOrder, ShopOrderS
 	loadItems(orderId: number): Promise<Array<ShopOrderItemStub>> {
 		return this.client.getJson(`${this.name}/${orderId}/items`);
 	}
+
+	updateItems(orderId: number, items: Array<ShopOrderItemStub>): Promise<Array<ShopOrderItemStub>> {
+		return this.client.putJson(`${this.name}/${orderId}/items`, items);
+	}
 }

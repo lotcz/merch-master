@@ -1,4 +1,4 @@
-import {Form, Spinner, Stack, Table} from "react-bootstrap";
+import {Button, Form, Spinner, Stack, Table} from "react-bootstrap";
 import {useParams} from "react-router";
 import {useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {NumberUtil} from "zavadil-ts-common";
@@ -11,9 +11,9 @@ import {useAdminNavigator} from "../../navigator/AdminNavigator";
 import {ShopOrderStub} from "../../../shared/types/ShopOrder";
 import OrderStateSelect from "./OrderStateSelect";
 import {ShopOrderItemStub} from "../../../shared/types/ShopOrderItem";
-import ShopProductSelect from "../shopProduct/ShopProductSelect";
 import ShopCustomerByShopSelect from "../shopCustomer/ShopCustomerByShopSelect";
 import ShopSelect from "../shop/ShopSelect";
+import ShopOrderItemForm from "./ShopOrderItemForm";
 
 export default function ShopOrderDetail() {
 	const {id, customerId} = useParams();
@@ -47,57 +47,68 @@ export default function ShopOrderDetail() {
 		[shopCustomerId]
 	);
 
-	const reload = useCallback(() => {
-		setChanged(false);
-		if (!id) {
-			setData({
-				customerId: Number(customerId),
-				orderState: "Pending",
-				totalPrice: 0,
-				useShippingAddress: true
-			});
-			return;
-		}
-		setData(undefined);
-		restClient.shopOrders
-			.loadSingleStub(Number(id))
-			.then(setData)
-			.catch((e: Error) => userAlerts.err(e));
-	}, [id, customerId, restClient, userAlerts]);
+	const reload = useCallback(
+		() => {
+			setChanged(false);
+			if (!id) {
+				setData(
+					{
+						customerId: Number(customerId),
+						orderState: "Pending",
+						totalPrice: 0,
+						useShippingAddress: true
+					}
+				);
+				setItems([]);
+				return;
+			}
+			setData(undefined);
+			restClient.shopOrders
+				.loadSingleStub(Number(id))
+				.then(setData)
+				.catch((e: Error) => userAlerts.err(e));
+			restClient.shopOrders.loadItems(Number(id))
+				.then(setItems)
+				.catch((e: Error) => {
+					setItems(undefined);
+					userAlerts.err(e);
+				});
+		},
+		[id, customerId, restClient, userAlerts]
+	);
 
 	useEffect(reload, [id]);
 
-	const orderId = useMemo(() => data?.id, [data]);
-
-	const loadItems = useCallback(() => {
-		setItems(undefined);
-		if (orderId) restClient.shopOrders.loadItems(orderId)
-			.then(setItems)
-			.catch((e: Error) => {
-				setData(undefined);
-				userAlerts.err(e);
-			});
-	}, [orderId, restClient, userAlerts]);
-
-	useEffect(loadItems, [orderId]);
-
 	const saveData = useCallback(() => {
-		if (!data) return;
+		if (!(data && items)) return;
 		const inserting = NumberUtil.isEmpty(data.id);
 		setSaving(true);
 		restClient.shopOrders
 			.saveStub(data)
-			.then((f) => {
-				if (inserting) {
-					navigator.orders.detail(f.id, true);
-				} else {
-					setData(f);
-				}
-				setChanged(false);
+			.then((updatedOrder) => {
+				const itemsForUpdate = items
+					.filter((i) => i.productId > 0)
+					.map((i) => {
+						return {...i, orderId: Number(updatedOrder.id)}
+					});
+				restClient.shopOrders
+					.updateItems(Number(updatedOrder.id), itemsForUpdate)
+					.then(
+						(updatedItems) => {
+							if (inserting) {
+								navigator.orders.detail(updatedOrder.id, true);
+							} else {
+								setData(updatedOrder);
+								setItems(updatedItems);
+							}
+							setChanged(false);
+						}
+					)
+					.catch((e: Error) => userAlerts.err(e));
 			})
 			.catch((e: Error) => userAlerts.err(e))
 			.finally(() => setSaving(false));
-	}, [restClient, data, userAlerts, navigator]);
+	}, [restClient, data, items, userAlerts, navigator]);
 
 	const deleteOrder = useCallback(() => {
 		if (!data?.id) return;
@@ -166,9 +177,25 @@ export default function ShopOrderDetail() {
 						</div>
 					</FormRow>
 
-					<div>
-						{
-							items && <Table>
+					{
+						items && <div>
+							<h2>
+								Items
+							</h2>
+
+							<Stack direction="horizontal" gap={2}>
+								<Button
+									size="sm"
+									onClick={
+										() => {
+											const newItem: ShopOrderItemStub = {orderId: Number(data.id), unitPrice: 0, unitCount: 1, productId: 0};
+											setItems([...items, newItem]);
+										}
+									}
+								>+ Add</Button>
+							</Stack>
+
+							<Table>
 								<thead>
 								<tr>
 									<th>Product</th>
@@ -180,34 +207,25 @@ export default function ShopOrderDetail() {
 								<tbody>
 								{
 									shopId && items.map(
-										(item, index) => <tr key={index}>
-											<td>
-												<ShopProductSelect
-													shopId={shopId}
-													onChange={
-														(id) => {
-															item.productId = Number(id);
-															setItems([...items]);
-														}
-													}
-												/>
-											</td>
-											<td>
-
-											</td>
-											<td>
-
-											</td>
-											<td>
-
-											</td>
-										</tr>
+										(item, index) => <ShopOrderItemForm
+											key={index}
+											shopId={shopId}
+											item={item}
+											onChange={
+												(i) => {
+													setItems(
+														items.map((ei) => ei === item ? {...i} : ei)
+													);
+													setChanged(true);
+												}
+											}
+										/>
 									)
 								}
 								</tbody>
 							</Table>
-						}
-					</div>
+						</div>
+					}
 				</Stack>
 			</Form>
 		</div>

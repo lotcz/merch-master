@@ -1,5 +1,6 @@
 package eu.zavadil.merchmaster.service;
 
+import eu.zavadil.java.spring.common.entity.EntityBase;
 import eu.zavadil.java.spring.common.paging.PagingUtils;
 import eu.zavadil.java.util.StringUtils;
 import eu.zavadil.merchmaster.data.shopOrder.Order;
@@ -60,6 +61,13 @@ public class ShopOrdersService {
 
 	public List<OrderItemStub> loadItems(int orderId) {
 		return this.itemStubRepository.findAllByOrderId(orderId);
+	}
+
+	public List<OrderItemStub> updateItems(int orderId, List<OrderItemStub> items) {
+		items.forEach(item -> item.setOrderId(orderId));
+		List<OrderItemStub> updatedItems = items.stream().map((item) -> this.itemStubRepository.save(item)).toList();
+		this.itemStubRepository.cleanOtherItems(orderId, updatedItems.stream().map(EntityBase::getId).toList());
+		return updatedItems;
 	}
 
 	public Page<Order> loadByCustomerId(int shopId, int page, int size, String sorting) {

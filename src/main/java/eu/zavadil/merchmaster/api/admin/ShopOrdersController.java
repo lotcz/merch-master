@@ -59,6 +59,12 @@ public class ShopOrdersController {
 		return this.shopOrdersService.loadItems(id);
 	}
 
+	@PutMapping("{id}/items")
+	public List<OrderItemStub> updateItems(@PathVariable int id, @RequestBody List<OrderItemStub> items) {
+
+		return this.shopOrdersService.updateItems(id, items);
+	}
+
 	@GetMapping("by-shop/{shopId}")
 	public JsonPage<Order> searchByShop(
 		@PathVariable int shopId,

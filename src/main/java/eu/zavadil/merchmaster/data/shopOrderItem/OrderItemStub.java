@@ -15,4 +15,7 @@ public class OrderItemStub extends OrderItemBase {
 	@Column(name = "order_id")
 	private int orderId;
 
+	@Column(name = "product_id")
+	private int productId;
+
 }
