@@ -1,8 +1,9 @@
-import { NumberUtil, RestClient, StringUtil } from "zavadil-ts-common";
-import { ImageHealth, ImagezColorPayload } from "../types/Image";
-import { createContext } from "react";
+import {NumberUtil, RestClient, StringUtil} from "zavadil-ts-common";
+import {ImageHealth, ImagezColorPayload} from "../types/Image";
+import {createContext, useContext} from "react";
 import conf from "../config/conf.json";
 import ImageUtil from "../util/ImageUtil";
+import {PublicRestClient, PublicRestClientContext} from "../../public/client/PublicRestClient";
 
 /**
  * Client for imagez - all endpoints should be unprotected
@@ -39,7 +40,7 @@ export class ImagezClient {
 			height = ImageUtil.snap(height);
 		}
 
-		return this.client.get(`imagez/url/resized/${name}`, { type, width, height, ext, verticalAlign, horizontalAlign }).then((r) => r.text());
+		return this.client.get(`imagez/url/resized/${name}`, {type, width, height, ext, verticalAlign, horizontalAlign}).then((r) => r.text());
 	}
 
 	getImageHealth(name: string): Promise<ImageHealth> {
@@ -54,7 +55,7 @@ export class ImagezClient {
 
 	getRemoveBackgroundUrl(name: string, hex: string | null, threshold: number | null): string {
 		threshold = threshold ? NumberUtil.round(threshold) : null;
-		return this.client.getUrl(`imagez/colors/remove-background/${name}`, { hex, threshold }).toString();
+		return this.client.getUrl(`imagez/colors/remove-background/${name}`, {hex, threshold}).toString();
 	}
 
 	guessBackgroundColor(name: string): Promise<ImagezColorPayload | null> {
@@ -63,3 +64,7 @@ export class ImagezClient {
 }
 
 export const ImagezRestClientContext = createContext(new ImagezClient(new RestClient(conf.API_URL)));
+
+export function usePublicRestClient(): PublicRestClient {
+	return useContext(PublicRestClientContext);
+}

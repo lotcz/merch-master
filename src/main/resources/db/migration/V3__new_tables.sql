@@ -1,6 +1,3 @@
-create type tp_sync_state AS ENUM ('Pending', 'Synced');
-create cast	(varchar AS tp_sync_state) WITH INOUT AS IMPLICIT;
-
 create type tp_account_state AS ENUM ('Temporary', 'Pending', 'Approved', 'Disabled');
 create cast	(varchar AS tp_account_state) WITH INOUT AS IMPLICIT;
 
@@ -36,13 +33,21 @@ CREATE TABLE shop (
 	last_updated_on timestamptz(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	"name" varchar(255) NULL,
 	slug varchar(50) NOT NULL,
+	description TEXT NULL,
 	state tp_shop_state NOT NULL DEFAULT 'Pending',
-	sync_state tp_sync_state NOT NULL DEFAULT 'Synced',
 	account_id int4 NOT NULL,
+	background_color VARCHAR(20) NOT NULL DEFAULT '#ffffff',
+	foreground_color VARCHAR(20) NOT NULL DEFAULT '#000000',
+	link_color VARCHAR(20) NOT NULL DEFAULT '#0000ff',
+	font_family VARCHAR(255) NOT NULL DEFAULT 'Times New Roman, serif',
+	brand_bg_color VARCHAR(20) NOT NULL DEFAULT '#ff0000',
+	brand_fg_color VARCHAR(20) NOT NULL DEFAULT '#ffffff',
+	brand_image VARCHAR(255),
+	brand_show_name BOOLEAN NOT NULL DEFAULT true,
+	brand_font_family VARCHAR(255) NOT NULL DEFAULT 'Arial, sans-serif',
 	CONSTRAINT fk_shop_account_id FOREIGN KEY (account_id) REFERENCES account(id)
 );
 CREATE INDEX idx_shop_account_id ON shop (account_id);
-CREATE INDEX idx_shop_sync_state ON shop (sync_state);
 CREATE UNIQUE INDEX idx_shop_slug ON shop (slug);
 
 CREATE TABLE shop_category (
@@ -62,6 +67,7 @@ CREATE TABLE shop_product (
 	last_updated_on timestamptz(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	shop_id int4 NOT NULL,
 	"name" varchar(255) NULL,
+	description TEXT NULL,
 	visible boolean NOT NULL DEFAULT true,
 	design_id int4 NOT NULL,
 	category_id int4,
@@ -82,8 +88,15 @@ CREATE TABLE usr (
 	last_updated_on timestamptz(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	"name" varchar(255) NULL,
 	email varchar(255) NULL,
-	oauth_subject varchar(10) NULL,
-	sync_state tp_sync_state NOT NULL DEFAULT 'Synced',
+	active BOOLEAN NOT NULL DEFAULT true,
+	admin BOOLEAN NOT NULL DEFAULT false,
+	password_algorithm varchar(10),
+    password_hash varchar(255),
+    password_salt varchar(100),
+    last_successful_login timestamptz(6),
+	last_failed_login timestamptz(6),
+	last_link_sent timestamptz(6),
+	failed_login_attempts INT NOT NULL DEFAULT 0,
 	shipping_name varchar(100),
 	shipping_street varchar(100),
 	shipping_city varchar(100),
@@ -94,8 +107,6 @@ CREATE TABLE usr (
 	billing_city varchar(100),
 	billing_zip INT
 );
-CREATE INDEX idx_usr_sync_state ON usr (sync_state);
-CREATE UNIQUE INDEX idx_usr_oauth_subject ON usr (oauth_subject);
 CREATE UNIQUE INDEX idx_usr_email ON usr (email);
 
 CREATE TABLE creator (
@@ -159,6 +170,7 @@ CREATE TABLE shop_order_item (
 	product_id int4 NOT NULL,
 	unit_price DECIMAL(8,2) NOT NULL DEFAULT 0,
 	unit_count INT NOT NULL DEFAULT 1,
+	CONSTRAINT fk_shop_order_item_product_id FOREIGN KEY (product_id) REFERENCES shop_product(id),
 	CONSTRAINT fk_shop_order_item_order_id FOREIGN KEY (order_id) REFERENCES shop_order(id)
 );
 CREATE UNIQUE INDEX idx_shop_order_item_order_id ON shop_order_item (order_id, product_id);
@@ -174,5 +186,14 @@ CREATE TABLE product_size (
 );
 CREATE INDEX idx_product_size_product_id ON product_size (product_id);
 
+/* ALTER ORIGINAL SCHEMA */
+
+ALTER TABLE design ADD COLUMN description TEXT NULL;
+ALTER TABLE design ADD COLUMN account_id int4 NULL;
+ALTER TABLE design ADD CONSTRAINT fk_design_account_id FOREIGN KEY (account_id) REFERENCES account(id);
+CREATE INDEX idx_design_account_id ON design (account_id);
+
+ALTER TABLE product ADD COLUMN description TEXT NULL;
 ALTER TABLE product ADD COLUMN base_price DECIMAL(8,2) NOT NULL DEFAULT 0;
+
 ALTER TABLE product_color ADD COLUMN extra_price DECIMAL(8,2) NOT NULL DEFAULT 0;

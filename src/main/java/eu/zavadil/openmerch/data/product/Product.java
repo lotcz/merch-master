@@ -1,0 +1,17 @@
+package eu.zavadil.openmerch.data.product;
+
+import eu.zavadil.java.spring.common.entity.EntityWithNameBase;
+import jakarta.persistence.Entity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode(callSuper = true)
+@Data
+@Entity
+public class Product extends EntityWithNameBase {
+
+	private double basePrice;
+
+	private String description;
+
+}

@@ -8,15 +8,15 @@
 	<parent>
 		<groupId>eu.zavadil.java</groupId>
 		<artifactId>spring-parent</artifactId>
-		<version>2.1.1</version>
+		<version>2.1.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
 	<groupId>eu.zavadil.merchmaster</groupId>
 	<artifactId>merch-master</artifactId>
-	<version>2.0.0</version>
-	<name>merch-master</name>
-	<description>Merch Master</description>
+	<version>3.0.0</version>
+	<name>open-merch</name>
+	<description>Open Merch</description>
 
 	<properties>
 		<java.version>25</java.version>
@@ -32,13 +32,13 @@
 		<dependency>
 			<groupId>eu.zavadil.java</groupId>
 			<artifactId>spring-common</artifactId>
-			<version>2.1.1</version>
+			<version>2.1.7</version>
 		</dependency>
 
 		<dependency>
 			<groupId>eu.zavadil.java</groupId>
-			<artifactId>oauth-client</artifactId>
-			<version>2.3.12</version>
+			<artifactId>oauth-common</artifactId>
+			<version>2.3.7</version>
 		</dependency>
 
 		<dependency>
@@ -85,6 +85,10 @@
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 
 		<!-- DB -->
