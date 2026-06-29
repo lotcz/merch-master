@@ -3,9 +3,7 @@ import {Account} from "./Account";
 
 export type ShopBase = EntityWithName & {
 	slug: string;
-	oauthAudienceName: string;
 	state: string;
-	syncState: string;
 	description?: string | null;
 	backgroundColor: string;
 	foregroundColor: string;

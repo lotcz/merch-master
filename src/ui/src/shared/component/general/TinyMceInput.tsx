@@ -15,9 +15,10 @@ export default function TinyMceInput({initialValue, onChange}: TinyMceInputProps
 		init={{
 			promotion: false,
 			branding: false,
+			menubar: false,
 			plugins: 'advlist autolink lists link image',
 			toolbar: 'undo redo | bold italic | bullist numlist',
 		}}
-		onInput={(evt, editor) => onChange(editor.getContent())}
+		onEditorChange={(evt, editor) => onChange(editor.getContent())}
 	/>
 }

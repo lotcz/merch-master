@@ -1,5 +1,9 @@
 todo:
 
+- administer all: shops/products/orders/items
+- implement shopping
+  - domain-based or path-based shop selection
+
 - security
   - limit accounts to only access their designs, products, shops, categories, creators, customers, images
   - filter out potential XSS from description fields

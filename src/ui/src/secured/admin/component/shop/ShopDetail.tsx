@@ -1,16 +1,15 @@
 import {Col, Form, Row, Spinner, Stack, Tab, Tabs} from "react-bootstrap";
 import {useParams, useSearchParams} from "react-router";
-import {useCallback, useContext, useEffect, useState} from "react";
-import {NumberUtil, StringUtil} from "zavadil-ts-common";
+import {useCallback, useContext, useEffect, useMemo, useState} from "react";
+import {NumberUtil, StringUtil, UrlUtil} from "zavadil-ts-common";
 import {useAdminRestClient} from "../../client/AdminRestClient";
 import {UserAlertsContext} from "../../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../../shared/component/general/RefreshIconButton";
-import {ConfirmDialogContext, DeleteButton, FormRow, FormRowControl, SaveButton} from "zavadil-react-common";
+import {ConfirmDialogContext, DeleteButton, FormRow, FormRowControl, SaveButton, Switch} from "zavadil-react-common";
 import BackIconLink from "../../../../shared/component/general/BackIconLink";
 import {ShopStub} from "../../../../shared/types/Shop";
 import AccountPreview from "../account/AccountPreview";
 import ShopStateSelect from "./ShopStateSelect";
-import SyncStateSelect from "../general/SyncStateSelect";
 import ShopProductsList from "./ShopProductsList";
 import ShopCategoriesList from "./ShopCategoriesList";
 import {ImagezUploadInput} from "../../../../shared/component/images/ImagezUploadInput";
@@ -35,6 +34,9 @@ export default function ShopDetail() {
 	const [changed, setChanged] = useState<boolean>(false);
 	const [deleting, setDeleting] = useState<boolean>(false);
 	const [saving, setSaving] = useState<boolean>(false);
+	const [customSlug, setCustomSlug] = useState<boolean>(false);
+
+	const inserting = useMemo(() => NumberUtil.isEmpty(data?.id), [data]);
 
 	useEffect(() => {
 		if (!activeTab) return;
@@ -57,7 +59,6 @@ export default function ShopDetail() {
 		if (!id) {
 			setData({
 				accountId: Number(accountId),
-				oauthAudienceName: "",
 				name: "",
 				slug: "",
 				backgroundColor: "#ffffff",
@@ -68,8 +69,7 @@ export default function ShopDetail() {
 				brandFgColor: "#ffffff",
 				brandShowName: true,
 				brandFontFamily: "Arial, sans-serif",
-				state: "Approved",
-				syncState: "Pending"
+				state: "Approved"
 			});
 			return;
 		}
@@ -84,7 +84,6 @@ export default function ShopDetail() {
 
 	const saveData = useCallback(() => {
 		if (!data) return;
-		const inserting = NumberUtil.isEmpty(data.id);
 		setSaving(true);
 		restClient.shops
 			.saveStub(data)
@@ -98,7 +97,7 @@ export default function ShopDetail() {
 			})
 			.catch((e: Error) => userAlerts.err(e))
 			.finally(() => setSaving(false));
-	}, [restClient, data, userAlerts, navigator]);
+	}, [restClient, data, inserting, userAlerts, navigator]);
 
 	const deleteAccount = useCallback(() => {
 		if (!data?.id) return;
@@ -135,24 +134,33 @@ export default function ShopDetail() {
 
 			<Form className="px-3 w-75">
 				<Stack direction="vertical" gap={2}>
-					<Stack direction="horizontal" className="align-items-start" gap={4}>
+					<Stack direction="horizontal" className="align-items-center" gap={4}>
 						<FormRowControl
 							label="Name"
 							type="text"
 							value={data.name}
 							onChange={(e) => {
 								data.name = e.target.value;
+								if (inserting && !customSlug) {
+									data.slug = UrlUtil.slugify(data.name);
+								}
 								onChanged();
 							}}
 						/>
 						<FormRowControl
 							label="Slug"
+							disabled={!customSlug}
 							type="text"
 							value={data.slug}
 							onChange={(e) => {
 								data.slug = e.target.value;
 								onChanged();
 							}}
+						/>
+						<Switch
+							label="Custom slug"
+							checked={customSlug}
+							onChange={(checked) => setCustomSlug(checked)}
 						/>
 					</Stack>
 
@@ -169,29 +177,19 @@ export default function ShopDetail() {
 								}}
 							/>
 						</FormRow>
-						<FormRow forId="sync_state" label="Sync">
-							<SyncStateSelect
-								state={data.syncState}
-								onChange={(e) => {
-									data.syncState = e;
-									onChanged();
-								}}
-							/>
-						</FormRow>
 					</Stack>
-
-					<FormRow label="Description">
-						<TinyMceInput
-							initialValue={StringUtil.getNonEmpty(data.description)}
-							onChange={(e) => {
-								data.description = e;
-								onChanged();
-							}}
-						/>
-					</FormRow>
 
 					<Row>
 						<Col>
+							<FormRow label="Description">
+								<TinyMceInput
+									initialValue={StringUtil.getNonEmpty(data.description)}
+									onChange={(e) => {
+										data.description = e;
+										onChanged();
+									}}
+								/>
+							</FormRow>
 							<Stack direction="horizontal" className="align-items-start" gap={4}>
 								<FormRowControl
 									label="Brand background"

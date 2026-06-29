@@ -5,9 +5,8 @@ import {NumberUtil, StringUtil} from "zavadil-ts-common";
 import {useAdminRestClient} from "../../client/AdminRestClient";
 import {UserAlertsContext} from "../../../../shared/util/UserAlerts";
 import RefreshIconButton from "../../../../shared/component/general/RefreshIconButton";
-import {ConfirmDialogContext, DeleteButton, FormRow, FormRowControl, SaveButton} from "zavadil-react-common";
+import {ConfirmDialogContext, DeleteButton, FormRowControl, SaveButton} from "zavadil-react-common";
 import BackIconLink from "../../../../shared/component/general/BackIconLink";
-import SyncStateSelect from "../general/SyncStateSelect";
 import {User} from "../../../../shared/types/User";
 import {useNavigator} from "../../../../shared/navigator/OmAppNavigator";
 
@@ -47,8 +46,7 @@ export default function UserDetail() {
 		if (!id) {
 			setData({
 				name: "",
-				email: "",
-				syncState: "Pending"
+				email: ""
 			});
 			return;
 		}
@@ -134,25 +132,6 @@ export default function UserDetail() {
 						}}
 					/>
 
-					<FormRowControl
-						label="OAuth Subject"
-						type="text"
-						value={StringUtil.getNonEmpty(data.oauthSubject)}
-						onChange={(e) => {
-							data.oauthSubject = e.target.value;
-							onChanged();
-						}}
-					/>
-
-					<FormRow forId="sync_state" label="Sync">
-						<SyncStateSelect
-							state={data.syncState}
-							onChange={(e) => {
-								data.syncState = e;
-								onChanged();
-							}}
-						/>
-					</FormRow>
 				</Stack>
 			</Form>
 		</div>

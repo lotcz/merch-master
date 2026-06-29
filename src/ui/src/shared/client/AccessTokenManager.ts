@@ -61,7 +61,8 @@ export class AccessTokenManager {
 			}
 		}
 
-		const storageToken = JsonUtil.parse(localStorage.getItem(TOKEN_STORAGE_NAME));
+		const tokenJson = localStorage.getItem(TOKEN_STORAGE_NAME);
+		const storageToken = JsonUtil.parse(tokenJson);
 		if (OAuthUtil.isValidToken(storageToken)) {
 			this.accessToken = storageToken;
 			return Promise.resolve(storageToken);

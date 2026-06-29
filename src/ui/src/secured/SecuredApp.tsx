@@ -14,7 +14,7 @@ export default function SecuredApp({children}: PropsWithChildren) {
 	const userAlerts = useContext(UserAlertsContext);
 	const userSession = useUserSession();
 	const userSessionUpdate = useUserSessionUpdate();
-	const [user, setUser] = useState<User | undefined>(userSession.user);
+	const [user, setUser] = useState<User | undefined>();
 	const isLoggedIn = useMemo<boolean>(() => ObjectUtil.notEmpty(user), [user]);
 	const [isInitializing, setIsInitializing] = useState<boolean>(false);
 	const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
@@ -31,7 +31,7 @@ export default function SecuredApp({children}: PropsWithChildren) {
 		[user, userSession, userSessionUpdate]
 	);
 
-	const securedRestClient = useMemo(() => new OmSecuredRestClient(() => setUser(undefined)), [setUser]);
+	const securedRestClient = useMemo(() => new OmSecuredRestClient(() => setUser(undefined)), []);
 
 	// initialize
 	useEffect(
