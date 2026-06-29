@@ -1,9 +1,8 @@
 import conf from "../config/conf.json";
 import {RestClient} from "zavadil-ts-common";
 import {OmStats} from "../types/Stats";
-import {createContext, useContext} from "react";
 
-export default class OmPublicRestClient extends RestClient {
+export default class OmRestClient extends RestClient {
 
 	constructor() {
 		super(conf.API_URL);
@@ -16,10 +15,4 @@ export default class OmPublicRestClient extends RestClient {
 	stats(): Promise<OmStats> {
 		return this.getJson("status/stats");
 	}
-}
-
-export const PublicRestClientContext = createContext<OmPublicRestClient>(new OmPublicRestClient());
-
-export function usePublicRestClient(): OmPublicRestClient {
-	return useContext(PublicRestClientContext);
 }

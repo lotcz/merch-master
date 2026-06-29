@@ -1,11 +1,11 @@
 import conf from "../config/conf.json";
 import {AccessTokenPayload} from "zavadil-ts-common";
 import {AccessTokenManager} from "./AccessTokenManager";
-import OmPublicRestClient from "./OmPublicRestClient";
+import OmRestClient from "./OmRestClient";
 import {createContext, useContext} from "react";
 import {User} from "../types/User";
 
-export default class OmSecuredRestClient extends OmPublicRestClient {
+export default class OmSecuredRestClient extends OmRestClient {
 
 	tokenManager: AccessTokenManager;
 

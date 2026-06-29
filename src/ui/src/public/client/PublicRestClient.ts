@@ -1,11 +1,11 @@
 import {createContext, useContext} from "react";
 import {EnumerationsClient} from "./EnumerationsClient";
-import OmPublicRestClient from "../../shared/client/OmPublicRestClient";
+import OmRestClient from "../../shared/client/OmRestClient";
 
 /**
  * Client for public - all endpoints should be unprotected
  */
-export class PublicRestClient extends OmPublicRestClient {
+export class PublicRestClient extends OmRestClient {
 
 	enumerations: EnumerationsClient;
 

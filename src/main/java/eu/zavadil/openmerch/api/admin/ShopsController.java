@@ -40,7 +40,6 @@ public class ShopsController {
 	@PostMapping("")
 	public ShopStub insert(@RequestBody ShopStub document) {
 		document.setId(null);
-		document.setSyncState(SyncState.Pending);
 		return this.shopsService.saveStub(document);
 	}
 

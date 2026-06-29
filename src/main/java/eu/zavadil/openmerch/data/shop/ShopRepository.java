@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ShopRepository extends EntityRepository<Shop> {
+
 	@Query(
 		"""
 				select s
@@ -20,5 +21,4 @@ public interface ShopRepository extends EntityRepository<Shop> {
 
 	List<Shop> findAllByAccountId(int accountId);
 
-	Page<Shop> findBySyncStateOrderByLastUpdatedOn(SyncState state, Pageable pr);
 }

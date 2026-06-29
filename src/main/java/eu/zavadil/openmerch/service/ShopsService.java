@@ -57,7 +57,4 @@ public class ShopsService {
 		return this.repository.findAllByAccountId(accountId);
 	}
 
-	public Page<Shop> loadSyncQueue() {
-		return this.repository.findBySyncStateOrderByLastUpdatedOn(SyncState.Pending, PagingUtils.of(0, 10));
-	}
 }

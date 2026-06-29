@@ -34,7 +34,7 @@ export default function App() {
 	}, [userAlerts]);
 
 	const updateSessionValues = useCallback((s: UserSession) => {
-		document.documentElement.dataset.bsTheme = s.theme;
+		//document.documentElement.dataset.bsTheme = s.theme;
 	}, []);
 
 	const saveSession = useCallback(

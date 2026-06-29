@@ -14,18 +14,24 @@ export default function SecuredApp({children}: PropsWithChildren) {
 	const userAlerts = useContext(UserAlertsContext);
 	const userSession = useUserSession();
 	const userSessionUpdate = useUserSessionUpdate();
-	const isLoggedIn = useMemo<boolean>(() => ObjectUtil.notEmpty(userSession.user), [userSession]);
+	const [user, setUser] = useState<User | undefined>(userSession.user);
+	const isLoggedIn = useMemo<boolean>(() => ObjectUtil.notEmpty(user), [user]);
 	const [isInitializing, setIsInitializing] = useState<boolean>(false);
 	const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
 	const [lastLogin, setLastLogin] = useState<string>();
 	const [uploadImageDialog, setUploadImageDialog] = useState<UploadImageModalProps>();
 
-	const setUser = useCallback((user?: User) => {
-		userSession.user = user;
-		userSessionUpdate(userSession);
-	}, [userSession, userSessionUpdate]);
+	useEffect(
+		() => {
+			if (userSession.user !== user) {
+				userSession.user = user;
+				userSessionUpdate(userSession);
+			}
+		},
+		[user, userSession, userSessionUpdate]
+	);
 
-	const securedRestClient = useMemo(() => new OmSecuredRestClient(() => setUser()), [setUser]);
+	const securedRestClient = useMemo(() => new OmSecuredRestClient(() => setUser(undefined)), [setUser]);
 
 	// initialize
 	useEffect(
@@ -37,7 +43,7 @@ export default function SecuredApp({children}: PropsWithChildren) {
 				.then((u) => setUser(u))
 				.catch((e) => {
 					userAlerts.err(`Rest initialization failed: ${e}`);
-					setUser();
+					setUser(undefined);
 				})
 				.finally(() => {
 					setIsInitializing(false);

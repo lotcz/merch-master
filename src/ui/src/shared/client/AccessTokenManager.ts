@@ -2,7 +2,7 @@ import {AccessTokenPayload, JsonUtil, OAuthUtil, StringUtil, UrlUtil} from "zava
 import {AccessTokensRestClient} from "./AccessTokensRestClient";
 
 const TOKEN_URL_NAME = 't';
-const TOKEN_STORAGE_NAME = 'access-token';
+const TOKEN_STORAGE_NAME = 'om-access-token';
 
 /**
  * Manages refresh of access tokens.
@@ -47,20 +47,18 @@ export class AccessTokenManager {
 	 * Attempts to get access token from URL or storage.
 	 * If successful returns AccessTokenPayload. If fails, promise is rejected.
 	 */
-	initialize(): Promise<AccessTokenPayload> {
+	async initialize(): Promise<AccessTokenPayload> {
 		const urlToken = UrlUtil.extractParamFromUrl(document.location.toString(), TOKEN_URL_NAME);
+		const thisUrl = UrlUtil.deleteParamFromUrl(document.location.toString(), TOKEN_URL_NAME);
 		if (StringUtil.notBlank(urlToken)) {
-			return this.verifyAccessToken(urlToken).then(
-				(accessToken) => {
-					this.setAccessToken(accessToken);
-					return accessToken;
-				}
-			).finally(
-				() => {
-					const thisUrl = UrlUtil.deleteParamFromUrl(document.location.toString(), TOKEN_URL_NAME);
-					return this.redirectTo(thisUrl);
-				}
-			)
+			try {
+				const accessToken = await this.verifyAccessToken(urlToken);
+				this.setAccessToken(accessToken);
+				return this.redirectTo(thisUrl);
+			} catch (e) {
+				console.log(e);
+				return this.redirectTo(thisUrl);
+			}
 		}
 
 		const storageToken = JsonUtil.parse(localStorage.getItem(TOKEN_STORAGE_NAME));
@@ -69,24 +67,21 @@ export class AccessTokenManager {
 			return Promise.resolve(storageToken);
 		}
 
-		return Promise.reject();
+		return Promise.reject('No existing token');
 	}
 
-	getAccessToken(): Promise<AccessTokenPayload> {
+	async getAccessToken(): Promise<AccessTokenPayload> {
 		if (this.accessToken && this.hasValidAccessToken()) {
 			if (OAuthUtil.isTokenReadyForRefresh(this.accessToken)) {
-				return this.accessTokensClient
-					.renewAccessToken(this.accessToken.token)
-					.then((t) => {
-						this.setAccessToken(t);
-						return t;
-					})
-					.catch(
-						(e) => {
-							this.logOut();
-							return Promise.reject('Obnova tokenu selhala!');
-						}
-					);
+				try {
+					const t = await this.accessTokensClient
+						.renewAccessToken(this.accessToken.token);
+					this.setAccessToken(t);
+					return t;
+				} catch (e) {
+					this.logOut();
+					return Promise.reject('Obnova tokenu selhala!');
+				}
 			}
 			return Promise.resolve(this.accessToken);
 		}
@@ -96,18 +91,17 @@ export class AccessTokenManager {
 
 	}
 
-	getAccessTokenRaw(): Promise<string> {
-		return this.getAccessToken().then((t) => t.token);
+	async getAccessTokenRaw(): Promise<string> {
+		const t = await this.getAccessToken();
+		return t.token;
 	}
 
-	logIn(login: string, password: string): Promise<AccessTokenPayload> {
+	async logIn(login: string, password: string): Promise<AccessTokenPayload> {
 		this.setAccessToken(undefined);
-		return this.accessTokensClient
-			.requestAccessTokenFromLogin(login, password)
-			.then((t) => {
-				this.setAccessToken(t);
-				return t;
-			});
+		const t = await this.accessTokensClient
+			.requestAccessTokenFromLogin(login, password);
+		this.setAccessToken(t);
+		return t;
 	}
 
 	logOut() {
