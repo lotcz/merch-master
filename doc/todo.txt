@@ -1,16 +1,21 @@
-todo:
+private version:
 
 - administer all: shops/products/orders/items
+- move design under account
+- move design under product
+- color should be
 - implement shopping
   - domain-based or path-based shop selection
 
 - security
   - limit accounts to only access their designs, products, shops, categories, creators, customers, images
   - filter out potential XSS from description fields
-- mobile designer
 - optimize imagez use (size buckets)
+
+public version:
+
+- mobile designer
 - improve preview (use full screen size, zoom)
-- switch to prod OAuth (switch WorldNews first)
 
 ideas:
 

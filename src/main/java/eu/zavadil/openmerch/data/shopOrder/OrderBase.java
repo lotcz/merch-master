@@ -9,6 +9,8 @@ import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
+import java.time.Instant;
+
 import static eu.zavadil.openmerch.data.user.User.ADDRESS_FIELD_LENGTH;
 
 @EqualsAndHashCode(callSuper = true)
@@ -18,6 +20,10 @@ public class OrderBase extends EntityBase {
 
 	@JdbcType(PostgreSQLEnumJdbcType.class)
 	private OrderState orderState = OrderState.Cart;
+
+	private Instant billingDate = Instant.now();
+
+	private double totalPrice = 0;
 
 	@Column(length = ADDRESS_FIELD_LENGTH)
 	@Size(max = ADDRESS_FIELD_LENGTH)

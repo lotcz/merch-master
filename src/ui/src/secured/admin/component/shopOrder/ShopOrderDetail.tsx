@@ -14,6 +14,7 @@ import ShopCustomerByShopSelect from "../shopCustomer/ShopCustomerByShopSelect";
 import ShopSelect from "../shop/ShopSelect";
 import ShopOrderItemForm from "./ShopOrderItemForm";
 import {useNavigator} from "../../../../shared/navigator/OmAppNavigator";
+import Money from "../../../../shared/component/general/Money";
 
 export default function ShopOrderDetail() {
 	const {id, customerId} = useParams();
@@ -35,6 +36,19 @@ export default function ShopOrderDetail() {
 	}, [data]);
 
 	const shopCustomerId = useMemo(() => data?.customerId, [data]);
+
+	const recalculate = useCallback(() => {
+		if (!data) return;
+		if (!items) return;
+		const totalPrice = items.reduce(
+			(prev, current) => prev + (current.unitCount * current.unitPrice),
+			0
+		);
+		if (data.totalPrice !== totalPrice) {
+			data.totalPrice = totalPrice;
+			onChanged();
+		}
+	}, [items, onChanged, data]);
 
 	useEffect(
 		() => {
@@ -216,13 +230,21 @@ export default function ShopOrderDetail() {
 													setItems(
 														items.map((ei) => ei === item ? {...i} : ei)
 													);
-													setChanged(true);
+													recalculate();
 												}
 											}
 										/>
 									)
 								}
 								</tbody>
+								<tfoot>
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+									<th className="money"><Money amount={data.totalPrice}/></th>
+								</tr>
+								</tfoot>
 							</Table>
 						</div>
 					}

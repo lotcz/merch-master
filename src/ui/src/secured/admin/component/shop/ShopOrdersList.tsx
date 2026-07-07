@@ -6,11 +6,12 @@ import {Button, Form} from "react-bootstrap";
 import {Page, PagingRequest} from "zavadil-ts-common";
 import {ShopOrder} from "../../../../shared/types/ShopOrder";
 import {useNavigator} from "../../../../shared/navigator/OmAppNavigator";
+import Money from "../../../../shared/component/general/Money";
 
 const HEADER: SelectableTableHeader<ShopOrder> = [
 	{name: "customer.user.email", label: "Customer"},
 	{name: "orderState", label: "State"},
-	{name: "totalPrice", label: "Price"},
+	{name: "totalPrice", label: "Price", renderer: (o) => <Money amount={o.totalPrice}/>},
 	{name: "lastUpdatedOn", label: "Updated", renderer: (p) => <DateTime value={p.lastUpdatedOn}/>},
 	{name: "createdOn", label: "Created", renderer: (p) => <DateTime value={p.createdOn}/>},
 ];

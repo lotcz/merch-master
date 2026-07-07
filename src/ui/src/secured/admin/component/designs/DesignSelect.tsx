@@ -33,7 +33,7 @@ export default function DesignSelect({accountId, designId, onChange}: DesignSele
 	return <AutocompleteSelect
 		onSearch={onSearch}
 		selected={design}
-		labelGetter={(d) => `${d.productColor.product.name} (${d.productColor.name})`}
+		labelGetter={(d) => `${d.productColor.product.name} (${d.productColor.name}) - ${d.description}`}
 		onChange={
 			(c) => {
 				onChange(c ? c.id : null);

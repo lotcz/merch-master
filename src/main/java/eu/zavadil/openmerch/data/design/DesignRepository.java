@@ -21,7 +21,8 @@ public interface DesignRepository extends EntityRepository<Design> {
 				select d
 				from Design d
 				where d.account.id = :accountId and (
-							d.productColor.name ILIKE %:search%
+							d.description ILIKE %:search%
+							or d.productColor.name ILIKE %:search%
 							or d.productColor.product.name ILIKE %:search%
 						)
 			"""

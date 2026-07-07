@@ -9,13 +9,14 @@ import RefreshIconButton from "../../../../shared/component/general/RefreshIconB
 import {ShopOrder} from "../../../../shared/types/ShopOrder";
 import ShopLabel from "../shop/ShopLabel";
 import {useNavigator} from "../../../../shared/navigator/OmAppNavigator";
+import Money from "../../../../shared/component/general/Money";
 
 const HEADER: SelectableTableHeader<ShopOrder> = [
 	{name: "id", label: "ID"},
 	{name: "shop.name", label: "Shop", renderer: (o) => <ShopLabel shop={o.customer.shop}/>},
 	{name: "customer.user.email", label: "Customer"},
-	{name: "totalPrice", label: "Price"},
-	{name: "state", label: "State"},
+	{name: "totalPrice", label: "Price", renderer: (o) => <Money amount={o.totalPrice}/>},
+	{name: "orderState", label: "State"},
 	{name: "lastUpdatedOn", label: "Updated", renderer: (p) => <DateTime value={p.lastUpdatedOn}/>},
 	{name: "createdOn", label: "Created", renderer: (p) => <DateTime value={p.createdOn}/>}
 ];

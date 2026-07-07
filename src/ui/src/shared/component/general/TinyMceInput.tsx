@@ -16,6 +16,7 @@ export default function TinyMceInput({initialValue, onChange}: TinyMceInputProps
 			promotion: false,
 			branding: false,
 			menubar: false,
+			height: 170,
 			plugins: 'advlist autolink lists link image',
 			toolbar: 'undo redo | bold italic | bullist numlist',
 		}}

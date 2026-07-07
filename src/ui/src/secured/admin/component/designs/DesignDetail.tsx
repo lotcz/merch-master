@@ -15,11 +15,6 @@ import AccountSelect from "../account/AccountSelect";
 const TAB_PARAM_NAME = "tab";
 const DEFAULT_TAB = "designer";
 
-const COL_1_MD = 3;
-const COL_2_MD = 5;
-const COL_1_LG = 2;
-const COL_2_LG = 6;
-
 export default function DesignDetail() {
 	const {id, productId} = useParams();
 	const navigate = useNavigate();
@@ -106,7 +101,7 @@ export default function DesignDetail() {
 	}
 
 	return (
-		<div>
+		<Stack gap={2}>
 			<div className="p-2">
 				<Stack direction="horizontal" gap={2}>
 					<BackIconLink changed={changed}/>
@@ -120,7 +115,7 @@ export default function DesignDetail() {
 				</Stack>
 			</div>
 
-			<Form className="px-3 w-75">
+			<Form className="px-3">
 				<Stack direction="vertical" gap={2}>
 					<FormRowControl
 						label="UUID"
@@ -131,7 +126,12 @@ export default function DesignDetail() {
 					<FormRow label="Description">
 						<Form.Control
 							as="textarea"
-							disabled={true}
+							onChange={
+								(e) => {
+									data.design.description = e.target.value;
+									onChanged({...data});
+								}
+							}
 							value={StringUtil.getNonEmpty(data.design.description)}
 						/>
 					</FormRow>
@@ -198,6 +198,6 @@ export default function DesignDetail() {
 					)}
 				</div>
 			</div>
-		</div>
+		</Stack>
 	);
 }

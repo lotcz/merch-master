@@ -5,6 +5,7 @@ import {ShopOrderItemStub} from "../../../../shared/types/ShopOrderItem";
 import ShopProductSelect from "../shopProduct/ShopProductSelect";
 import {ShopProduct} from "../../../../shared/types/ShopProduct";
 import {Form} from "react-bootstrap";
+import Money from "../../../../shared/component/general/Money";
 
 export type ShopOrderItemFormProps = {
 	shopId: number;
@@ -36,10 +37,13 @@ export default function ShopOrderItemForm({shopId, item, onChange}: ShopOrderIte
 	useEffect(
 		() => {
 			if (!shopProduct) {
-				item.unitPrice = 0;
 				return;
 			}
-			item.unitPrice = shopProduct.design.productColor.product.basePrice + shopProduct.creatorProfit;
+			const unitPrice = shopProduct.design.productColor.product.basePrice + shopProduct.creatorProfit;
+			if (item.unitPrice !== unitPrice) {
+				item.unitPrice = unitPrice;
+				onChange(item);
+			}
 		},
 		[shopProduct]
 	);
@@ -59,8 +63,8 @@ export default function ShopOrderItemForm({shopId, item, onChange}: ShopOrderIte
 					}
 				/>
 			</td>
-			<td className="v-center">
-				{item.unitPrice} Kč
+			<td className="v-center money">
+				<Money amount={item.unitPrice}/>
 			</td>
 			<td>
 				<div className="float-start">
@@ -76,8 +80,8 @@ export default function ShopOrderItemForm({shopId, item, onChange}: ShopOrderIte
 					/>
 				</div>
 			</td>
-			<td className="v-center">
-				{item.unitCount * item.unitPrice} Kč
+			<td className="v-center money">
+				<Money amount={item.unitCount * item.unitPrice}/>
 			</td>
 		</tr>
 	);

@@ -270,7 +270,9 @@ export default function ShopDetail() {
 							/>
 						</Col>
 						<Col>
-							<ShopPreview shop={data}/>
+							<div className="position-sticky top-0">
+								<ShopPreview shop={data}/>
+							</div>
 						</Col>
 					</Row>
 

@@ -13,6 +13,7 @@ import {Product} from "../../../../shared/types/Product";
 const HEADER: SelectableTableHeader<Design> = [
 	{name: "id", label: "ID"},
 	{name: "uuid", label: "UUID"},
+	{name: "account.name", label: "Account"},
 	{name: "printType.product.name", label: "Product"},
 	{name: "productColor.name", label: "Color", renderer: (p) => p.productColor && <ColorPreview color={p.productColor}/>},
 	{name: "printType.name", label: "Print Type"},
